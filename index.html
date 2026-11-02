@@ -110,51 +110,92 @@
       cursor: grabbing;
     }
 
-    /* Canvas Wrapper */
+    /* The Wall Stage - Exact 750x1125 Proportions */
     #canvas {
       position: absolute;
       top: 0;
       left: 0;
+      width: 750px;
+      height: 1125px;
       transform-origin: 0 0;
       will-change: transform;
     }
 
     .wall-stage {
       position: relative;
-      display: inline-block;
+      width: 750px;
+      height: 1125px;
     }
 
     #wall-photo {
+      width: 100%;
+      height: 100%;
       display: block;
       pointer-events: none;
     }
 
-    #hotspot-overlay {
+    /* Pure CSS Percentage Hotspots (Zero Math, Zero Drift) */
+    .sticker-spot {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 10;
-    }
-
-    /* Soft Dotted Neon-Pink Highlight Style */
-    .sticker-link {
-      fill: rgba(255, 0, 127, 0.12);
-      stroke: rgba(255, 0, 127, 0.85);
-      stroke-width: 4;
-      stroke-dasharray: 8 5;
+      background: rgba(255, 0, 127, 0.12);
+      border: 3.5px dashed rgba(255, 0, 127, 0.9);
       cursor: pointer;
-      transition: all 0.25s ease;
-      filter: drop-shadow(0 0 8px rgba(255, 0, 127, 0.5));
+      transition: all 0.2s ease;
+      box-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
     }
 
-    .sticker-link:hover, .sticker-link:active {
-      fill: rgba(255, 0, 127, 0.35);
-      stroke: #ff007f;
-      stroke-width: 5;
-      stroke-dasharray: none;
-      filter: drop-shadow(0 0 20px #ff007f);
+    .sticker-spot:hover, .sticker-spot:active {
+      background: rgba(255, 0, 127, 0.35);
+      border-color: #ff007f;
+      border-style: solid;
+      box-shadow: 0 0 20px #ff007f;
+    }
+
+    /* 1. Cassette Tape (Top Left) */
+    #spot-cassette {
+      top: 20%;
+      left: 28%;
+      width: 23%;
+      height: 9.5%;
+      border-radius: 6px;
+      transform: rotate(-7deg);
+    }
+
+    /* 2. Grenade Grape (Top Right) */
+    #spot-grenade {
+      top: 23%;
+      left: 57%;
+      width: 15%;
+      height: 16%;
+      border-radius: 50%;
+      transform: rotate(12deg);
+    }
+
+    /* 3. Raccoon Circle (Center Right) */
+    #spot-raccoon {
+      top: 33.5%;
+      left: 51%;
+      width: 13.5%;
+      height: 9%;
+      border-radius: 50%;
+    }
+
+    /* 4. Purple Grape Bunch (Center Left Big Circle) */
+    #spot-grapes {
+      top: 42.5%;
+      left: 27%;
+      width: 23%;
+      height: 15.5%;
+      border-radius: 50%;
+    }
+
+    /* 5. Spray Cans / Fundraiser (Lower Center/Right) */
+    #spot-fundraiser {
+      top: 61%;
+      left: 49%;
+      width: 18%;
+      height: 19%;
+      border-radius: 8px;
     }
 
     /* Bottom Title Banner */
@@ -203,38 +244,16 @@
   <div id="viewport">
     <div id="canvas">
       <div class="wall-stage">
-        <!-- Background Image with auto-initializer -->
-        <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall" onload="initStickerWall(this)">
+        <!-- Background Image -->
+        <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall">
 
-        <!-- SVG overlay gets dynamically sized to match image natural pixels -->
-        <svg id="hotspot-overlay">
-          
-          <!-- 1. GREEN CASSETTE TAPE -> The Grapevine Official Instagram -->
-          <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram">
-            <rect class="sticker-link" x="28%" y="19%" width="22%" height="10%" rx="6" transform="rotate(-7)" />
-          </a>
+        <!-- Pure CSS Percentage Hotspots matching your pink reference drawing -->
+        <a id="spot-cassette" class="sticker-spot" href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram"></a>
+        <a id="spot-grenade" class="sticker-spot" href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub"></a>
+        <a id="spot-raccoon" class="sticker-spot" href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="Upcoming Shows & Notice Board"></a>
+        <a id="spot-grapes" class="sticker-spot" href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map"></a>
+        <a id="spot-fundraiser" class="sticker-spot" href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport"></a>
 
-          <!-- 2. GRENADE GRAPE -> UK Hardcore Instagram Hub -->
-          <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
-            <ellipse class="sticker-link" cx="63%" cy="28%" rx="7%" ry="12%" />
-          </a>
-
-          <!-- 3. RACCOON HEAD CIRCLE -> Notice Board / Upcoming Shows -->
-          <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="Upcoming Shows & Notice Board">
-            <circle class="sticker-link" cx="55%" cy="36%" r="6%" />
-          </a>
-
-          <!-- 4. PURPLE GRAPE BUNCH -> Grassroots Venue Map -->
-          <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map">
-            <circle class="sticker-link" cx="40%" cy="46%" r="9%" />
-          </a>
-
-          <!-- 5. SPRAY PAINT CANS -> Community Fundraiser -->
-          <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport">
-            <rect class="sticker-link" x="50%" y="65%" width="18%" height="18%" rx="8" />
-          </a>
-
-        </svg>
       </div>
     </div>
   </div>
@@ -243,9 +262,7 @@
     const viewport = document.getElementById('viewport');
     const canvas = document.getElementById('canvas');
     const tooltipBox = document.getElementById('tooltip-box');
-    
-    let nativeWidth = 0;
-    let nativeHeight = 0;
+
     let scale = 1;
     let minScale = 1;
     let pointX = 0;
@@ -260,33 +277,18 @@
       tooltipBox.style.display = 'none';
     }
 
-    document.querySelectorAll('#hotspot-overlay a').forEach(spot => {
+    document.querySelectorAll('.sticker-spot').forEach(spot => {
       const titleText = spot.getAttribute('data-title');
       spot.addEventListener('mouseenter', () => showTooltip(titleText));
       spot.addEventListener('mouseleave', () => hideTooltip());
       spot.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
     });
 
-    // Automatically initialize based on the image's true loaded resolution
-    window.initStickerWall = function(img) {
-      nativeWidth = img.naturalWidth;
-      nativeHeight = img.naturalHeight;
-
-      canvas.style.width = nativeWidth + 'px';
-      canvas.style.height = nativeHeight + 'px';
-
-      const svg = document.getElementById('hotspot-overlay');
-      svg.setAttribute('viewBox', `0 0 ${nativeWidth} ${nativeHeight}`);
-
-      initCanvasFit();
-    };
-
     function clampPositions() {
-      if (!nativeWidth) return;
       const vWidth = window.innerWidth;
       const vHeight = window.innerHeight;
-      const cWidth = nativeWidth * scale;
-      const cHeight = nativeHeight * scale;
+      const cWidth = 750 * scale;
+      const cHeight = 1125 * scale;
 
       if (cWidth <= vWidth) {
         pointX = (vWidth - cWidth) / 2;
@@ -307,23 +309,23 @@
     }
 
     function initCanvasFit() {
-      if (!nativeWidth) return;
       const vWidth = window.innerWidth;
       const vHeight = window.innerHeight;
       
-      const scaleX = vWidth / nativeWidth;
-      const scaleY = vHeight / nativeHeight;
+      const scaleX = vWidth / 750;
+      const scaleY = vHeight / 1125;
       minScale = Math.max(scaleX, scaleY); 
       scale = minScale;
       
-      pointX = (vWidth - nativeWidth * scale) / 2;
-      pointY = (vHeight - nativeHeight * scale) / 2;
+      pointX = (vWidth - 750 * scale) / 2;
+      pointY = (vHeight - 1125 * scale) / 2;
       setTransform();
     }
 
+    window.addEventListener('load', initCanvasFit);
     window.addEventListener('resize', initCanvasFit);
 
-    // Gestures
+    // Pan & Zoom Engine
     let isDragging = false;
     let startX = 0, startY = 0;
     let initialPinchDistance = null;
