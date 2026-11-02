@@ -110,41 +110,41 @@
       cursor: grabbing;
     }
 
-    /* Interactive Canvas */
+    /* Canvas calibrated exactly to 750x1125 image dimensions */
     #canvas {
       position: absolute;
       top: 0;
       left: 0;
-      width: 1000px;
-      height: 1500px;
+      width: 750px;
+      height: 1125px;
       transform-origin: 0 0;
       will-change: transform;
     }
 
     #wall-photo {
       display: block;
-      width: 1000px;
-      height: 1500px;
+      width: 750px;
+      height: 1125px;
       object-fit: fill;
       pointer-events: none;
     }
 
-    /* SVG Overlay Layer aligned 1:1 with Canvas */
+    /* SVG Overlay Layer aligned 1:1 with 750x1125 canvas */
     #hotspot-overlay {
       position: absolute;
       top: 0;
       left: 0;
-      width: 1000px;
-      height: 1500px;
+      width: 750px;
+      height: 1125px;
       z-index: 10;
     }
 
-    /* Softer, Broken Neon-Pink Stencil Highlights */
+    /* Soft Dotted Neon-Pink Highlight Style */
     .sticker-link {
       fill: rgba(255, 0, 127, 0.12);
-      stroke: rgba(255, 0, 127, 0.8);
-      stroke-width: 4.5;
-      stroke-dasharray: 10 6; /* Creates the softer, broken stencil line style */
+      stroke: rgba(255, 0, 127, 0.85);
+      stroke-width: 4;
+      stroke-dasharray: 8 5;
       cursor: pointer;
       transition: all 0.25s ease;
       filter: drop-shadow(0 0 8px rgba(255, 0, 127, 0.5));
@@ -153,8 +153,8 @@
     .sticker-link:hover, .sticker-link:active {
       fill: rgba(255, 0, 127, 0.35);
       stroke: #ff007f;
-      stroke-width: 6;
-      stroke-dasharray: none; /* Solidifies on hover/tap for clear feedback */
+      stroke-width: 5;
+      stroke-dasharray: none;
       filter: drop-shadow(0 0 20px #ff007f);
     }
 
@@ -207,32 +207,32 @@
       <!-- Background Image -->
       <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall">
 
-      <!-- Shifted down coordinates matching your drawing exactly -->
-      <svg id="hotspot-overlay" viewBox="0 0 1000 1500">
+      <!-- viewBox locked 1:1 to image dimensions (750x1125) -->
+      <svg id="hotspot-overlay" viewBox="0 0 750 1125">
         
-        <!-- 1. TOP-LEFT TILTED RECTANGLE -> The Grapevine's Instagram -->
+        <!-- 1. CASSETTE TAPE -> The Grapevine Official Instagram -->
         <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram">
-          <polygon class="sticker-link" points="265,395 480,285 515,395 295,505" />
+          <polygon class="sticker-link" points="212,225 380,225 380,330 212,330" transform="rotate(-6 296 277)" />
         </a>
 
-        <!-- 2. TOP-RIGHT OVAL -> UK Hardcore Instagram Hub -->
+        <!-- 2. GRENADE GRAPE -> UK Hardcore Instagram Hub -->
         <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
-          <ellipse class="sticker-link" cx="720" cy="390" rx="80" ry="110" transform="rotate(8 720 390)" />
+          <ellipse class="sticker-link" cx="535" cy="300" rx="52" ry="90" transform="rotate(12 535 300)" />
         </a>
 
-        <!-- 3. UPPER-MIDDLE CIRCLE -> Notice Board / Upcoming Shows -->
+        <!-- 3. RACCOON HEAD CIRCLE -> Notice Board / Upcoming Shows -->
         <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="Upcoming Shows & Notice Board">
-          <circle class="sticker-link" cx="615" cy="500" r="75" />
+          <circle class="sticker-link" cx="460" cy="395" r="50" />
         </a>
 
-        <!-- 4. LOWER-LEFT CIRCLE -> The Grapevine's Venue Map -->
+        <!-- 4. PURPLE GRAPE BUNCH -> Grassroots Venue Map -->
         <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map">
-          <circle class="sticker-link" cx="395" cy="625" r="110" />
+          <circle class="sticker-link" cx="300" cy="510" r="75" />
         </a>
 
-        <!-- 5. LOWER-RIGHT SQUARE -> Community Fundraiser -->
+        <!-- 5. SPRAY PAINT CANS -> Community Fundraiser -->
         <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport">
-          <rect class="sticker-link" x="540" y="665" width="170" height="115" rx="6" />
+          <polygon class="sticker-link" points="360,685 485,685 485,910 360,910" transform="rotate(-6 422 797)" />
         </a>
 
       </svg>
@@ -265,12 +265,12 @@
       spot.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
     });
 
-    // Enforce drag boundaries so users cannot scroll into black background space
+    // Enforce drag boundaries to prevent scrolling off background image
     function clampPositions() {
       const vWidth = window.innerWidth;
       const vHeight = window.innerHeight;
-      const cWidth = 1000 * scale;
-      const cHeight = 1500 * scale;
+      const cWidth = 750 * scale;
+      const cHeight = 1125 * scale;
 
       if (cWidth <= vWidth) {
         pointX = (vWidth - cWidth) / 2;
@@ -295,12 +295,12 @@
       const vWidth = window.innerWidth;
       const vHeight = window.innerHeight;
       
-      const scaleX = vWidth / 1000;
-      const scaleY = vHeight / 1500;
+      const scaleX = vWidth / 750;
+      const scaleY = vHeight / 1125;
       scale = Math.max(scaleX, scaleY);
       
-      pointX = (vWidth - 1000 * scale) / 2;
-      pointY = (vHeight - 1500 * scale) / 2;
+      pointX = (vWidth - 750 * scale) / 2;
+      pointY = (vHeight - 1125 * scale) / 2;
       setTransform();
     }
 
