@@ -211,27 +211,27 @@
         <!-- SVG Hotspots -->
         <svg id="hotspot-overlay">
           
-          <!-- 1. CASSETTE TAPE -->
+          <!-- 1. CASSETTE TAPE -> The Grapevine Official Instagram -->
           <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram">
             <polygon class="sticker-link" points="240,307 398,275 426,379 261,414" />
           </a>
 
-          <!-- 2. GRENADE -->
+          <!-- 2. GRENADE -> UK Hardcore Community Hub -->
           <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
             <polygon class="sticker-link" points="545,420 547,432 551,401 540,375 548,360 557,341 568,338 584,326 586,307 620,306 631,321 649,332 649,346 655,360 657,374 655,389 655,400 652,406 649,416 644,423 642,430 628,446 625,454 610,466 593,467 580,458 552,433 554,439 562,442 547,432" />
           </a>
 
-          <!-- 3. RACCOON -->
-          <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="NOTICE BOARD">
+          <!-- 3. RACCOON -> Notice Board (Links internally to notice-board.html) -->
+          <a href="notice-board.html" data-title="NOTICE BOARD">
             <circle class="sticker-link" cx="519" cy="510" r="61" />
           </a>
 
-          <!-- 4. GRAPES -->
+          <!-- 4. GRAPES -> Grassroots Venue Map -->
           <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map">
             <circle class="sticker-link" cx="339" cy="650" r="82" />
           </a>
 
-          <!-- 5. KEYS -->
+          <!-- 5. KEYS -> Community Fundraiser -->
           <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport">
             <rect class="sticker-link" x="562" y="777" width="176" height="149" rx="10" />
           </a>
@@ -289,7 +289,6 @@
       const cWidth = nativeWidth * scale;
       const cHeight = nativeHeight * scale;
 
-      // Ensure canvas strictly fills screen width and height boundaries with no empty gaps
       pointX = Math.min(0, Math.max(vWidth - cWidth, pointX));
       pointY = Math.min(0, Math.max(vHeight - cHeight, pointY));
     }
@@ -306,7 +305,6 @@
       
       const scaleX = vWidth / nativeWidth;
       const scaleY = vHeight / nativeHeight;
-      // Forces minScale to always cover full height and width (no black bars anywhere)
       minScale = Math.max(scaleX, scaleY); 
       scale = minScale;
       
