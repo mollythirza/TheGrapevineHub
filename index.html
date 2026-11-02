@@ -110,7 +110,7 @@
       cursor: grabbing;
     }
 
-    /* Canvas calibrated exactly to 750x1125 image dimensions */
+    /* Canvas Wrapper locked to strict 750x1125 aspect ratio */
     #canvas {
       position: absolute;
       top: 0;
@@ -121,21 +121,29 @@
       will-change: transform;
     }
 
-    #wall-photo {
-      display: block;
+    /* Absolute Stacking for Image & SVG Overlay */
+    .wall-stage {
+      position: relative;
       width: 750px;
       height: 1125px;
-      object-fit: fill;
+    }
+
+    #wall-photo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
       pointer-events: none;
     }
 
-    /* SVG Overlay Layer aligned 1:1 with 750x1125 canvas */
     #hotspot-overlay {
       position: absolute;
       top: 0;
       left: 0;
-      width: 750px;
-      height: 1125px;
+      width: 100%;
+      height: 100%;
       z-index: 10;
     }
 
@@ -158,7 +166,7 @@
       filter: drop-shadow(0 0 20px #ff007f);
     }
 
-    /* Bottom Interactive Title Banner */
+    /* Bottom Title Banner */
     #tooltip-box {
       position: fixed;
       bottom: 25px;
@@ -193,7 +201,6 @@
     <p>Explore the DIY gig wall. Tap glowing stickers to access community hubs, maps, and independent projects.</p>
   </div>
 
-  <!-- Bottom Title Banner -->
   <div id="tooltip-box"></div>
 
   <div class="zoom-buttons">
@@ -204,38 +211,40 @@
 
   <div id="viewport">
     <div id="canvas">
-      <!-- Background Image -->
-      <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall">
+      <div class="wall-stage">
+        <!-- Background Image -->
+        <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall">
 
-      <!-- viewBox locked 1:1 to image dimensions (750x1125) -->
-      <svg id="hotspot-overlay" viewBox="0 0 750 1125">
-        
-        <!-- 1. CASSETTE TAPE -> The Grapevine Official Instagram -->
-        <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram">
-          <polygon class="sticker-link" points="212,225 380,225 380,330 212,330" transform="rotate(-6 296 277)" />
-        </a>
+        <!-- Synchronized SVG Overlay -->
+        <svg id="hotspot-overlay" viewBox="0 0 750 1125" preserveAspectRatio="none">
+          
+          <!-- 1. GREEN CASSETTE TAPE -> The Grapevine Official Instagram -->
+          <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram">
+            <rect class="sticker-link" x="210" y="245" width="160" height="100" rx="6" transform="rotate(-6 290 295)" />
+          </a>
 
-        <!-- 2. GRENADE GRAPE -> UK Hardcore Instagram Hub -->
-        <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
-          <ellipse class="sticker-link" cx="535" cy="300" rx="52" ry="90" transform="rotate(12 535 300)" />
-        </a>
+          <!-- 2. GRENADE GRAPE -> UK Hardcore Instagram Hub -->
+          <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
+            <ellipse class="sticker-link" cx="545" cy="315" rx="50" ry="85" transform="rotate(12 545 315)" />
+          </a>
 
-        <!-- 3. RACCOON HEAD CIRCLE -> Notice Board / Upcoming Shows -->
-        <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="Upcoming Shows & Notice Board">
-          <circle class="sticker-link" cx="460" cy="395" r="50" />
-        </a>
+          <!-- 3. RACCOON HEAD CIRCLE -> Notice Board / Upcoming Shows -->
+          <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="Upcoming Shows & Notice Board">
+            <circle class="sticker-link" cx="460" cy="425" r="50" />
+          </a>
 
-        <!-- 4. PURPLE GRAPE BUNCH -> Grassroots Venue Map -->
-        <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map">
-          <circle class="sticker-link" cx="300" cy="510" r="75" />
-        </a>
+          <!-- 4. PURPLE GRAPE BUNCH -> Grassroots Venue Map -->
+          <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map">
+            <circle class="sticker-link" cx="300" cy="545" r="75" />
+          </a>
 
-        <!-- 5. SPRAY PAINT CANS -> Community Fundraiser -->
-        <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport">
-          <polygon class="sticker-link" points="360,685 485,685 485,910 360,910" transform="rotate(-6 422 797)" />
-        </a>
+          <!-- 5. SPRAY PAINT CANS -> Community Fundraiser -->
+          <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport">
+            <rect class="sticker-link" x="360" y="760" width="125" height="225" rx="8" transform="rotate(-6 422 872.5)" />
+          </a>
 
-      </svg>
+        </svg>
+      </div>
     </div>
   </div>
 
@@ -257,7 +266,6 @@
       tooltipBox.style.display = 'none';
     }
 
-    // Attach Title Banner events to hotspots
     document.querySelectorAll('#hotspot-overlay a').forEach(spot => {
       const titleText = spot.getAttribute('data-title');
       spot.addEventListener('mouseenter', () => showTooltip(titleText));
@@ -265,7 +273,6 @@
       spot.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
     });
 
-    // Enforce drag boundaries to prevent scrolling off background image
     function clampPositions() {
       const vWidth = window.innerWidth;
       const vHeight = window.innerHeight;
@@ -290,7 +297,6 @@
       canvas.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
     }
 
-    // Initialize wall to fill full screen without black space
     function initCanvasFit() {
       const vWidth = window.innerWidth;
       const vHeight = window.innerHeight;
@@ -307,7 +313,7 @@
     window.addEventListener('load', initCanvasFit);
     window.addEventListener('resize', initCanvasFit);
 
-    // --- PAN & ZOOM GESTURE ENGINE ---
+    // Gestures
     let isDragging = false;
     let startX = 0, startY = 0;
     let initialPinchDistance = null;
@@ -319,7 +325,6 @@
       return Math.sqrt(dx * dx + dy * dy);
     }
 
-    // Mouse Dragging
     viewport.addEventListener('mousedown', (e) => {
       if (e.target.closest('a')) return;
       e.preventDefault();
@@ -338,7 +343,6 @@
 
     window.addEventListener('mouseup', () => { isDragging = false; });
 
-    // Mouse Wheel Zoom
     viewport.addEventListener('wheel', (e) => {
       e.preventDefault();
       const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
@@ -353,7 +357,6 @@
       setTransform();
     }, { passive: false });
 
-    // Touch Controls (Pinch to zoom + 1 finger pan)
     viewport.addEventListener('touchstart', (e) => {
       if (e.touches.length === 1) {
         if (e.target.closest('a')) {
@@ -401,7 +404,6 @@
       if (e.touches.length === 0) isDragging = false;
     });
 
-    // Zoom Buttons
     document.getElementById('zoom-in').addEventListener('click', () => { scale = Math.min(scale * 1.3, 4.5); setTransform(); });
     document.getElementById('zoom-out').addEventListener('click', () => { scale = Math.max(scale / 1.3, 0.4); setTransform(); });
     document.getElementById('zoom-reset').addEventListener('click', initCanvasFit);
