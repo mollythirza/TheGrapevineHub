@@ -139,21 +139,23 @@
       z-index: 10;
     }
 
-    /* Sticker Link Styling with Pink Glow */
+    /* Softer, Broken Neon-Pink Stencil Highlights */
     .sticker-link {
-      fill: rgba(255, 0, 127, 0.2);
-      stroke: rgba(255, 0, 127, 0.85);
-      stroke-width: 4;
+      fill: rgba(255, 0, 127, 0.12);
+      stroke: rgba(255, 0, 127, 0.8);
+      stroke-width: 4.5;
+      stroke-dasharray: 10 6; /* Creates the softer, broken stencil line style */
       cursor: pointer;
       transition: all 0.25s ease;
-      filter: drop-shadow(0 0 10px rgba(255, 0, 127, 0.7));
+      filter: drop-shadow(0 0 8px rgba(255, 0, 127, 0.5));
     }
 
     .sticker-link:hover, .sticker-link:active {
-      fill: rgba(255, 0, 127, 0.5);
+      fill: rgba(255, 0, 127, 0.35);
       stroke: #ff007f;
       stroke-width: 6;
-      filter: drop-shadow(0 0 25px #ff007f) drop-shadow(0 0 10px #ff007f);
+      stroke-dasharray: none; /* Solidifies on hover/tap for clear feedback */
+      filter: drop-shadow(0 0 20px #ff007f);
     }
 
     /* Bottom Interactive Title Banner */
@@ -205,32 +207,32 @@
       <!-- Background Image -->
       <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall">
 
-      <!-- Precise Coordinates Calibrated to Your Reference Image -->
+      <!-- Shifted down coordinates matching your drawing exactly -->
       <svg id="hotspot-overlay" viewBox="0 0 1000 1500">
         
         <!-- 1. TOP-LEFT TILTED RECTANGLE -> The Grapevine's Instagram -->
         <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram">
-          <polygon class="sticker-link" points="265,335 480,225 515,335 295,445" />
+          <polygon class="sticker-link" points="265,395 480,285 515,395 295,505" />
         </a>
 
         <!-- 2. TOP-RIGHT OVAL -> UK Hardcore Instagram Hub -->
         <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
-          <ellipse class="sticker-link" cx="720" cy="330" rx="80" ry="110" transform="rotate(8 720 330)" />
+          <ellipse class="sticker-link" cx="720" cy="390" rx="80" ry="110" transform="rotate(8 720 390)" />
         </a>
 
         <!-- 3. UPPER-MIDDLE CIRCLE -> Notice Board / Upcoming Shows -->
         <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="Upcoming Shows & Notice Board">
-          <circle class="sticker-link" cx="615" cy="440" r="75" />
+          <circle class="sticker-link" cx="615" cy="500" r="75" />
         </a>
 
         <!-- 4. LOWER-LEFT CIRCLE -> The Grapevine's Venue Map -->
         <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map">
-          <circle class="sticker-link" cx="395" cy="565" r="110" />
+          <circle class="sticker-link" cx="395" cy="625" r="110" />
         </a>
 
         <!-- 5. LOWER-RIGHT SQUARE -> Community Fundraiser -->
         <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport">
-          <rect class="sticker-link" x="540" y="605" width="170" height="115" rx="6" />
+          <rect class="sticker-link" x="540" y="665" width="170" height="115" rx="6" />
         </a>
 
       </svg>
@@ -263,7 +265,7 @@
       spot.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
     });
 
-    // Enforce drag boundaries to prevent scrolling off background image
+    // Enforce drag boundaries so users cannot scroll into black background space
     function clampPositions() {
       const vWidth = window.innerWidth;
       const vHeight = window.innerHeight;
