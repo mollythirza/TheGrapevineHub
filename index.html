@@ -15,6 +15,8 @@
       font-family: 'Courier New', Courier, monospace;
       overflow: hidden;
       touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     /* Fixed UI Header & Description Panel */
@@ -111,13 +113,12 @@
       cursor: grabbing;
     }
 
-    /* Interactive Canvas */
+    /* Interactive Canvas with Fixed Proportions */
     #canvas {
       position: absolute;
       width: 1000px;
       height: 1500px;
-      transform-origin: center center;
-      transition: transform 0.05s linear;
+      transform-origin: 0 0;
       will-change: transform;
     }
 
@@ -129,7 +130,7 @@
       pointer-events: none;
     }
 
-    /* SVG Overlay Layer matches 1000x1500 canvas perfectly */
+    /* SVG Overlay Layer aligned perfectly over 1000x1500 canvas */
     #hotspot-overlay {
       position: absolute;
       top: 0;
@@ -156,7 +157,7 @@
       filter: drop-shadow(0 0 20px #ff007f) drop-shadow(0 0 10px #ff007f);
     }
 
-    /* Visible Floating Label Box */
+    /* Visible Floating Label Box for Mobile Tap & Desktop Hover */
     #tooltip-box {
       position: fixed;
       bottom: 25px;
@@ -176,6 +177,7 @@
       box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
       text-transform: uppercase;
       text-align: center;
+      max-width: 85vw;
     }
   </style>
 </head>
@@ -204,37 +206,32 @@
       <!-- Background Photo -->
       <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall">
 
-      <!-- Precise 1000x1500 Coordinate Hotspots with Custom Tooltip triggers -->
+      <!-- Precise Coordinate Hotspots Mapped Directly to the Textured Background Image -->
       <svg id="hotspot-overlay" viewBox="0 0 1000 1500">
         
         <!-- 1. CASSETTE TAPE -> The Grapevine's Instagram -->
-        <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" 
-           onmouseover="showTooltip('The Grapevine — Official Instagram')" onmouseout="hideTooltip()">
-          <rect class="sticker-link" x="280" y="220" width="140" height="90" rx="6" />
+        <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram">
+          <polygon class="sticker-link" points="280,220 500,210 505,320 285,335" />
         </a>
 
         <!-- 2. PURPLE GRAPE BUNCH -> UK Hardcore Instagram -->
-        <a href="https://www.instagram.com/uk_hc/" target="_blank"
-           onmouseover="showTooltip('UK Hardcore Community Hub')" onmouseout="hideTooltip()">
-          <circle class="sticker-link" cx="395" cy="510" r="75" />
+        <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
+          <ellipse class="sticker-link" cx="400" cy="505" rx="100" ry="90" transform="rotate(-12 400 505)" />
         </a>
 
         <!-- 3. SPRAY PAINT CANS -> Community Fundraiser -->
-        <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank"
-           onmouseover="showTooltip('Community Fundraiser — Help Richard Get His Passport')" onmouseout="hideTooltip()">
-          <rect class="sticker-link" x="485" y="680" width="165" height="150" rx="8" />
+        <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport">
+          <polygon class="sticker-link" points="475,670 660,695 645,845 470,805" />
         </a>
 
         <!-- 4. KEYCHAIN -> The Grapevine's Venue Map -->
-        <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank"
-           onmouseover="showTooltip('The Grapevine — Grassroots Venue Map')" onmouseout="hideTooltip()">
-          <rect class="sticker-link" x="670" y="620" width="130" height="110" rx="6" />
+        <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map">
+          <polygon class="sticker-link" points="675,615 875,615 875,735 675,735" />
         </a>
 
         <!-- 5. PINK RACCOON STICKER -> Upcoming Shows / Notice Board -->
-        <a href="https://www.instagram.com/thegrapevineuk/" target="_blank"
-           onmouseover="showTooltip('Upcoming Shows & Notice Board')" onmouseout="hideTooltip()">
-          <circle class="sticker-link" cx="615" cy="400" r="65" />
+        <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="Upcoming Shows & Notice Board">
+          <circle class="sticker-link" cx="620" cy="400" r="70" />
         </a>
 
       </svg>
@@ -246,6 +243,10 @@
     const canvas = document.getElementById('canvas');
     const tooltipBox = document.getElementById('tooltip-box');
 
+    let scale = 1;
+    let pointX = 0;
+    let pointY = 0;
+
     function showTooltip(text) {
       tooltipBox.innerText = text;
       tooltipBox.style.display = 'block';
@@ -255,14 +256,21 @@
       tooltipBox.style.display = 'none';
     }
 
-    let scale = 1;
-    let pointX = 0;
-    let pointY = 0;
-    
-    // Auto-fit canvas to cover screen on load
+    // Attach tooltips dynamically to all sticker links
+    document.querySelectorAll('#hotspot-overlay a').forEach(link => {
+      const titleText = link.getAttribute('data-title');
+      
+      link.addEventListener('mouseenter', () => showTooltip(titleText));
+      link.addEventListener('mouseleave', () => hideTooltip());
+      link.addEventListener('touchstart', (e) => {
+        showTooltip(titleText);
+      });
+    });
+
+    // Auto-fit initial canvas to screen center
     function initCanvasFit() {
-      const vWidth = viewport.clientWidth;
-      const vHeight = viewport.clientHeight;
+      const vWidth = window.innerWidth;
+      const vHeight = window.innerHeight;
       const cWidth = 1000;
       const cHeight = 1500;
       
@@ -282,11 +290,9 @@
     window.addEventListener('load', initCanvasFit);
     window.addEventListener('resize', initCanvasFit);
 
-    // --- MOUSE & TOUCH GESTURE ENGINE ---
+    // --- PAN & ZOOM GESTURE ENGINE ---
     let isDragging = false;
-    let startX = 0;
-    let startY = 0;
-    
+    let startX = 0, startY = 0;
     let initialPinchDistance = null;
     let initialScale = 1;
 
@@ -296,7 +302,7 @@
       return Math.sqrt(dx * dx + dy * dy);
     }
 
-    // Mouse Dragging
+    // MOUSE DRAGGING
     viewport.addEventListener('mousedown', (e) => {
       if (e.target.closest('a')) return;
       e.preventDefault();
@@ -315,6 +321,74 @@
 
     window.addEventListener('mouseup', () => { isDragging = false; });
 
-    // Mouse Wheel Zoom
+    // MOUSE WHEEL ZOOM
     viewport.addEventListener('wheel', (e) => {
-      e
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
+      const newScale = Math.min(Math.max(scale * zoomFactor, 0.4), 4.5);
+      
+      const xs = (e.clientX - pointX) / scale;
+      const ys = (e.clientY - pointY) / scale;
+      
+      scale = newScale;
+      pointX = e.clientX - xs * scale;
+      pointY = e.clientY - ys * scale;
+      setTransform();
+    }, { passive: false });
+
+    // TOUCH EVENT LISTENERS (Non-passive to allow movement)
+    viewport.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        if (e.target.closest('a')) {
+          isDragging = false;
+          return;
+        }
+        hideTooltip();
+        startX = e.touches[0].clientX - pointX;
+        startY = e.touches[0].clientY - pointY;
+        isDragging = true;
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
+        initialScale = scale;
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && isDragging) {
+        e.preventDefault();
+        pointX = e.touches[0].clientX - startX;
+        pointY = e.touches[0].clientY - startY;
+        setTransform();
+      } else if (e.touches.length === 2 && initialPinchDistance) {
+        e.preventDefault();
+        const currentDistance = getDistance(e.touches[0], e.touches[1]);
+        const factor = currentDistance / initialPinchDistance;
+        const newScale = Math.min(Math.max(initialScale * factor, 0.4), 4.5);
+        
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        
+        const xs = (midX - pointX) / scale;
+        const ys = (midY - pointY) / scale;
+        
+        scale = newScale;
+        pointX = midX - xs * scale;
+        pointY = midY - ys * scale;
+        setTransform();
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) initialPinchDistance = null;
+      if (e.touches.length === 0) isDragging = false;
+    });
+
+    // ZOOM BUTTONS
+    document.getElementById('zoom-in').addEventListener('click', () => { scale = Math.min(scale * 1.3, 4.5); setTransform(); });
+    document.getElementById('zoom-out').addEventListener('click', () => { scale = Math.max(scale / 1.3, 0.4); setTransform(); });
+    document.getElementById('zoom-reset').addEventListener('click', initCanvasFit);
+  </script>
+
+</body>
+</html>
