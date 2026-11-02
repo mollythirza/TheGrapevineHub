@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
+  <title>The Grapevine — Interactive Sticker Wall</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: #0d0d0d;
+      color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    /* Fixed UI Header */
+    .controls-overlay {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1000;
+      background: rgba(13, 13, 13, 0.9);
+      border: 1px solid #ff007f;
+      padding: 10px 14px;
+      border-radius: 4px;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+      backdrop-filter: blur(5px);
+      pointer-events: none;
+    }
+
+    .controls-overlay h1 {
+      font-size: 13px;
+      color: #ff007f;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+
+    .controls-overlay p {
+      font-size: 10px;
+      color: #aaa;
+    }
+
+    /* Zoom Buttons */
+    .zoom-buttons {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn {
+      background: #111;
+      color: #ff007f;
+      border: 1px solid #ff007f;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+    }
+
+    .btn:active {
+      background: #ff007f;
+      color: #000;
+    }
+
+    /* Viewport Container */
+    #viewport {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #viewport:active {
+      cursor: grabbing;
+    }
+
+    /* Interactive Canvas */
+    #canvas {
+      position: absolute;
+      width: 1000px;
+      height: 1500px;
+      transform-origin: center center;
+      transition: transform 0.05s linear;
+      background-color: #1a1a1a;
+      box-shadow: 0 0 50px rgba(0,0,0,0.9);
+    }
+
+    #wall-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      display: block;
+    }
+
+    /* SVG Overlay Layer */
+    #hotspot-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+    }
+
+    /* Sticker Link Styling with Subtle Pink Glow */
+    .sticker-link {
+      fill: rgba(255, 0, 127, 0.08);
+      stroke: rgba(255, 0, 127, 0.4);
+      stroke-width: 2.5;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      filter: drop-shadow(0 0 6px rgba(255, 0, 127, 0.4));
+    }
+
+    /* Bright Pink Glow on Hover / Active Tap */
+    .sticker-link:hover {
+      fill: rgba(255, 0, 127, 0.3);
+      stroke: #ff007f;
+      stroke-width: 4;
+      filter: drop-shadow(0 0 16px #ff007f) drop-shadow(0 0 6px #ff007f);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="controls-overlay">
+    <h1>The Grapevine Hub</h1>
+    <p>Scroll/pinch to zoom. Drag to explore. Tap glowing stickers!</p>
+  </div>
+
+  <div class="zoom-buttons">
+    <button class="btn" id="zoom-in">+</button>
+    <button class="btn" id="zoom-out">−</button>
+    <button class="btn" id="zoom-reset">↺</button>
+  </div>
+
+  <div id="viewport">
+    <div id="canvas">
+      <!-- Background Photo -->
+      <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall">
+
+      <!-- SVG Hotspots Mapped to Your Active Links -->
+      <svg id="hotspot-overlay" viewBox="0 0 1000 1500">
+        
+        <!-- 1. CASSETTE TAPE -> The Grapevine UK Instagram -->
+        <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" title="The Grapevine Instagram">
+          <rect class="sticker-link" x="280" y="220" width="140" height="90" rx="6" />
+        </a>
+
+        <!-- 2. PURPLE GRAPE BUNCH -> UK Hardcore Instagram -->
+        <a href="https://www.instagram.com/uk_hc/" target="_blank" title="UK Hardcore Hub">
+          <circle class="sticker-link" cx="395" cy="510" r="75" />
+        </a>
+
+        <!-- 3. RACCOON -> Community Notice Board (Points to Grapevine IG until board is built) -->
+        <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" title="Community Notice Board (Coming Soon)">
+          <circle class="sticker-link" cx="615" cy="400" r="65" />
+        </a>
+
+        <!-- 4. SPRAY PAINT CANS -> Richard's Passport GoFundMe -->
+        <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" title="Solidarity Fundraiser: Help Richard Get His British Passport">
+          <rect class="sticker-link" x="485" y="680" width="165" height="150" rx="8" />
+        </a>
+
+        <!-- 5. KEYCHAIN -> The Grapevine Grassroots Venue Map -->
+        <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" title="The Grapevine Grassroots Venue Map">
+          <rect class="sticker-link" x="670" y="620" width="130" height="110" rx="6" />
+        </a>
+
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    const viewport = document.getElementById('viewport');
+    const canvas = document.getElementById('canvas');
+
+    let scale = 1;
+    let pointX = 0;
+    let pointY = 0;
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
+
+    function setTransform() {
+      canvas.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+    }
+
+    viewport.addEventListener('mousedown', (e) => {
+      if (e.target.closest('a')) return;
+      e.preventDefault();
+      startX = e.clientX - pointX;
+      startY = e.clientY - pointY;
+      isDragging = true;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      pointX = e.clientX - startX;
+      pointY = e.clientY - startY;
+      setTransform();
+    });
+
+    window.addEventListener('mouseup', () => { isDragging = false; });
+
+    viewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const xs = (e.clientX - pointX) / scale;
+      const ys = (e.clientY - pointY) / scale;
+      const delta = -e.deltaY;
+      
+      if (delta > 0) scale = Math.min(scale * 1.15, 4.5);
+      else scale = Math.max(scale / 1.15, 0.6);
+      
+      pointX = e.clientX - xs * scale;
+      pointY = e.clientY - ys * scale;
+      setTransform();
+    }, { passive: false });
+
+    document.getElementById('zoom-in').addEventListener('click', () => { scale = Math.min(scale * 1.3, 4.5); setTransform(); });
+    document.getElementById('zoom-out').addEventListener('click', () => { scale = Math.max(scale / 1.3, 0.6); setTransform(); });
+    document.getElementById('zoom-reset').addEventListener('click', () => { scale = 1; pointX = 0; pointY = 0; setTransform(); });
+  </script>
+
+</body>
+</html>
