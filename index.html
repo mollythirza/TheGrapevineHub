@@ -212,35 +212,35 @@
   <div id="viewport">
     <div id="canvas">
       <div class="wall-stage">
-        <!-- Background Image -->
+        <!-- Background Image[cite: 4] -->
         <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall">
 
-        <!-- Synchronized SVG Overlay -->
+        <!-- Synchronized SVG Overlay with calibrated coordinates -->
         <svg id="hotspot-overlay" viewBox="0 0 750 1125" preserveAspectRatio="none">
           
           <!-- 1. GREEN CASSETTE TAPE -> The Grapevine Official Instagram -->
           <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram">
-            <rect class="sticker-link" x="230" y="215" width="165" height="105" rx="6" transform="rotate(-8 312 267)" />
+            <rect class="sticker-link" x="200" y="210" width="180" height="110" rx="6" transform="rotate(-7 290 265)" />
           </a>
 
           <!-- 2. GRENADE GRAPE -> UK Hardcore Instagram Hub -->
           <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
-            <ellipse class="sticker-link" cx="665" cy="310" rx="55" ry="85" transform="rotate(12 665 310)" />
+            <ellipse class="sticker-link" cx="475" cy="310" rx="50" ry="85" transform="rotate(10 475 310)" />
           </a>
 
           <!-- 3. RACCOON HEAD CIRCLE -> Notice Board / Upcoming Shows -->
           <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="Upcoming Shows & Notice Board">
-            <circle class="sticker-link" cx="615" cy="395" r="52" />
+            <circle class="sticker-link" cx="410" cy="385" rx="45" ry="45" />
           </a>
 
           <!-- 4. PURPLE GRAPE BUNCH -> Grassroots Venue Map -->
           <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map">
-            <circle class="sticker-link" cx="400" cy="515" r="90" />
+            <circle class="sticker-link" cx="230" cy="500" rx="75" ry="75" />
           </a>
 
-          <!-- 5. SPRAY PAINT CANS / FUNDRAISER AREA -> Community Fundraiser -->
+          <!-- 5. SPRAY PAINT CANS -> Community Fundraiser -->
           <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport">
-            <rect class="sticker-link" x="535" y="540" width="145" height="125" rx="8" />
+            <rect class="sticker-link" x="365" y="745" width="130" height="210" rx="8" transform="rotate(-5 430 850)" />
           </a>
 
         </svg>
@@ -304,7 +304,7 @@
       
       const scaleX = vWidth / 750;
       const scaleY = vHeight / 1125;
-      minScale = Math.max(scaleX, scaleY); // Sets exact floor so image always covers viewport fully
+      minScale = Math.max(scaleX, scaleY); 
       scale = minScale;
       
       pointX = (vWidth - 750 * scale) / 2;
