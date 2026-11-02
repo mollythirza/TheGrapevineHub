@@ -19,7 +19,7 @@
       user-select: none;
     }
 
-    /* Fixed UI Header & Description Panel */
+    /* Fixed UI Header */
     .controls-overlay {
       position: fixed;
       top: 15px;
@@ -63,7 +63,7 @@
       margin-top: 4px;
     }
 
-    /* Zoom Controls */
+    /* Zoom Buttons */
     .zoom-buttons {
       position: fixed;
       bottom: 20px;
@@ -96,16 +96,13 @@
       color: #000;
     }
 
-    /* Viewport Container */
+    /* Fullscreen Viewport */
     #viewport {
       width: 100vw;
       height: 100vh;
       overflow: hidden;
       position: relative;
       cursor: grab;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       background-color: #0d0d0d;
     }
 
@@ -113,9 +110,11 @@
       cursor: grabbing;
     }
 
-    /* Interactive Canvas with Fixed Proportions */
+    /* Interactive Canvas with Center Transformation */
     #canvas {
       position: absolute;
+      top: 0;
+      left: 0;
       width: 1000px;
       height: 1500px;
       transform-origin: 0 0;
@@ -130,7 +129,7 @@
       pointer-events: none;
     }
 
-    /* SVG Overlay Layer aligned perfectly over 1000x1500 canvas */
+    /* SVG Overlay locked 1:1 to Canvas */
     #hotspot-overlay {
       position: absolute;
       top: 0;
@@ -144,7 +143,7 @@
     .sticker-link {
       fill: rgba(255, 0, 127, 0.15);
       stroke: rgba(255, 0, 127, 0.7);
-      stroke-width: 3;
+      stroke-width: 3.5;
       cursor: pointer;
       transition: all 0.25s ease;
       filter: drop-shadow(0 0 8px rgba(255, 0, 127, 0.6));
@@ -157,7 +156,7 @@
       filter: drop-shadow(0 0 20px #ff007f) drop-shadow(0 0 10px #ff007f);
     }
 
-    /* Visible Floating Label Box for Mobile Tap & Desktop Hover */
+    /* Floating Title Label Box */
     #tooltip-box {
       position: fixed;
       bottom: 25px;
@@ -183,7 +182,7 @@
 </head>
 <body>
 
-  <!-- Branded Header & Description -->
+  <!-- Header Branding -->
   <div class="controls-overlay">
     <div class="brand-container">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
@@ -192,7 +191,7 @@
     <p>Explore the DIY gig wall. Tap glowing stickers to access community hubs, maps, and independent projects.</p>
   </div>
 
-  <!-- Dynamic Label Box for Hover/Tap Descriptions -->
+  <!-- Bottom Label Box for Titles -->
   <div id="tooltip-box"></div>
 
   <div class="zoom-buttons">
@@ -203,35 +202,35 @@
 
   <div id="viewport">
     <div id="canvas">
-      <!-- Background Photo -->
+      <!-- Background Image -->
       <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall">
 
-      <!-- Precise Coordinate Hotspots Mapped Directly to the Textured Background Image -->
+      <!-- Re-aligned SVG Hotspot Coordinates mapped exactly to stickers -->
       <svg id="hotspot-overlay" viewBox="0 0 1000 1500">
         
-        <!-- 1. CASSETTE TAPE -> The Grapevine's Instagram -->
+        <!-- 1. CASSETTE TAPE -> The Grapevine's Instagram (Top Left) -->
         <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram">
-          <polygon class="sticker-link" points="280,220 500,210 505,320 285,335" />
+          <polygon class="sticker-link" points="282,222 505,212 510,325 287,338" />
         </a>
 
-        <!-- 2. PURPLE GRAPE BUNCH -> UK Hardcore Instagram -->
-        <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
-          <ellipse class="sticker-link" cx="400" cy="505" rx="100" ry="90" transform="rotate(-12 400 505)" />
-        </a>
-
-        <!-- 3. SPRAY PAINT CANS -> Community Fundraiser -->
-        <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport">
-          <polygon class="sticker-link" points="475,670 660,695 645,845 470,805" />
-        </a>
-
-        <!-- 4. KEYCHAIN -> The Grapevine's Venue Map -->
-        <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map">
-          <polygon class="sticker-link" points="675,615 875,615 875,735 675,735" />
-        </a>
-
-        <!-- 5. PINK RACCOON STICKER -> Upcoming Shows / Notice Board -->
+        <!-- 2. RACCOON STICKER -> Upcoming Shows & Notice Board (Mid Right) -->
         <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="Upcoming Shows & Notice Board">
-          <circle class="sticker-link" cx="620" cy="400" r="70" />
+          <circle class="sticker-link" cx="620" cy="402" r="72" />
+        </a>
+
+        <!-- 3. PURPLE GRAPE BUNCH -> UK Hardcore Instagram (Mid Left) -->
+        <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
+          <ellipse class="sticker-link" cx="400" cy="508" rx="100" ry="92" transform="rotate(-12 400 508)" />
+        </a>
+
+        <!-- 4. KEYCHAIN -> The Grapevine's Venue Map (Lower Right) -->
+        <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map">
+          <polygon class="sticker-link" points="675,622 870,622 870,735 675,735" />
+        </a>
+
+        <!-- 5. SPRAY PAINT CANS -> Community Fundraiser (Lower Center) -->
+        <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport">
+          <polygon class="sticker-link" points="480,685 652,705 640,845 480,810" />
         </a>
 
       </svg>
@@ -256,18 +255,15 @@
       tooltipBox.style.display = 'none';
     }
 
-    // Attach tooltips dynamically to all sticker links
+    // Attach Title Banner events to stickers
     document.querySelectorAll('#hotspot-overlay a').forEach(link => {
       const titleText = link.getAttribute('data-title');
-      
       link.addEventListener('mouseenter', () => showTooltip(titleText));
       link.addEventListener('mouseleave', () => hideTooltip());
-      link.addEventListener('touchstart', (e) => {
-        showTooltip(titleText);
-      });
+      link.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
     });
 
-    // Auto-fit initial canvas to screen center
+    // Auto-fit & Center Canvas to fill 100% of the screen without black borders
     function initCanvasFit() {
       const vWidth = window.innerWidth;
       const vHeight = window.innerHeight;
@@ -276,7 +272,7 @@
       
       const scaleX = vWidth / cWidth;
       const scaleY = vHeight / cHeight;
-      scale = Math.max(scaleX, scaleY);
+      scale = Math.max(scaleX, scaleY); // Fills total screen width and height
       
       pointX = (vWidth - cWidth * scale) / 2;
       pointY = (vHeight - cHeight * scale) / 2;
@@ -290,7 +286,7 @@
     window.addEventListener('load', initCanvasFit);
     window.addEventListener('resize', initCanvasFit);
 
-    // --- PAN & ZOOM GESTURE ENGINE ---
+    // --- TOUCH & MOUSE ENGINE ---
     let isDragging = false;
     let startX = 0, startY = 0;
     let initialPinchDistance = null;
@@ -302,7 +298,7 @@
       return Math.sqrt(dx * dx + dy * dy);
     }
 
-    // MOUSE DRAGGING
+    // Mouse Dragging
     viewport.addEventListener('mousedown', (e) => {
       if (e.target.closest('a')) return;
       e.preventDefault();
@@ -321,7 +317,7 @@
 
     window.addEventListener('mouseup', () => { isDragging = false; });
 
-    // MOUSE WHEEL ZOOM
+    // Mouse Wheel Zoom
     viewport.addEventListener('wheel', (e) => {
       e.preventDefault();
       const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
@@ -336,7 +332,7 @@
       setTransform();
     }, { passive: false });
 
-    // TOUCH EVENT LISTENERS (Non-passive to allow movement)
+    // Mobile Touch Panning & Pinch-to-Zoom
     viewport.addEventListener('touchstart', (e) => {
       if (e.touches.length === 1) {
         if (e.target.closest('a')) {
@@ -384,7 +380,7 @@
       if (e.touches.length === 0) isDragging = false;
     });
 
-    // ZOOM BUTTONS
+    // Zoom Buttons
     document.getElementById('zoom-in').addEventListener('click', () => { scale = Math.min(scale * 1.3, 4.5); setTransform(); });
     document.getElementById('zoom-out').addEventListener('click', () => { scale = Math.max(scale / 1.3, 0.4); setTransform(); });
     document.getElementById('zoom-reset').addEventListener('click', initCanvasFit);
