@@ -63,7 +63,7 @@
       margin-top: 4px;
     }
 
-    /* Zoom Buttons */
+    /* Zoom Control Buttons */
     .zoom-buttons {
       position: fixed;
       bottom: 20px;
@@ -96,7 +96,7 @@
       color: #000;
     }
 
-    /* Fullscreen Viewport */
+    /* Main Viewport Container */
     #viewport {
       width: 100vw;
       height: 100vh;
@@ -110,11 +110,9 @@
       cursor: grabbing;
     }
 
-    /* Interactive Canvas with Center Transformation */
+    /* Canvas locked to strict 1000x1500 proportions */
     #canvas {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 1000px;
       height: 1500px;
       transform-origin: 0 0;
@@ -125,12 +123,11 @@
       display: block;
       width: 1000px;
       height: 1500px;
-      object-fit: fill;
       pointer-events: none;
     }
 
-    /* SVG Overlay locked 1:1 to Canvas */
-    #hotspot-overlay {
+    /* Overlay Layer for HTML Hotspots */
+    #hotspot-layer {
       position: absolute;
       top: 0;
       left: 0;
@@ -139,24 +136,70 @@
       z-index: 10;
     }
 
-    /* Sticker Link Styling with Pink Glow */
-    .sticker-link {
-      fill: rgba(255, 0, 127, 0.15);
-      stroke: rgba(255, 0, 127, 0.7);
-      stroke-width: 3.5;
+    /* Percentage-Locked Interactive Sticker Hotspots */
+    .sticker-hotspot {
+      position: absolute;
+      background: rgba(255, 0, 127, 0.15);
+      border: 3px solid rgba(255, 0, 127, 0.7);
+      box-shadow: 0 0 12px rgba(255, 0, 127, 0.6);
       cursor: pointer;
-      transition: all 0.25s ease;
-      filter: drop-shadow(0 0 8px rgba(255, 0, 127, 0.6));
+      transition: all 0.2s ease;
+      display: block;
+      text-decoration: none;
     }
 
-    .sticker-link:hover, .sticker-link:active {
-      fill: rgba(255, 0, 127, 0.45);
-      stroke: #ff007f;
-      stroke-width: 5;
-      filter: drop-shadow(0 0 20px #ff007f) drop-shadow(0 0 10px #ff007f);
+    .sticker-hotspot:hover, .sticker-hotspot:active {
+      background: rgba(255, 0, 127, 0.4);
+      border-color: #ff007f;
+      border-width: 4px;
+      box-shadow: 0 0 25px #ff007f;
     }
 
-    /* Floating Title Label Box */
+    /* Specific Sticker Placements (Mapped directly to your textured image) */
+    #spot-cassette {
+      top: 14.5%;
+      left: 28%;
+      width: 22%;
+      height: 7.5%;
+      border-radius: 6px;
+      transform: rotate(-3deg);
+    }
+
+    #spot-grapes {
+      top: 29.5%;
+      left: 30%;
+      width: 20%;
+      height: 13.5%;
+      border-radius: 50%;
+      transform: rotate(-10deg);
+    }
+
+    #spot-raccoon {
+      top: 23.5%;
+      left: 54.5%;
+      width: 15%;
+      height: 10.5%;
+      border-radius: 50%;
+    }
+
+    #spot-spraycans {
+      top: 45.5%;
+      left: 47.5%;
+      width: 18%;
+      height: 11%;
+      border-radius: 12px;
+      transform: rotate(6deg);
+    }
+
+    #spot-keychain {
+      top: 41.5%;
+      left: 67%;
+      width: 20%;
+      height: 8%;
+      border-radius: 8px;
+    }
+
+    /* Floating Title Banner for Mobile & Desktop */
     #tooltip-box {
       position: fixed;
       bottom: 25px;
@@ -182,7 +225,7 @@
 </head>
 <body>
 
-  <!-- Header Branding -->
+  <!-- Branded Header Panel -->
   <div class="controls-overlay">
     <div class="brand-container">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
@@ -191,7 +234,7 @@
     <p>Explore the DIY gig wall. Tap glowing stickers to access community hubs, maps, and independent projects.</p>
   </div>
 
-  <!-- Bottom Label Box for Titles -->
+  <!-- Bottom Interactive Title Banner -->
   <div id="tooltip-box"></div>
 
   <div class="zoom-buttons">
@@ -205,35 +248,25 @@
       <!-- Background Image -->
       <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall">
 
-      <!-- Re-aligned SVG Hotspot Coordinates mapped exactly to stickers -->
-      <svg id="hotspot-overlay" viewBox="0 0 1000 1500">
+      <!-- Percentage-Based Sticker Hotspots -->
+      <div id="hotspot-layer">
         
-        <!-- 1. CASSETTE TAPE -> The Grapevine's Instagram (Top Left) -->
-        <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram">
-          <polygon class="sticker-link" points="282,222 505,212 510,325 287,338" />
-        </a>
+        <!-- 1. CASSETTE TAPE -> The Grapevine's Instagram -->
+        <a id="spot-cassette" class="sticker-hotspot" href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram"></a>
 
-        <!-- 2. RACCOON STICKER -> Upcoming Shows & Notice Board (Mid Right) -->
-        <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="Upcoming Shows & Notice Board">
-          <circle class="sticker-link" cx="620" cy="402" r="72" />
-        </a>
+        <!-- 2. PURPLE GRAPE BUNCH -> UK Hardcore Hub -->
+        <a id="spot-grapes" class="sticker-hotspot" href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub"></a>
 
-        <!-- 3. PURPLE GRAPE BUNCH -> UK Hardcore Instagram (Mid Left) -->
-        <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
-          <ellipse class="sticker-link" cx="400" cy="508" rx="100" ry="92" transform="rotate(-12 400 508)" />
-        </a>
+        <!-- 3. RACCOON STICKER -> Notice Board / Upcoming Shows -->
+        <a id="spot-raccoon" class="sticker-hotspot" href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="Upcoming Shows & Notice Board"></a>
 
-        <!-- 4. KEYCHAIN -> The Grapevine's Venue Map (Lower Right) -->
-        <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map">
-          <polygon class="sticker-link" points="675,622 870,622 870,735 675,735" />
-        </a>
+        <!-- 4. SPRAY PAINT CANS -> Community Fundraiser -->
+        <a id="spot-spraycans" class="sticker-hotspot" href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport"></a>
 
-        <!-- 5. SPRAY PAINT CANS -> Community Fundraiser (Lower Center) -->
-        <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport">
-          <polygon class="sticker-link" points="480,685 652,705 640,845 480,810" />
-        </a>
+        <!-- 5. KEYCHAIN -> The Grapevine's Venue Map -->
+        <a id="spot-keychain" class="sticker-hotspot" href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map"></a>
 
-      </svg>
+      </div>
     </div>
   </div>
 
@@ -255,38 +288,59 @@
       tooltipBox.style.display = 'none';
     }
 
-    // Attach Title Banner events to stickers
-    document.querySelectorAll('#hotspot-overlay a').forEach(link => {
-      const titleText = link.getAttribute('data-title');
-      link.addEventListener('mouseenter', () => showTooltip(titleText));
-      link.addEventListener('mouseleave', () => hideTooltip());
-      link.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
+    // Attach Title Banner events to hotspots
+    document.querySelectorAll('.sticker-hotspot').forEach(spot => {
+      const titleText = spot.getAttribute('data-title');
+      spot.addEventListener('mouseenter', () => showTooltip(titleText));
+      spot.addEventListener('mouseleave', () => hideTooltip());
+      spot.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
     });
 
-    // Auto-fit & Center Canvas to fill 100% of the screen without black borders
-    function initCanvasFit() {
+    // Enforce drag boundaries so users cannot scroll into black background space
+    function clampPositions() {
       const vWidth = window.innerWidth;
       const vHeight = window.innerHeight;
-      const cWidth = 1000;
-      const cHeight = 1500;
-      
-      const scaleX = vWidth / cWidth;
-      const scaleY = vHeight / cHeight;
-      scale = Math.max(scaleX, scaleY); // Fills total screen width and height
-      
-      pointX = (vWidth - cWidth * scale) / 2;
-      pointY = (vHeight - cHeight * scale) / 2;
-      setTransform();
+      const cWidth = 1000 * scale;
+      const cHeight = 1500 * scale;
+
+      // Restrict horizontal offset
+      if (cWidth <= vWidth) {
+        pointX = (vWidth - cWidth) / 2;
+      } else {
+        pointX = Math.min(0, Math.max(vWidth - cWidth, pointX));
+      }
+
+      // Restrict vertical offset
+      if (cHeight <= vHeight) {
+        pointY = (vHeight - cHeight) / 2;
+      } else {
+        pointY = Math.min(0, Math.max(vHeight - cHeight, pointY));
+      }
     }
 
     function setTransform() {
+      clampPositions();
       canvas.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+    }
+
+    // Initialize wall to fill full screen without black space
+    function initCanvasFit() {
+      const vWidth = window.innerWidth;
+      const vHeight = window.innerHeight;
+      
+      const scaleX = vWidth / 1000;
+      const scaleY = vHeight / 1500;
+      scale = Math.max(scaleX, scaleY);
+      
+      pointX = (vWidth - 1000 * scale) / 2;
+      pointY = (vHeight - 1500 * scale) / 2;
+      setTransform();
     }
 
     window.addEventListener('load', initCanvasFit);
     window.addEventListener('resize', initCanvasFit);
 
-    // --- TOUCH & MOUSE ENGINE ---
+    // --- PAN & ZOOM GESTURE ENGINE ---
     let isDragging = false;
     let startX = 0, startY = 0;
     let initialPinchDistance = null;
@@ -332,7 +386,7 @@
       setTransform();
     }, { passive: false });
 
-    // Mobile Touch Panning & Pinch-to-Zoom
+    // Touch Controls (Pinch to zoom + 1 finger pan)
     viewport.addEventListener('touchstart', (e) => {
       if (e.touches.length === 1) {
         if (e.target.closest('a')) {
