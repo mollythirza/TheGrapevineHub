@@ -207,7 +207,7 @@
       border: 2px solid #ff007f;
       width: 100%;
       max-width: 600px;
-      height: 80vh;
+      height: 85vh;
       border-radius: 8px;
       display: flex;
       flex-direction: column;
@@ -222,6 +222,7 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid #ff007f;
+      flex-shrink: 0;
     }
 
     .modal-header span {
@@ -246,13 +247,15 @@
     .modal-body {
       flex-grow: 1;
       width: 100%;
-      height: 100%;
       background: #fff;
+      overflow-y: auto; /* Enables smooth scrolling inside modal */
+      -webkit-overflow-scrolling: touch; /* Smooth scroll on mobile iPhones/Androids */
     }
 
     .modal-body iframe {
       width: 100%;
       height: 100%;
+      min-height: 700px; /* Ensures full form height is scrollable */
       border: none;
     }
 
@@ -299,7 +302,7 @@
         <button class="close-modal" id="close-modal-btn">&times;</button>
       </div>
       <div class="modal-body">
-        <script src="https://static.airtable.com/js/embed/embed_snippet_v1.js"></script><iframe class="airtable-embed airtable-dynamic-height" src="https://airtable.com/embed/appPjSSpMgtmXBouN/shrWKs6smV8calxpB" frameborder="0" onmousewheel="" width="100%" height="792" style="background: transparent; border: 1px solid #ccc;"></iframe>
+        <script src="https://static.airtable.com/js/embed/embed_snippet_v1.js"></script><iframe class="airtable-embed" src="https://airtable.com/embed/appPjSSpMgtmXBouN/shrWKs6smV8calxpB" frameborder="0" width="100%" height="100%" style="background: transparent;"></iframe>
       </div>
     </div>
   </div>
