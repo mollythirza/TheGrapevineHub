@@ -110,7 +110,7 @@
       cursor: grabbing;
     }
 
-    /* Canvas Wrapper locked to native image resolution (will be read on load) */
+    /* Canvas Wrapper */
     #canvas {
       position: absolute;
       top: 0;
@@ -138,23 +138,21 @@
       z-index: 10;
     }
 
-    /* Soft Dotted Neon-Pink Highlight Style matching your request */
+    /* Solid Lower-Opacity Line with Subtle Neon Glow */
     .sticker-link {
-      fill: rgba(255, 0, 127, 0.12);
-      stroke: rgba(255, 0, 127, 0.85);
-      stroke-width: 4;
-      stroke-dasharray: 8 5;
+      fill: rgba(255, 0, 127, 0.1);
+      stroke: rgba(255, 0, 127, 0.65);
+      stroke-width: 3.5;
       cursor: pointer;
       transition: all 0.25s ease;
-      filter: drop-shadow(0 0 8px rgba(255, 0, 127, 0.5));
+      filter: drop-shadow(0 0 10px rgba(255, 0, 127, 0.7));
     }
 
     .sticker-link:hover, .sticker-link:active {
       fill: rgba(255, 0, 127, 0.35);
       stroke: #ff007f;
       stroke-width: 5;
-      stroke-dasharray: none;
-      filter: drop-shadow(0 0 20px #ff007f);
+      filter: drop-shadow(0 0 25px #ff007f) drop-shadow(0 0 10px #ff007f);
     }
 
     /* Bottom Title Banner */
@@ -203,7 +201,7 @@
   <div id="viewport">
     <div id="canvas">
       <div class="wall-stage">
-        <!-- Background Image with dynamic native size reader -->
+        <!-- Background Image -->
         <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall" onload="initStickerWall(this)">
 
         <!-- SVG Hotspots using your exact image map coordinates -->
@@ -214,7 +212,7 @@
             <polygon class="sticker-link" points="240,307 398,275 426,379 261,414" />
           </a>
 
-          <!-- 2. GRENADE (UK Hardcore Hub) -> Using your precise polygon coordinates -->
+          <!-- 2. GRENADE (UK Hardcore Hub) -->
           <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
             <polygon class="sticker-link" points="545,420 547,432 551,401 540,375 548,360 557,341 568,338 584,326 586,307 620,306 631,321 649,332 649,346 655,360 657,374 655,389 655,400 652,406 649,416 644,423 642,430 628,446 625,454 610,466 593,467 580,458 552,433 554,439 562,442 547,432" />
           </a>
@@ -267,7 +265,6 @@
       spot.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
     });
 
-    // Automatically synchronize canvas and SVG viewBox to your image's exact native pixels
     window.initStickerWall = function(img) {
       nativeWidth = img.naturalWidth;
       nativeHeight = img.naturalHeight;
