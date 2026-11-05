@@ -69,39 +69,47 @@
       touch-action: none;
     }
 
-    /* Freeform Flyer Styling */
+    /* Freeform Flyer Styling (Half-sized 80px base width) */
     .flyer-card {
       position: absolute;
-      width: 150px; /* Tailored for phone displays */
+      width: 80px; /* Reduced to ~half previous size */
       background: #161616;
-      border: 1px solid rgba(255, 0, 127, 0.5);
-      padding: 8px;
-      box-shadow: 5px 8px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 0, 127, 0.15);
+      border: 1px solid rgba(255, 0, 127, 0.4);
+      padding: 4px;
+      box-shadow: 3px 5px 12px rgba(0, 0, 0, 0.9), 0 0 8px rgba(255, 0, 127, 0.2);
       cursor: grab;
       user-select: none;
       touch-action: none;
       transition: box-shadow 0.15s ease;
       will-change: transform;
+      
+      /* Textured/Torn Paper Edge via Clip-Path Polygon */
+      clip-path: polygon(
+        0% 1.5%, 12% 0%, 25% 1.8%, 38% 0.5%, 52% 2%, 67% 0.2%, 81% 1.6%, 94% 0%, 100% 1%,
+        99% 14%, 100% 28%, 98.5% 42%, 100% 57%, 99% 71%, 100% 86%, 98.8% 99%,
+        88% 98%, 74% 100%, 59% 98.4%, 43% 100%, 29% 98.2%, 14% 100%, 0% 98.5%,
+        1.2% 84%, 0% 69%, 1.5% 53%, 0.2% 38%, 1.8% 24%, 0.5% 10%
+      );
     }
 
     .flyer-card:active {
       cursor: grabbing;
-      box-shadow: 10px 15px 30px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 0, 127, 0.4);
+      box-shadow: 8px 12px 25px rgba(0, 0, 0, 0.95), 0 0 20px rgba(255, 0, 127, 0.5);
     }
 
-    /* Tape Overlay */
+    /* Mini Tape Overlay */
     .flyer-card::before {
       content: '';
       position: absolute;
-      top: -10px;
-      left: 35%;
-      width: 45px;
-      height: 18px;
-      background: rgba(255, 255, 255, 0.25);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transform: rotate(-3deg);
+      top: -6px;
+      left: 30%;
+      width: 28px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transform: rotate(-4deg);
       backdrop-filter: blur(2px);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
       z-index: 10;
     }
 
@@ -110,7 +118,6 @@
       aspect-ratio: 3 / 4;
       background: #000;
       overflow: hidden;
-      margin-bottom: 6px;
       pointer-events: none;
     }
 
@@ -122,47 +129,30 @@
     }
 
     .flyer-title {
-      font-size: 11px;
+      font-size: 8px;
       font-weight: bold;
       color: #fff;
-      margin-bottom: 4px;
+      margin-top: 3px;
       pointer-events: none;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-
-    .flyer-link {
-      display: block;
       text-align: center;
-      background: transparent;
-      border: 1px solid #ff007f;
-      color: #ff007f;
-      padding: 4px 6px;
-      border-radius: 3px;
-      font-size: 9px;
-      text-transform: uppercase;
-      text-decoration: none;
     }
 
-    .flyer-link:hover {
-      background: #ff007f;
-      color: #000;
-    }
-
-    /* Modal Popup */
-    #modal-overlay {
+    /* Modal Popups (AirTable Submission & Click-to-Enlarge Lightbox) */
+    .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.88);
       z-index: 20000;
       display: none;
       justify-content: center;
       align-items: center;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(6px);
       padding: 20px;
     }
 
@@ -192,6 +182,51 @@
     .close-modal { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
     .modal-body { flex-grow: 1; width: 100%; background: #fff; overflow-y: auto; }
     .modal-body iframe { width: 100%; height: 100%; min-height: 700px; border: none; }
+
+    /* Click-to-Enlarge Flyer Lightbox Card */
+    #enlarge-modal-content {
+      background: #121212;
+      border: 2px solid #ff007f;
+      max-width: 420px;
+      height: auto;
+      max-height: 90vh;
+      padding: 16px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 0 40px rgba(255, 0, 127, 0.6);
+      position: relative;
+    }
+
+    #enlarge-image {
+      max-width: 100%;
+      max-height: 60vh;
+      object-fit: contain;
+      border: 1px solid #333;
+      border-radius: 4px;
+    }
+
+    #enlarge-title {
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 12px 0 8px 0;
+      text-align: center;
+    }
+
+    #enlarge-link {
+      display: inline-block;
+      background: #ff007f;
+      color: #000;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      text-decoration: none;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
   </style>
 </head>
 <body>
@@ -210,8 +245,8 @@
   <!-- Interactive Canvas -->
   <div id="wall-canvas"></div>
 
-  <!-- Submission Modal -->
-  <div id="modal-overlay">
+  <!-- AirTable Submission Modal -->
+  <div class="modal-overlay" id="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
         <span>Pin Your Flyer to The Grapevine</span>
@@ -223,6 +258,16 @@
     </div>
   </div>
 
+  <!-- Click to Enlarge Flyer Lightbox Overlay -->
+  <div class="modal-overlay" id="enlarge-modal">
+    <div id="enlarge-modal-content">
+      <button class="close-modal" id="close-enlarge-btn" style="position: absolute; top: 10px; right: 15px;">&times;</button>
+      <img id="enlarge-image" src="" alt="Enlarged Flyer">
+      <div id="enlarge-title"></div>
+      <a id="enlarge-link" href="#" target="_blank" style="display: none;">View Event Link →</a>
+    </div>
+  </div>
+
   <script>
     const AIRTABLE_API_KEY = 'patofpH96mlcRFtil.2e58895959f770a5c40cfc49ff4d858652b847b259ee8f443e4dc770242bb107';
     const BASE_ID = 'appPjSSpMgtmXBouN';
@@ -230,10 +275,32 @@
 
     let highestZIndex = 10;
 
+    // Submission Modal
     const modalOverlay = document.getElementById('modal-overlay');
     document.getElementById('open-modal-btn').addEventListener('click', () => modalOverlay.style.display = 'flex');
     document.getElementById('close-modal-btn').addEventListener('click', () => modalOverlay.style.display = 'none');
     modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.style.display = 'none'; });
+
+    // Enlarge Lightbox Modal
+    const enlargeModal = document.getElementById('enlarge-modal');
+    const enlargeImg = document.getElementById('enlarge-image');
+    const enlargeTitle = document.getElementById('enlarge-title');
+    const enlargeLink = document.getElementById('enlarge-link');
+    
+    document.getElementById('close-enlarge-btn').addEventListener('click', () => enlargeModal.style.display = 'none');
+    enlargeModal.addEventListener('click', (e) => { if (e.target === enlargeModal) enlargeModal.style.display = 'none'; });
+
+    function openEnlargedFlyer(imageUrl, title, link) {
+      enlargeImg.src = imageUrl;
+      enlargeTitle.innerText = title;
+      if (link) {
+        enlargeLink.href = link;
+        enlargeLink.style.display = 'inline-block';
+      } else {
+        enlargeLink.style.display = 'none';
+      }
+      enlargeModal.style.display = 'flex';
+    }
 
     async function fetchAndScatterFlyers() {
       const wall = document.getElementById('wall-canvas');
@@ -248,8 +315,8 @@
         const data = await response.json();
         wall.innerHTML = '';
 
-        const wallWidth = wall.clientWidth - 180;
-        const wallHeight = wall.clientHeight - 240;
+        const wallWidth = wall.clientWidth - 100;
+        const wallHeight = wall.clientHeight - 140;
 
         data.records.forEach((record, index) => {
           const fields = record.fields;
@@ -259,9 +326,9 @@
 
           if (!imageUrl) return;
 
-          const randomX = Math.max(15, Math.floor(Math.random() * wallWidth));
-          const randomY = Math.max(15, Math.floor(Math.random() * wallHeight));
-          const randomRotation = (Math.random() * 16 - 8).toFixed(1);
+          const randomX = Math.max(10, Math.floor(Math.random() * wallWidth));
+          const randomY = Math.max(10, Math.floor(Math.random() * wallHeight));
+          const randomRotation = (Math.random() * 18 - 9).toFixed(1);
 
           const card = document.createElement('div');
           card.className = 'flyer-card';
@@ -274,10 +341,9 @@
               <img src="${imageUrl}" alt="${title}" loading="lazy">
             </div>
             <div class="flyer-title">${title}</div>
-            ${eventLink ? `<a href="${eventLink}" target="_blank" class="flyer-link">View Link →</a>` : ''}
           `;
 
-          makeInteractive(card, randomRotation);
+          makeInteractive(card, randomRotation, imageUrl, title, eventLink);
           wall.appendChild(card);
         });
 
@@ -287,13 +353,13 @@
       }
     }
 
-    function makeInteractive(element, baseRotation) {
+    function makeInteractive(element, baseRotation, imageUrl, title, eventLink) {
       let xOffset = 0, yOffset = 0;
       let currentScale = 1;
       let isDragging = false;
+      let hasDraggedSignificantly = false;
       let initialX, initialY;
 
-      // Track active touch points for pinch-to-zoom
       const activeTouches = new Map();
       let initialPinchDistance = null;
       let initialPinchScale = 1;
@@ -304,30 +370,25 @@
 
       updateTransform(0, 0);
 
-      // Desktop Mouse Wheel Zoom
       element.addEventListener('wheel', (e) => {
         e.preventDefault();
         const delta = e.deltaY < 0 ? 0.1 : -0.1;
-        currentScale = Math.min(Math.max(currentScale + delta, 0.6), 2.5);
+        currentScale = Math.min(Math.max(currentScale + delta, 0.6), 3.0);
         updateTransform();
       }, { passive: false });
 
-      // Touch & Pointer Handling
       element.addEventListener('pointerdown', (e) => {
-        if (e.target.tagName === 'A') return;
-
         highestZIndex++;
         element.style.zIndex = highestZIndex;
 
+        hasDraggedSignificantly = false;
         activeTouches.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
         if (activeTouches.size === 1) {
-          // Single finger touch / mouse drag
           isDragging = true;
           initialX = e.clientX - xOffset;
           initialY = e.clientY - yOffset;
         } else if (activeTouches.size === 2) {
-          // Two finger touch: initiate Pinch-to-Zoom
           isDragging = false;
           const points = Array.from(activeTouches.values());
           initialPinchDistance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
@@ -343,15 +404,17 @@
         activeTouches.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
         if (activeTouches.size === 2 && initialPinchDistance) {
-          // Calculate pinch zoom ratio
           const points = Array.from(activeTouches.values());
           const currentDistance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
           const pinchFactor = currentDistance / initialPinchDistance;
           
-          currentScale = Math.min(Math.max(initialPinchScale * pinchFactor, 0.6), 2.5);
+          currentScale = Math.min(Math.max(initialPinchScale * pinchFactor, 0.6), 3.0);
           updateTransform();
         } else if (isDragging && activeTouches.size === 1) {
-          // Drag position
+          const dx = Math.abs((e.clientX - initialX) - xOffset);
+          const dy = Math.abs((e.clientY - initialY) - yOffset);
+          if (dx > 5 || dy > 5) hasDraggedSignificantly = true;
+
           xOffset = e.clientX - initialX;
           yOffset = e.clientY - initialY;
           updateTransform(xOffset, yOffset);
@@ -361,11 +424,13 @@
       const handlePointerEnd = (e) => {
         activeTouches.delete(e.pointerId);
 
-        if (activeTouches.size < 2) {
-          initialPinchDistance = null;
+        if (!hasDraggedSignificantly && activeTouches.size === 0) {
+          // If the user tapped/clicked without dragging, open the enlarge lightbox!
+          openEnlargedFlyer(imageUrl, title, eventLink);
         }
+
+        if (activeTouches.size < 2) initialPinchDistance = null;
         if (activeTouches.size === 1) {
-          // Resume dragging if one finger remains on screen
           const remainingPoint = Array.from(activeTouches.values())[0];
           isDragging = true;
           initialX = remainingPoint.x - xOffset;
