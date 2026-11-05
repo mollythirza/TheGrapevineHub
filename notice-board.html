@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
   <title>Notice Board — The Grapevine</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -66,24 +66,22 @@
       background-position: center;
       background-repeat: no-repeat;
       overflow: hidden;
+      touch-action: none;
     }
 
     /* Freeform Flyer Styling */
     .flyer-card {
       position: absolute;
-      width: 220px;
-      min-width: 140px;
-      max-width: 450px;
+      width: 150px; /* Tailored for phone displays */
       background: #161616;
       border: 1px solid rgba(255, 0, 127, 0.5);
-      padding: 10px;
+      padding: 8px;
       box-shadow: 5px 8px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 0, 127, 0.15);
       cursor: grab;
       user-select: none;
       touch-action: none;
-      resize: both;
-      overflow: hidden;
       transition: box-shadow 0.15s ease;
+      will-change: transform;
     }
 
     .flyer-card:active {
@@ -91,20 +89,14 @@
       box-shadow: 10px 15px 30px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 0, 127, 0.4);
     }
 
-    /* Custom Pink Corner Resize Handle */
-    .flyer-card::-webkit-resizer {
-      background-color: #ff007f;
-      border-radius: 2px;
-    }
-
     /* Tape Overlay */
     .flyer-card::before {
       content: '';
       position: absolute;
-      top: -12px;
+      top: -10px;
       left: 35%;
-      width: 60px;
-      height: 22px;
+      width: 45px;
+      height: 18px;
       background: rgba(255, 255, 255, 0.25);
       border: 1px solid rgba(255, 255, 255, 0.1);
       transform: rotate(-3deg);
@@ -118,7 +110,7 @@
       aspect-ratio: 3 / 4;
       background: #000;
       overflow: hidden;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       pointer-events: none;
     }
 
@@ -130,11 +122,14 @@
     }
 
     .flyer-title {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       color: #fff;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       pointer-events: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .flyer-link {
@@ -143,9 +138,9 @@
       background: transparent;
       border: 1px solid #ff007f;
       color: #ff007f;
-      padding: 4px 8px;
+      padding: 4px 6px;
       border-radius: 3px;
-      font-size: 10px;
+      font-size: 9px;
       text-transform: uppercase;
       text-decoration: none;
     }
@@ -253,8 +248,8 @@
         const data = await response.json();
         wall.innerHTML = '';
 
-        const wallWidth = wall.clientWidth - 260;
-        const wallHeight = wall.clientHeight - 340;
+        const wallWidth = wall.clientWidth - 180;
+        const wallHeight = wall.clientHeight - 240;
 
         data.records.forEach((record, index) => {
           const fields = record.fields;
@@ -264,15 +259,14 @@
 
           if (!imageUrl) return;
 
-          const randomX = Math.max(20, Math.floor(Math.random() * wallWidth));
-          const randomY = Math.max(20, Math.floor(Math.random() * wallHeight));
+          const randomX = Math.max(15, Math.floor(Math.random() * wallWidth));
+          const randomY = Math.max(15, Math.floor(Math.random() * wallHeight));
           const randomRotation = (Math.random() * 16 - 8).toFixed(1);
 
           const card = document.createElement('div');
           card.className = 'flyer-card';
           card.style.left = `${randomX}px`;
           card.style.top = `${randomY}px`;
-          card.style.transform = `rotate(${randomRotation}deg)`;
           card.style.zIndex = index + 1;
 
           card.innerHTML = `
@@ -283,7 +277,7 @@
             ${eventLink ? `<a href="${eventLink}" target="_blank" class="flyer-link">View Link →</a>` : ''}
           `;
 
-          makeDraggableAndResizable(card, randomRotation);
+          makeInteractive(card, randomRotation);
           wall.appendChild(card);
         });
 
@@ -293,59 +287,96 @@
       }
     }
 
-    function makeDraggableAndResizable(element, baseRotation) {
-      let active = false;
-      let initialX, initialY;
+    function makeInteractive(element, baseRotation) {
       let xOffset = 0, yOffset = 0;
+      let currentScale = 1;
+      let isDragging = false;
+      let initialX, initialY;
 
-      // Mouse Wheel Zooming / Sizing
+      // Track active touch points for pinch-to-zoom
+      const activeTouches = new Map();
+      let initialPinchDistance = null;
+      let initialPinchScale = 1;
+
+      function updateTransform(tx = xOffset, ty = yOffset) {
+        element.style.transform = `translate(${tx}px, ${ty}px) rotate(${baseRotation}deg) scale(${currentScale})`;
+      }
+
+      updateTransform(0, 0);
+
+      // Desktop Mouse Wheel Zoom
       element.addEventListener('wheel', (e) => {
         e.preventDefault();
-        const currentWidth = element.offsetWidth;
-        const delta = e.deltaY < 0 ? 20 : -20;
-        const newWidth = Math.min(Math.max(currentWidth + delta, 140), 450);
-        element.style.width = `${newWidth}px`;
+        const delta = e.deltaY < 0 ? 0.1 : -0.1;
+        currentScale = Math.min(Math.max(currentScale + delta, 0.6), 2.5);
+        updateTransform();
       }, { passive: false });
 
+      // Touch & Pointer Handling
       element.addEventListener('pointerdown', (e) => {
         if (e.target.tagName === 'A') return;
-        
+
         highestZIndex++;
         element.style.zIndex = highestZIndex;
 
-        // Check if user clicked near bottom-right corner to resize using CSS handle
-        const rect = element.getBoundingClientRect();
-        const isNearResizeHandle = (e.clientX > rect.right - 25) && (e.clientY > rect.bottom - 25);
-        if (isNearResizeHandle) return;
+        activeTouches.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
-        initialX = e.clientX - xOffset;
-        initialY = e.clientY - yOffset;
-        active = true;
+        if (activeTouches.size === 1) {
+          // Single finger touch / mouse drag
+          isDragging = true;
+          initialX = e.clientX - xOffset;
+          initialY = e.clientY - yOffset;
+        } else if (activeTouches.size === 2) {
+          // Two finger touch: initiate Pinch-to-Zoom
+          isDragging = false;
+          const points = Array.from(activeTouches.values());
+          initialPinchDistance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+          initialPinchScale = currentScale;
+        }
 
         element.setPointerCapture(e.pointerId);
-
-        const drag = (moveEvent) => {
-          if (!active) return;
-          moveEvent.preventDefault();
-
-          const currentX = moveEvent.clientX - initialX;
-          const currentY = moveEvent.clientY - initialY;
-
-          xOffset = currentX;
-          yOffset = currentY;
-
-          element.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${baseRotation}deg)`;
-        };
-
-        const dragEnd = () => {
-          active = false;
-          element.removeEventListener('pointermove', drag);
-          element.removeEventListener('pointerup', dragEnd);
-        };
-
-        element.addEventListener('pointermove', drag);
-        element.addEventListener('pointerup', dragEnd);
       });
+
+      element.addEventListener('pointermove', (e) => {
+        if (!activeTouches.has(e.pointerId)) return;
+
+        activeTouches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+        if (activeTouches.size === 2 && initialPinchDistance) {
+          // Calculate pinch zoom ratio
+          const points = Array.from(activeTouches.values());
+          const currentDistance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+          const pinchFactor = currentDistance / initialPinchDistance;
+          
+          currentScale = Math.min(Math.max(initialPinchScale * pinchFactor, 0.6), 2.5);
+          updateTransform();
+        } else if (isDragging && activeTouches.size === 1) {
+          // Drag position
+          xOffset = e.clientX - initialX;
+          yOffset = e.clientY - initialY;
+          updateTransform(xOffset, yOffset);
+        }
+      });
+
+      const handlePointerEnd = (e) => {
+        activeTouches.delete(e.pointerId);
+
+        if (activeTouches.size < 2) {
+          initialPinchDistance = null;
+        }
+        if (activeTouches.size === 1) {
+          // Resume dragging if one finger remains on screen
+          const remainingPoint = Array.from(activeTouches.values())[0];
+          isDragging = true;
+          initialX = remainingPoint.x - xOffset;
+          initialY = remainingPoint.y - yOffset;
+        } else {
+          isDragging = false;
+        }
+      };
+
+      element.addEventListener('pointerup', handlePointerEnd);
+      element.addEventListener('pointercancel', handlePointerEnd);
     }
 
     fetchAndScatterFlyers();
