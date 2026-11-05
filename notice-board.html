@@ -13,7 +13,7 @@
       background-color: #0b0b0b;
       color: #fff;
       font-family: 'Courier New', Courier, monospace;
-      overflow: hidden; /* Prevents scrollbars so the canvas acts like a big wall */
+      overflow: hidden;
     }
 
     /* Header */
@@ -53,7 +53,7 @@
       border: none;
     }
 
-    /* Freeform Wall Canvas */
+    /* Freeform Wall Canvas with Graffiti Background */
     #wall-canvas {
       position: absolute;
       top: 60px;
@@ -61,12 +61,10 @@
       width: 100vw;
       height: calc(100vh - 60px);
       background-color: #0d0d0d;
-      /* Optional brick/cork texture pattern using CSS gradient */
-      background-image: 
-        radial-gradient(rgba(255, 0, 127, 0.05) 1px, transparent 0),
-        radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 0);
-      background-size: 20px 20px;
-      background-position: 0 0, 10px 10px;
+      background-image: url('IMG_1397.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       overflow: hidden;
     }
 
@@ -74,6 +72,8 @@
     .flyer-card {
       position: absolute;
       width: 220px;
+      min-width: 140px;
+      max-width: 450px;
       background: #161616;
       border: 1px solid rgba(255, 0, 127, 0.5);
       padding: 10px;
@@ -81,7 +81,9 @@
       cursor: grab;
       user-select: none;
       touch-action: none;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      resize: both;
+      overflow: hidden;
+      transition: box-shadow 0.15s ease;
     }
 
     .flyer-card:active {
@@ -89,7 +91,13 @@
       box-shadow: 10px 15px 30px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 0, 127, 0.4);
     }
 
-    /* Realistic Tape Effect on Top */
+    /* Custom Pink Corner Resize Handle */
+    .flyer-card::-webkit-resizer {
+      background-color: #ff007f;
+      border-radius: 2px;
+    }
+
+    /* Tape Overlay */
     .flyer-card::before {
       content: '';
       position: absolute;
@@ -111,7 +119,7 @@
       background: #000;
       overflow: hidden;
       margin-bottom: 8px;
-      pointer-events: none; /* Prevents image drag ghosting */
+      pointer-events: none;
     }
 
     .flyer-image-container img {
@@ -147,7 +155,7 @@
       color: #000;
     }
 
-    /* Modal Overlay Popup */
+    /* Modal Popup */
     #modal-overlay {
       position: fixed;
       top: 0;
@@ -204,10 +212,10 @@
     </div>
   </header>
 
-  <!-- Interactive Scatter Wall -->
+  <!-- Interactive Canvas -->
   <div id="wall-canvas"></div>
 
-  <!-- Submission Modal Popup -->
+  <!-- Submission Modal -->
   <div id="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
@@ -227,7 +235,6 @@
 
     let highestZIndex = 10;
 
-    // Modal controls
     const modalOverlay = document.getElementById('modal-overlay');
     document.getElementById('open-modal-btn').addEventListener('click', () => modalOverlay.style.display = 'flex');
     document.getElementById('close-modal-btn').addEventListener('click', () => modalOverlay.style.display = 'none');
@@ -246,8 +253,8 @@
         const data = await response.json();
         wall.innerHTML = '';
 
-        const wallWidth = wall.clientWidth - 240;
-        const wallHeight = wall.clientHeight - 320;
+        const wallWidth = wall.clientWidth - 260;
+        const wallHeight = wall.clientHeight - 340;
 
         data.records.forEach((record, index) => {
           const fields = record.fields;
@@ -257,10 +264,9 @@
 
           if (!imageUrl) return;
 
-          // Calculate random scatter positioning and rotation
           const randomX = Math.max(20, Math.floor(Math.random() * wallWidth));
           const randomY = Math.max(20, Math.floor(Math.random() * wallHeight));
-          const randomRotation = (Math.random() * 16 - 8).toFixed(1); // -8deg to +8deg random tilt
+          const randomRotation = (Math.random() * 16 - 8).toFixed(1);
 
           const card = document.createElement('div');
           card.className = 'flyer-card';
@@ -277,61 +283,69 @@
             ${eventLink ? `<a href="${eventLink}" target="_blank" class="flyer-link">View Link →</a>` : ''}
           `;
 
-          makeDraggable(card, randomRotation);
+          makeDraggableAndResizable(card, randomRotation);
           wall.appendChild(card);
         });
 
       } catch (err) {
         console.error(err);
-        wall.innerHTML = '<div style="padding: 40px; text-align: center; color: #666;">Unable to load flyers.</div>';
+        wall.innerHTML = '<div style="padding: 40px; text-align: center; color: #aaa;">Unable to load flyers right now.</div>';
       }
     }
 
-    // Drag-and-Drop Implementation
-    function makeDraggable(element, baseRotation) {
+    function makeDraggableAndResizable(element, baseRotation) {
       let active = false;
-      let currentX, currentY, initialX, initialY;
+      let initialX, initialY;
       let xOffset = 0, yOffset = 0;
 
-      element.addEventListener('pointerdown', dragStart);
+      // Mouse Wheel Zooming / Sizing
+      element.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const currentWidth = element.offsetWidth;
+        const delta = e.deltaY < 0 ? 20 : -20;
+        const newWidth = Math.min(Math.max(currentWidth + delta, 140), 450);
+        element.style.width = `${newWidth}px`;
+      }, { passive: false });
 
-      function dragStart(e) {
-        if (e.target.tagName === 'A') return; // Allow clicking links without dragging
+      element.addEventListener('pointerdown', (e) => {
+        if (e.target.tagName === 'A') return;
         
-        // Bring to front
         highestZIndex++;
         element.style.zIndex = highestZIndex;
 
+        // Check if user clicked near bottom-right corner to resize using CSS handle
+        const rect = element.getBoundingClientRect();
+        const isNearResizeHandle = (e.clientX > rect.right - 25) && (e.clientY > rect.bottom - 25);
+        if (isNearResizeHandle) return;
+
         initialX = e.clientX - xOffset;
         initialY = e.clientY - yOffset;
-
         active = true;
+
         element.setPointerCapture(e.pointerId);
+
+        const drag = (moveEvent) => {
+          if (!active) return;
+          moveEvent.preventDefault();
+
+          const currentX = moveEvent.clientX - initialX;
+          const currentY = moveEvent.clientY - initialY;
+
+          xOffset = currentX;
+          yOffset = currentY;
+
+          element.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${baseRotation}deg)`;
+        };
+
+        const dragEnd = () => {
+          active = false;
+          element.removeEventListener('pointermove', drag);
+          element.removeEventListener('pointerup', dragEnd);
+        };
 
         element.addEventListener('pointermove', drag);
         element.addEventListener('pointerup', dragEnd);
-      }
-
-      function drag(e) {
-        if (!active) return;
-        e.preventDefault();
-
-        currentX = e.clientX - initialX;
-        currentY = e.clientY - initialY;
-
-        xOffset = currentX;
-        yOffset = currentY;
-
-        element.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${baseRotation}deg) scale(1.05)`;
-      }
-
-      function dragEnd(e) {
-        if (!active) return;
-        active = false;
-        element.style.transform = `translate(${currentX || 0}px, ${currentY || 0}px) rotate(${baseRotation}deg) scale(1)`;
-        element.removeEventListener('pointermove', drag);
-        element.removeEventListener('pointerup', dragEnd);
-      }
+      });
     }
 
     fetchAndScatterFlyers();
