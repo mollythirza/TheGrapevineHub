@@ -61,7 +61,7 @@
       width: 100vw;
       height: calc(100vh - 60px);
       background-color: #0d0d0d;
-      background-image: url('IMG_1397.jpg'); /*[span_1](start_span)[span_1](end_span) */
+      background-image: url('IMG_1397.jpg'); /*[span_0](start_span)[span_0](end_span) */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -69,7 +69,7 @@
       touch-action: none;
     }
 
-    /* Freeform Flyer Styling (Half-sized 80px base width) */
+    /* Freeform Flyer Styling */
     .flyer-card {
       position: absolute;
       width: 80px;
@@ -83,7 +83,6 @@
       transition: box-shadow 0.15s ease;
       will-change: transform;
       
-      /* Textured/Torn Paper Edge via Clip-Path Polygon */
       clip-path: polygon(
         0% 1.5%, 12% 0%, 25% 1.8%, 38% 0.5%, 52% 2%, 67% 0.2%, 81% 1.6%, 94% 0%, 100% 1%,
         99% 14%, 100% 28%, 98.5% 42%, 100% 57%, 99% 71%, 100% 86%, 98.8% 99%,
@@ -97,7 +96,6 @@
       box-shadow: 8px 12px 25px rgba(0, 0, 0, 0.95), 0 0 20px rgba(255, 0, 127, 0.5);
     }
 
-    /* Mini Tape Overlay */
     .flyer-card::before {
       content: '';
       position: absolute;
@@ -153,15 +151,15 @@
       justify-content: center;
       align-items: center;
       backdrop-filter: blur(6px);
-      padding: 15px;
+      padding: 10px;
     }
 
     .modal-content {
       background: #141414;
       border: 2px solid #ff007f;
       width: 100%;
-      max-width: 600px;
-      height: 85vh;
+      max-width: 550px;
+      max-height: 90vh; /* Prevents modal from overflowing screen height */
       border-radius: 8px;
       display: flex;
       flex-direction: column;
@@ -171,17 +169,33 @@
 
     .modal-header {
       background: #1a1a1a;
-      padding: 12px 20px;
+      padding: 10px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid #ff007f;
+      flex-shrink: 0;
     }
 
-    .modal-header span { font-size: 14px; font-weight: bold; color: #ff007f; text-transform: uppercase; }
+    .modal-header span { font-size: 13px; font-weight: bold; color: #ff007f; text-transform: uppercase; }
     .close-modal { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
-    .modal-body { flex-grow: 1; width: 100%; background: #fff; overflow-y: auto; }
-    .modal-body iframe { width: 100%; height: 100%; min-height: 700px; border: none; }
+    
+    /* Scrollable body wrapper for the Airtable embed */
+    .modal-body { 
+      flex-grow: 1; 
+      width: 100%; 
+      background: #fff; 
+      overflow-y: auto; /* Enables smooth scrolling inside the modal box */
+      -webkit-overflow-scrolling: touch; 
+    }
+    
+    .modal-body iframe { 
+      width: 100%; 
+      height: 100%; 
+      min-height: 650px; 
+      border: none; 
+      display: block;
+    }
 
     /* Fully Fitted Click-to-Enlarge Lightbox Card */
     #enlarge-modal-content {
