@@ -61,7 +61,7 @@
       width: 100vw;
       height: calc(100vh - 60px);
       background-color: #0d0d0d;
-      background-image: url('IMG_1397.jpg');
+      background-image: url('IMG_1397.jpg'); /*[span_1](start_span)[span_1](end_span) */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -72,7 +72,7 @@
     /* Freeform Flyer Styling (Half-sized 80px base width) */
     .flyer-card {
       position: absolute;
-      width: 80px; /* Reduced to ~half previous size */
+      width: 80px;
       background: #161616;
       border: 1px solid rgba(255, 0, 127, 0.4);
       padding: 4px;
@@ -140,7 +140,7 @@
       text-align: center;
     }
 
-    /* Modal Popups (AirTable Submission & Click-to-Enlarge Lightbox) */
+    /* Modal Overlays */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -153,7 +153,7 @@
       justify-content: center;
       align-items: center;
       backdrop-filter: blur(6px);
-      padding: 20px;
+      padding: 15px;
     }
 
     .modal-content {
@@ -179,40 +179,47 @@
     }
 
     .modal-header span { font-size: 14px; font-weight: bold; color: #ff007f; text-transform: uppercase; }
-    .close-modal { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
+    .close-modal { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
     .modal-body { flex-grow: 1; width: 100%; background: #fff; overflow-y: auto; }
     .modal-body iframe { width: 100%; height: 100%; min-height: 700px; border: none; }
 
-    /* Click-to-Enlarge Flyer Lightbox Card */
+    /* Fully Fitted Click-to-Enlarge Lightbox Card */
     #enlarge-modal-content {
       background: #121212;
       border: 2px solid #ff007f;
-      max-width: 420px;
-      height: auto;
+      width: 90vw;
+      max-width: 480px;
       max-height: 90vh;
-      padding: 16px;
+      padding: 20px;
       border-radius: 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       box-shadow: 0 0 40px rgba(255, 0, 127, 0.6);
       position: relative;
     }
 
     #enlarge-image {
-      max-width: 100%;
-      max-height: 60vh;
+      width: 100%;
+      height: auto;
+      max-height: 68vh;
       object-fit: contain;
       border: 1px solid #333;
       border-radius: 4px;
+      background: #000;
     }
 
     #enlarge-title {
       color: #fff;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: bold;
-      margin: 12px 0 8px 0;
+      margin: 12px 0 6px 0;
       text-align: center;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     #enlarge-link {
@@ -225,7 +232,7 @@
       font-weight: bold;
       text-decoration: none;
       text-transform: uppercase;
-      margin-top: 6px;
+      margin-top: 4px;
     }
   </style>
 </head>
@@ -275,13 +282,13 @@
 
     let highestZIndex = 10;
 
-    // Submission Modal
+    // Submission Modal Controls
     const modalOverlay = document.getElementById('modal-overlay');
     document.getElementById('open-modal-btn').addEventListener('click', () => modalOverlay.style.display = 'flex');
     document.getElementById('close-modal-btn').addEventListener('click', () => modalOverlay.style.display = 'none');
     modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.style.display = 'none'; });
 
-    // Enlarge Lightbox Modal
+    // Enlarge Lightbox Modal Controls
     const enlargeModal = document.getElementById('enlarge-modal');
     const enlargeImg = document.getElementById('enlarge-image');
     const enlargeTitle = document.getElementById('enlarge-title');
@@ -425,7 +432,6 @@
         activeTouches.delete(e.pointerId);
 
         if (!hasDraggedSignificantly && activeTouches.size === 0) {
-          // If the user tapped/clicked without dragging, open the enlarge lightbox!
           openEnlargedFlyer(imageUrl, title, eventLink);
         }
 
