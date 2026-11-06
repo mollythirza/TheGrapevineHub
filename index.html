@@ -6,12 +6,11 @@
   <title>The Grapevine Hub</title>
   <style>
     @import url('https://db.onlinewebfonts.com/c/33a778322e7d57ee578df9e00a59d75b?family=Monte+Stella+VF+Trial+Medium');
-    @import url('https://use.typekit.net/your-font-kit-id.css'); /* Replace or ensure Forma DJR Regular is loaded */
 
-    /* Fallback / Custom Import for Forma DJR Regular if hosted or available */
+    /* Safe fallback stack for Forma DJR Regular */
     @font-face {
       font-family: 'Forma DJR Regular';
-      src: url('FormaDJRText-Regular.woff2') format('woff2');
+      src: local('FormaDJRText-Regular'), local('Forma DJR Text Regular'), url('FormaDJRText-Regular.woff2') format('woff2');
       font-weight: normal;
       font-style: normal;
     }
@@ -22,8 +21,8 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background-color: #121212;
-      font-family: 'Forma DJR Regular', sans-serif;
+      background-color: #0b0b0b;
+      font-family: 'Forma DJR Regular', 'Courier New', Courier, monospace;
       color: #fff;
     }
 
@@ -61,7 +60,7 @@
       height: calc(100vh - 55px);
       overflow: hidden;
       cursor: grab;
-      background: #000;
+      background: #0d0d0d;
     }
 
     #viewport:active { cursor: grabbing; }
@@ -74,29 +73,34 @@
       transition: filter 0.3s ease;
     }
 
-    /* Background Wall Texture with Desaturation Support */
+    /* Background Wall Texture with Reliable Fallback Pattern */
     #wall-bg {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: url('wall-texture.jpg') repeat;
-      background-size: 600px;
+      background-color: #111;
+      /* Combines image texture with a built-in grungy dot/grid pattern so it never breaks */
+      background-image: 
+        url('wall-texture.jpg'),
+        radial-gradient(rgba(255, 0, 127, 0.08) 1.5px, transparent 1.5px),
+        radial-gradient(rgba(255, 255, 255, 0.03) 1.5px, transparent 1.5px);
+      background-size: cover, 30px 30px, 30px 30px;
+      background-position: center, 0 0, 15px 15px;
       filter: saturate(100%);
       transition: filter 0.4s ease;
       z-index: 1;
     }
 
-    /* When zoomed, class added to desaturate background slightly */
     #viewport.zoomed-in #wall-bg {
-      filter: saturate(30%) brightness(0.7);
+      filter: saturate(30%) brightness(0.6);
     }
 
     /* Interactive Stickers with Pulsing Pink Glow Animation */
     @keyframes pinkPulse {
       0% { box-shadow: 0 0 0 0 rgba(255, 0, 127, 0.8); }
-      70% { box-shadow: 0 0 0 15px rgba(255, 0, 127, 0); }
+      70% { box-shadow: 0 0 0 16px rgba(255, 0, 127, 0); }
       100% { box-shadow: 0 0 0 0 rgba(255, 0, 127, 0); }
     }
 
@@ -106,8 +110,9 @@
       z-index: 10;
       transition: transform 0.2s ease;
       animation: pinkPulse 2.5s infinite;
-      border-radius: 6px;
-      padding: 4px;
+      border-radius: 8px;
+      padding: 6px;
+      background: rgba(0,0,0,0.3);
     }
 
     .sticker:hover {
@@ -116,10 +121,10 @@
 
     .sticker img {
       display: block;
-      max-width: 180px;
+      max-width: 160px;
       height: auto;
       pointer-events: none;
-      filter: drop-shadow(3px 5px 10px rgba(0,0,0,0.8));
+      filter: drop-shadow(3px 5px 10px rgba(0,0,0,0.9));
     }
 
     /* Reset Button with Double Circular Arrow Symbol */
@@ -133,7 +138,7 @@
       width: 45px;
       height: 45px;
       border-radius: 50%;
-      font-size: 20px;
+      font-size: 22px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -149,7 +154,7 @@
       transform: rotate(180deg);
     }
 
-    /* Info Preview Modal */
+    /* Information Preview Modal */
     #preview-modal {
       position: fixed;
       top: 0;
@@ -177,15 +182,17 @@
       align-items: center;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
       position: relative;
-      font-family: 'Forma DJR Regular', sans-serif;
+      font-family: 'Forma DJR Regular', 'Courier New', monospace;
     }
 
     .modal-card img {
-      max-width: 140px;
-      max-height: 140px;
+      max-width: 130px;
+      max-height: 130px;
       object-fit: contain;
       margin-bottom: 16px;
       border: 1px solid #333;
+      background: #000;
+      padding: 4px;
     }
 
     .modal-card h3 {
@@ -220,7 +227,7 @@
       cursor: pointer;
       text-align: center;
       text-decoration: none;
-      font-family: 'Forma DJR Regular', sans-serif;
+      font-family: inherit;
     }
 
     .btn-visit { background: #ff007f; color: #000; border: none; }
@@ -245,13 +252,13 @@
       <div id="wall-bg"></div>
 
       <!-- Sticker 1: Notice Board -->
-      <div class="sticker" style="top: 400px; left: 600px;" onclick="openPreview('Notice Board', 'Explore community gig posters, DIY flyers, and underground announcements pinned live by creators.', 'notice-board.html', 'raccoon-sticker.png')">
-        <img src="raccoon-sticker.png" alt="Notice Board Sticker">
+      <div class="sticker" style="top: 500px; left: 700px;" onclick="openPreview('Notice Board', 'Explore community gig posters, DIY flyers, and underground announcements pinned live by creators.', 'notice-board.html', 'raccoon-sticker.png')">
+        <img src="raccoon-sticker.png" alt="Notice Board Sticker" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\'><rect width=\'120\' height=\'120\' fill=\'%23222\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'14\' text-anchor=\'middle\' dy=\'.3em\'>Notice Board</text></svg>';">
       </div>
 
       <!-- Sticker 2: Venue Map -->
-      <div class="sticker" style="top: 900px; left: 1600px;" onclick="openPreview('Venue Map', 'Discover independent grassroots music venues, community spaces, and safe hubs across the scene.', 'https://mollythirza.github.io/TheGrapevineMap/', 'map-sticker.png')">
-        <img src="map-sticker.png" alt="Venue Map Sticker">
+      <div class="sticker" style="top: 1000px; left: 1800px;" onclick="openPreview('Venue Map', 'Discover independent grassroots music venues, community spaces, and safe hubs across the scene.', 'https://mollythirza.github.io/TheGrapevineMap/', 'map-sticker.png')">
+        <img src="map-sticker.png" alt="Venue Map Sticker" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\'><rect width=\'120\' height=\'120\' fill=\'%23222\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'14\' text-anchor=\'middle\' dy=\'.3em\'>Venue Map</text></svg>';">
       </div>
     </div>
   </div>
@@ -285,7 +292,6 @@
     function updateTransform() {
       canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
       
-      // Trigger background desaturation when zoomed in past threshold
       if (scale > 1.3) {
         viewport.classList.add('zoomed-in');
       } else {
@@ -327,7 +333,6 @@
         scale = Math.max(scale - zoomIntensity, 0.6);
       }
 
-      // Zoom towards cursor center
       const rect = viewport.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
