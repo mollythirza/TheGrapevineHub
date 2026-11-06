@@ -7,14 +7,6 @@
   <style>
     @import url('https://db.onlinewebfonts.com/c/33a778322e7d57ee578df9e00a59d75b?family=Monte+Stella+VF+Trial+Medium');
 
-    /* Safe fallback stack for Forma DJR Regular */
-    @font-face {
-      font-family: 'Forma DJR Regular';
-      src: local('FormaDJRText-Regular'), local('Forma DJR Text Regular'), url('FormaDJRText-Regular.woff2') format('woff2');
-      font-weight: normal;
-      font-style: normal;
-    }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body, html {
@@ -22,7 +14,7 @@
       height: 100%;
       overflow: hidden;
       background-color: #0b0b0b;
-      font-family: 'Forma DJR Regular', 'Courier New', Courier, monospace;
+      font-family: 'Courier New', Courier, monospace;
       color: #fff;
     }
 
@@ -81,13 +73,11 @@
       width: 100%;
       height: 100%;
       background-color: #111;
-      /* Combines image texture with a built-in grungy dot/grid pattern so it never breaks */
       background-image: 
-        url('wall-texture.jpg'),
         radial-gradient(rgba(255, 0, 127, 0.08) 1.5px, transparent 1.5px),
         radial-gradient(rgba(255, 255, 255, 0.03) 1.5px, transparent 1.5px);
-      background-size: cover, 30px 30px, 30px 30px;
-      background-position: center, 0 0, 15px 15px;
+      background-size: 30px 30px, 30px 30px;
+      background-position: 0 0, 15px 15px;
       filter: saturate(100%);
       transition: filter 0.4s ease;
       z-index: 1;
@@ -112,7 +102,7 @@
       animation: pinkPulse 2.5s infinite;
       border-radius: 8px;
       padding: 6px;
-      background: rgba(0,0,0,0.3);
+      background: rgba(0,0,0,0.4);
     }
 
     .sticker:hover {
@@ -182,7 +172,6 @@
       align-items: center;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
       position: relative;
-      font-family: 'Forma DJR Regular', 'Courier New', monospace;
     }
 
     .modal-card img {
