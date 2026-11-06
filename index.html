@@ -131,6 +131,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
+      filter: contrast(1.05) brightness(0.9);
     }
 
     #hotspot-overlay {
@@ -142,11 +143,11 @@
       z-index: 10;
     }
 
-    /* Animated Pulsing Pink Neon Lines */
+    /* Animated Pulsing Pink Neon Hotspots with Shadow Depth */
     @keyframes pinkPulse {
-      0% { fill: rgba(255, 0, 127, 0.1); stroke: rgba(255, 0, 127, 0.4); filter: drop-shadow(0 0 4px rgba(255, 0, 127, 0.4)); }
-      50% { fill: rgba(255, 0, 127, 0.3); stroke: #ff007f; filter: drop-shadow(0 0 15px #ff007f); }
-      100% { fill: rgba(255, 0, 127, 0.1); stroke: rgba(255, 0, 127, 0.4); filter: drop-shadow(0 0 4px rgba(255, 0, 127, 0.4)); }
+      0% { fill: rgba(255, 0, 127, 0.1); stroke: rgba(255, 0, 127, 0.4); filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 4px rgba(255, 0, 127, 0.4)); }
+      50% { fill: rgba(255, 0, 127, 0.3); stroke: #ff007f; filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 15px #ff007f); }
+      100% { fill: rgba(255, 0, 127, 0.1); stroke: rgba(255, 0, 127, 0.4); filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 4px rgba(255, 0, 127, 0.4)); }
     }
 
     .sticker-link {
@@ -154,13 +155,14 @@
       cursor: pointer;
       animation: pinkPulse 2.5s infinite;
       transition: all 0.2s ease;
+      transform-origin: center;
     }
 
     .sticker-link:hover, .sticker-link:active {
       fill: rgba(255, 0, 127, 0.4);
       stroke: #ff007f;
       stroke-width: 5;
-      filter: drop-shadow(0 0 25px #ff007f) drop-shadow(0 0 10px #ff007f);
+      filter: drop-shadow(6px 12px 18px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 25px #ff007f);
       animation: none;
     }
 
@@ -293,43 +295,57 @@
         <!-- Background Image -->
         <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall" onload="initStickerWall(this)">
 
-        <!-- SVG Hotspots (Converted from <a> tags to standard SVG shapes for clean JS modal handling) -->
+        <!-- SVG Hotspots mapped to your specific links -->
         <svg id="hotspot-overlay">
           
-          <!-- 1. CASSETTE TAPE -->
+          <!-- 1. CASSETTE = Scene Oral History / Voice Note Vault -->
           <polygon class="sticker-link" points="240,307 398,275 426,379 261,414" 
-                   data-title="The Grapevine — Official Instagram" 
-                   data-desc="Check out our official Instagram feed for live updates, behind-the-scenes content, and community highlights." 
-                   data-url="https://www.instagram.com/thegrapevineuk/"
+                   data-title="Scene Oral History — Voice Note Vault" 
+                   data-desc="Listen to short voice notes, live gig snippets, and anecdotes recorded directly by members of the scene." 
+                   data-url="oral-history.html"
                    data-img="cassette-sticker.png" />
 
-          <!-- 2. GRENADE -->
+          <!-- 2. GRENADE = Grapevine Instagram -->
           <polygon class="sticker-link" points="545,420 547,432 551,401 540,375 548,360 557,341 568,338 584,326 586,307 620,306 631,321 649,332 649,346 655,360 657,374 655,389 655,400 652,406 649,416 644,423 642,430 628,446 625,454 610,466 593,467 580,458 552,433 554,439 562,442 547,432" 
-                   data-title="UK Hardcore Community Hub" 
-                   data-desc="Connecting the broader UK hardcore and alternative music network, shows, and community projects." 
-                   data-url="https://www.instagram.com/uk_hc/"
+                   data-title="The Grapevine — Official Instagram" 
+                   data-desc="Follow our official page for updates, behind-the-scenes content, and community highlights." 
+                   data-url="https://www.instagram.com/thegrapevineuk/"
                    data-img="grenade-sticker.png" />
 
-          <!-- 3. RACCOON -->
+          <!-- 3. RACCOON = Hardcore Hub -->
           <circle class="sticker-link" cx="519" cy="510" r="61" 
-                  data-title="Notice Board" 
-                  data-desc="Explore community gig posters, DIY flyers, and underground announcements pinned live by creators." 
-                  data-url="https://mollythirza.github.io/TheGrapevineHub/notice-board.html"
+                  data-title="UK Hardcore Community Hub" 
+                  data-desc="Connecting the broader UK hardcore and alternative music network, shows, and community projects." 
+                  data-url="https://www.instagram.com/uk_hc/"
                   data-img="raccoon-sticker.png" />
 
-          <!-- 4. GRAPES -->
+          <!-- 4. GRAPES = Venue Map -->
           <circle class="sticker-link" cx="339" cy="650" r="82" 
                   data-title="The Grapevine — Grassroots Venue Map" 
                   data-desc="Discover independent grassroots music venues, community spaces, and safe hubs across the scene." 
                   data-url="https://mollythirza.github.io/TheGrapevineMap/"
-                  data-img="map-sticker.png" />
+                  data-img="grapes-sticker.png" />
 
-          <!-- 5. KEYS -->
+          <!-- 5. KEYS = Notice Board -->
           <rect class="sticker-link" x="562" y="777" width="176" height="149" rx="10" 
-                data-title="Community Fundraiser — Help Richard Get His Passport" 
-                data-desc="Support this vital community mutual aid campaign to help get Richard his British passport sorted." 
-                data-url="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link"
+                data-title="Notice Board" 
+                data-desc="Explore community gig posters, DIY flyers, and underground announcements pinned live by creators." 
+                data-url="https://mollythirza.github.io/TheGrapevineHub/notice-board.html"
                 data-img="keys-sticker.png" />
+
+          <!-- 6. SAFETY PIN = Digital Zine Library -->
+          <circle class="sticker-link" cx="180" cy="850" r="65" 
+                  data-title="DIY Distro — Digital Zine Library" 
+                  data-desc="Flip page-by-page through digital archives and scans of local underground zines and mini-pubs." 
+                  data-url="zine-library.html"
+                  data-img="safetypin-sticker.png" />
+
+          <!-- 7. SPRAY CAN = Band & Creator Directory -->
+          <polygon class="sticker-link" points="800,250 950,230 970,360 820,380" 
+                   data-title="Band & Creator Directory" 
+                   data-desc="Browse an algorithm-free roster of local independent bands, DIY zine makers, and visual artists." 
+                   data-url="creator-directory.html"
+                   data-img="spraycan-sticker.png" />
 
         </svg>
       </div>
@@ -380,8 +396,15 @@
     function openPreview(title, desc, targetUrl, imgSrc) {
       modalTitle.innerText = title;
       modalDesc.innerText = desc;
-      modalLink.href = targetUrl;
       modalThumb.src = imgSrc;
+
+      if (targetUrl) {
+        modalLink.href = targetUrl;
+        modalLink.style.display = 'inline-block';
+      } else {
+        modalLink.style.display = 'none';
+      }
+
       modal.style.display = 'flex';
       hideTooltip();
     }
@@ -404,7 +427,6 @@
       spot.addEventListener('mouseleave', () => hideTooltip());
       spot.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
 
-      // Clean JavaScript click trigger opening the modal preview
       spot.addEventListener('click', (e) => {
         e.stopPropagation();
         openPreview(titleText, descText, targetUrl, imgSrc);
