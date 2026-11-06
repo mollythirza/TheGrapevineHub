@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Grapevine — Scene Oral History & Voice Note Vault</title>
+  <style>
+    @import url('https://db.onlinewebfonts.com/c/33a778322e7d57ee578df9e00a59d75b?family=Monte+Stella+VF+Trial+Medium');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body, html {
+      width: 100%;
+      min-height: 100%;
+      background-color: #0d0d0d;
+      color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      overflow-x: hidden;
+    }
+
+    /* Fixed Header matching Hub */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10000;
+      background: rgba(13, 13, 13, 0.95);
+      border-bottom: 2px solid #ff007f;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.3);
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      height: 32px;
+      width: auto;
+      filter: drop-shadow(0 0 6px #ff007f);
+    }
+
+    .brand-title {
+      font-family: "Monte Stella VF Trial Medium", sans-serif;
+      color: #ff007f;
+      font-size: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .nav-links a {
+      color: #aaa;
+      text-decoration: none;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #ff007f;
+      text-shadow: 0 0 8px #ff007f;
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1200px;
+      margin: 100px auto 60px;
+      padding: 0 24px;
+    }
+
+    .hero-section {
+      border: 1px solid #ff007f;
+      background: rgba(20, 20, 20, 0.8);
+      padding: 24px;
+      border-radius: 6px;
+      box-shadow: 0 0 25px rgba(255, 0, 127, 0.25);
+      margin-bottom: 30px;
+    }
+
+    .hero-section h1 {
+      color: #ff007f;
+      font-size: 24px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero-section p {
+      color: #bbb;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* Search & Filter Bar */
+    .filter-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 30px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .search-input {
+      background: #111;
+      border: 1px solid #ff007f;
+      color: #fff;
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 13px;
+      border-radius: 4px;
+      outline: none;
+      min-width: 260px;
+      flex: 1;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
+    }
+
+    .search-input:focus {
+      box-shadow: 0 0 12px rgba(255, 0, 127, 0.5);
+    }
+
+    .category-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: #141414;
+      color: #aaa;
+      border: 1px solid #333;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 11px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: #ff007f;
+      color: #000;
+      border-color: #ff007f;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+    }
+
+    /* Audio Cards Grid */
+    .audio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .audio-card {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 6px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+
+    .audio-card:hover {
+      transform: translateY(-4px);
+      border-color: #ff007f;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.35);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 10px;
+      color: #ff007f;
+      border: 1px solid #ff007f;
+      padding: 2px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    .audio-info h3 {
+      color: #fff;
+      font-size: 16px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .audio-info .speaker {
+      color: #888;
+      font-size: 11px;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .audio-desc {
+      color: #bbb;
+      font-size: 12px;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    /* Player Interface */
+    .player-box {
+      background: #0d0d0d;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-play {
+      background: #ff007f;
+      color: #000;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-play:hover {
+      background: #ff3399;
+      box-shadow: 0 0 10px #ff007f;
+    }
+
+    .waveform-bar {
+      flex: 1;
+      height: 6px;
+      background: #222;
+      border-radius: 3px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .waveform-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: #ff007f;
+      box-shadow: 0 0 8px #ff007f;
+      transition: width 0.1s linear;
+    }
+
+    .time-readout {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #777;
+    }
+
+    .transcript-toggle {
+      background: transparent;
+      border: none;
+      color: #ff007f;
+      font-family: inherit;
+      font-size: 11px;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-align: left;
+      margin-top: 4px;
+      padding: 0;
+    }
+
+    .transcript-toggle:hover {
+      text-decoration: underline;
+    }
+
+    .transcript-box {
+      display: none;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #333;
+      font-size: 11px;
+      color: #ccc;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header>
+    <div class="brand-container">
+      <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
+      <a href="index.html" class="brand-title">The Grapevine Hub</a>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">← Back to Hub</a>
+      <a href="creator-directory.html">Directory</a>
+      <a href="zine-library.html">Zine Library</a>
+      <a href="notice-board.html">Notice Board</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Intro Banner -->
+    <div class="hero-section">
+      <h1>Scene Oral History & Voice Note Vault</h1>
+      <p>Listen to raw 60-second voice notes, gig memories, venue lore, and underground oral histories recorded directly by members of our local DIY community.</p>
+    </div>
+
+    <!-- Filters & Search -->
+    <div class="filter-controls">
+      <input type="text" id="search-input" class="search-input" placeholder="Search voice notes, speakers, venues..." oninput="filterAudio()">
+      
+      <div class="category-buttons">
+        <button class="filter-btn active" onclick="setCategory('all', this)">All</button>
+        <button class="filter-btn" onclick="setCategory('gig', this)">Gig Memories</button>
+        <button class="filter-btn" onclick="setCategory('venue', this)">Venue Lore</button>
+        <button class="filter-btn" onclick="setCategory('history', this)">Oral History</button>
+      </div>
+    </div>
+
+    <!-- Audio Cards Grid -->
+    <div class="audio-grid" id="audio-grid">
+      
+      <!-- Audio Card 1 -->
+      <div class="audio-card" data-category="gig">
+        <span class="card-badge">Gig Memory</span>
+        <div class="audio-info">
+          <h3>The Boiler Room Show (2018)</h3>
+          <span class="speaker">Recounted by Dave (Static Shred) • 0:54</span>
+        </div>
+        <p class="audio-desc">Remembering when the power cut out halfway through the headline set and the crowd finished the vocals through a megaphone.</p>
+        
+        <div class="player-box">
+          <div class="player-controls">
+            <button class="btn-play" onclick="togglePlay(this)">▶</button>
+            <div class="waveform-bar" onclick="seekAudio(event, this)">
+              <div class="waveform-progress" style="width: 0%;"></div>
+            </div>
+          </div>
+          <div class="time-readout">
+            <span>0:00</span>
+            <span>0:54</span>
+          </div>
+          <button class="transcript-toggle" onclick="toggleTranscript(this)">Show Transcript</button>
+          <div class="transcript-box">
+            "We thought the breaker had tripped for good. The lights went pitch black, but someone had a battery megaphone in the back and the whole room just took over the chorus. Unreal energy."
+          </div>
+        </div>
+      </div>
+
+      <!-- Audio Card 2 -->
+      <div class="audio-card" data-category="venue">
+        <span class="card-badge">Venue Lore</span>
+        <div class="audio-info">
+          <h3>The Old Crown Basement</h3>
+          <span class="speaker">Recounted by Elena (Mutant Press) • 1:12</span>
+        </div>
+        <p class="audio-desc">How a damp storage cellar underneath a local pub turned into the central pillar of the underground hardcore scene.</p>
+        
+        <div class="player-box">
+          <div class="player-controls">
+            <button class="btn-play" onclick="togglePlay(this)">▶</button>
+            <div class="waveform-bar" onclick="seekAudio(event, this)">
+              <div class="waveform-progress" style="width: 0%;"></div>
+            </div>
+          </div>
+          <div class="time-readout">
+            <span>0:00</span>
+            <span>1:12</span>
+          </div>
+          <button class="transcript-toggle" onclick="toggleTranscript(this)">Show Transcript</button>
+          <div class="transcript-box">
+            "It smelled permanently of stale beer and ozone, but the acoustics were surprisingly killer. Every touring band wanted to play that room because the ceiling was so low you could touch the pipes."
+          </div>
+        </div>
+      </div>
+
+      <!-- Audio Card 3 -->
+      <div class="audio-card" data-category="history">
+        <span class="card-badge">Oral History</span>
+        <div class="audio-info">
+          <h3>Why We Make Zines</h3>
+          <span class="speaker">Recounted by Liam (Acid Threads) • 0:45</span>
+        </div>
+        <p class="audio-desc">Reflections on why physical print culture matters in an era dominated by algorithmic social media feeds.</p>
+        
+        <div class="player-box">
+          <div class="player-controls">
+            <button class="btn-play" onclick="togglePlay(this)">▶</button>
+            <div class="waveform-bar" onclick="seekAudio(event, this)">
+              <div class="waveform-progress" style="width: 0%;"></div>
+            </div>
+          </div>
+          <div class="time-readout">
+            <span>0:00</span>
+            <span>0:45</span>
+          </div>
+          <button class="transcript-toggle" onclick="toggleTranscript(this)">Show Transcript</button>
+          <div class="transcript-box">
+            "Algorithms decide who sees what online. When you hand someone a printed zine or a cassette tape, nobody can shadowban it. It's direct from human to human."
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    let activeCategory = 'all';
+
+    function setCategory(cat, btnElement) {
+      activeCategory = cat;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+      filterAudio();
+    }
+
+    function filterAudio() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const cards = document.querySelectorAll('.audio-card');
+
+      cards.forEach(card => {
+        const category = card.getAttribute('data-category');
+        const textContent = card.innerText.toLowerCase();
+
+        const matchesCategory = (activeCategory === 'all' || category === activeCategory);
+        const matchesSearch = textContent.includes(searchTerm);
+
+        if (matchesCategory && matchesSearch) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function toggleTranscript(btn) {
+      const box = btn.nextElementSibling;
+      if (box.style.display === 'block') {
+        box.style.display = 'none';
+        btn.innerText = 'Show Transcript';
+      } else {
+        box.style.display = 'block';
+        btn.innerText = 'Hide Transcript';
+      }
+    }
+
+    // Interactive Audio Simulation
+    let activeInterval = null;
+
+    function togglePlay(btn) {
+      const card = btn.closest('.audio-card');
+      const progress = card.querySelector('.waveform-progress');
+      
+      // Stop any other playing card
+      document.querySelectorAll('.btn-play').forEach(b => {
+        if (b !== btn) {
+          b.innerText = '▶';
+          const otherProg = b.closest('.audio-card').querySelector('.waveform-progress');
+          otherProg.style.width = '0%';
+        }
+      });
+
+      if (btn.innerText === '▶') {
+        btn.innerText = '❚❚';
+        simulatePlayback(progress, btn);
+      } else {
+        btn.innerText = '▶';
+        clearInterval(activeInterval);
+      }
+    }
+
+    function simulatePlayback(progressBar, playBtn) {
+      clearInterval(activeInterval);
+      let currentWidth = parseFloat(progressBar.style.width) || 0;
+      
+      activeInterval = setInterval(() => {
+        currentWidth += 1.5;
+        if (currentWidth >= 100) {
+          currentWidth = 0;
+          playBtn.innerText = '▶';
+          clearInterval(activeInterval);
+        }
+        progressBar.style.width = currentWidth + '%';
+      }, 300);
+    }
+
+    function seekAudio(event, bar) {
+      const card = bar.closest('.audio-card');
+      const progress = card.querySelector('.waveform-progress');
+      const rect = bar.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const widthPercentage = (clickX / rect.width) * 100;
+      progress.style.width = Math.max(0, Math.min(100, widthPercentage)) + '%';
+    }
+  </script>
+</body>
+</html>
