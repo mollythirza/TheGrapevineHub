@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Grapevine — Band & Creator Directory</title>
+  <style>
+    @import url('https://db.onlinewebfonts.com/c/33a778322e7d57ee578df9e00a59d75b?family=Monte+Stella+VF+Trial+Medium');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body, html {
+      width: 100%;
+      min-height: 100%;
+      background-color: #0d0d0d;
+      color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      overflow-x: hidden;
+    }
+
+    /* Fixed Header matching Hub */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10000;
+      background: rgba(13, 13, 13, 0.95);
+      border-bottom: 2px solid #ff007f;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.3);
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      height: 32px;
+      width: auto;
+      filter: drop-shadow(0 0 6px #ff007f);
+    }
+
+    .brand-title {
+      font-family: "Monte Stella VF Trial Medium", sans-serif;
+      color: #ff007f;
+      font-size: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .nav-links a {
+      color: #aaa;
+      text-decoration: none;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #ff007f;
+      text-shadow: 0 0 8px #ff007f;
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1200px;
+      margin: 100px auto 60px;
+      padding: 0 24px;
+    }
+
+    .hero-section {
+      border: 1px solid #ff007f;
+      background: rgba(20, 20, 20, 0.8);
+      padding: 24px;
+      border-radius: 6px;
+      box-shadow: 0 0 25px rgba(255, 0, 127, 0.25);
+      margin-bottom: 30px;
+    }
+
+    .hero-section h1 {
+      color: #ff007f;
+      font-size: 24px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero-section p {
+      color: #bbb;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* Search & Filter Bar */
+    .filter-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 30px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .search-input {
+      background: #111;
+      border: 1px solid #ff007f;
+      color: #fff;
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 13px;
+      border-radius: 4px;
+      outline: none;
+      min-width: 260px;
+      flex: 1;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
+    }
+
+    .search-input:focus {
+      box-shadow: 0 0 12px rgba(255, 0, 127, 0.5);
+    }
+
+    .category-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: #141414;
+      color: #aaa;
+      border: 1px solid #333;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 11px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: #ff007f;
+      color: #000;
+      border-color: #ff007f;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+    }
+
+    /* Cards Grid */
+    .directory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .creator-card {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 6px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .creator-card:hover {
+      transform: translateY(-4px);
+      border-color: #ff007f;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.35);
+    }
+
+    .card-category {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-size: 10px;
+      color: #ff007f;
+      border: 1px solid #ff007f;
+      padding: 2px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    .creator-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .creator-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 4px;
+      object-fit: cover;
+      border: 1px solid #ff007f;
+      background: #000;
+    }
+
+    .creator-info h3 {
+      color: #fff;
+      font-size: 15px;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .creator-info span {
+      color: #888;
+      font-size: 11px;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .creator-desc {
+      color: #bbb;
+      font-size: 12px;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    .card-footer {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-link {
+      flex: 1;
+      padding: 8px;
+      background: transparent;
+      border: 1px solid #ff007f;
+      color: #ff007f;
+      text-align: center;
+      text-decoration: none;
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: bold;
+      border-radius: 3px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-link:hover {
+      background: #ff007f;
+      color: #000;
+    }
+
+    /* Modal Styling */
+    #preview-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 30000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: #141414;
+      border: 2px solid #ff007f;
+      width: 100%;
+      max-width: 440px;
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
+    }
+
+    .modal-avatar {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      margin-bottom: 14px;
+      border: 1px solid #ff007f;
+      border-radius: 4px;
+    }
+
+    .modal-card h3 {
+      color: #ff007f;
+      font-size: 18px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .modal-tag {
+      color: #888;
+      font-size: 12px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .modal-card p {
+      color: #ccc;
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      font-family: inherit;
+    }
+
+    .btn-visit { background: #ff007f; color: #000; border: none; }
+    .btn-visit:hover { background: #ff3399; }
+    .btn-close { background: transparent; color: #aaa; border: 1px solid #444; }
+    .btn-close:hover { color: #fff; border-color: #777; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header>
+    <div class="brand-container">
+      <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
+      <a href="index.html" class="brand-title">The Grapevine Hub</a>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">← Back to Hub</a>
+      <a href="notice-board.html">Notice Board</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Intro Banner -->
+    <div class="hero-section">
+      <h1>Band & Creator Directory</h1>
+      <p>An algorithm-free roster connecting independent bands, DIY zine makers, printmakers, and underground visual artists across our community. Discover local projects directly from the source.</p>
+    </div>
+
+    <!-- Filters & Search -->
+    <div class="filter-controls">
+      <input type="text" id="search-input" class="search-input" placeholder="Search creators, bands, genres..." oninput="filterDirectory()">
+      
+      <div class="category-buttons">
+        <button class="filter-btn active" onclick="setCategory('all', this)">All</button>
+        <button class="filter-btn" onclick="setCategory('band', this)">Bands / Music</button>
+        <button class="filter-btn" onclick="setCategory('zine', this)">Zines / Writers</button>
+        <button class="filter-btn" onclick="setCategory('artist', this)">Visual Artists</button>
+      </div>
+    </div>
+
+    <!-- Directory Grid -->
+    <div class="directory-grid" id="directory-grid">
+      <!-- Item 1 -->
+      <div class="creator-card" data-category="band" onclick="openCreatorModal('STATIC SHRED', 'Hardcore Punk', 'Four-piece fast hardcore punk out of local DIY basements. Demo tape streaming now.', 'https://bandcamp.com', 'cassette-sticker.png')">
+        <span class="card-category">Band</span>
+        <div class="creator-header">
+          <img src="cassette-sticker.png" class="creator-avatar" alt="Static Shred" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\'><rect width=\'50\' height=\'50\' fill=\'%23111\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'10\' text-anchor=\'middle\' dy=\'.3em\'>Band</text></svg>'">
+          <div class="creator-info">
+            <h3>Static Shred</h3>
+            <span>Hardcore Punk</span>
+          </div>
+        </div>
+        <p class="creator-desc">Four-piece fast hardcore punk out of local DIY basements. Demo tape streaming now on Bandcamp.</p>
+        <div class="card-footer">
+          <span class="btn-link">View Profile →</span>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="creator-card" data-category="zine" onclick="openCreatorModal('MUTANT PRESS', 'Zine / Print', 'Independent quarterly risograph zine showcasing underground art, photo essays, and local gig recaps.', 'https://instagram.com', 'raccoon-sticker.png')">
+        <span class="card-category">Zine</span>
+        <div class="creator-header">
+          <img src="raccoon-sticker.png" class="creator-avatar" alt="Mutant Press" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\'><rect width=\'50\' height=\'50\' fill=\'%23111\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'10\' text-anchor=\'middle\' dy=\'.3em\'>Zine</text></svg>'">
+          <div class="creator-info">
+            <h3>Mutant Press</h3>
+            <span>Zine / Print</span>
+          </div>
+        </div>
+        <p class="creator-desc">Independent quarterly risograph zine showcasing underground art, photo essays, and local gig recaps.</p>
+        <div class="card-footer">
+          <span class="btn-link">View Profile →</span>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="creator-card" data-category="artist" onclick="openCreatorModal('ACID THREADS', 'Illustrator & Screenprinter', 'Hand-drawn screenprinted gig posters, patches, and custom apparel for local underground shows.', 'https://instagram.com', 'grenade-sticker.png')">
+        <span class="card-category">Artist</span>
+        <div class="creator-header">
+          <img src="grenade-sticker.png" class="creator-avatar" alt="Acid Threads" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\'><rect width=\'50\' height=\'50\' fill=\'%23111\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'10\' text-anchor=\'middle\' dy=\'.3em\'>Artist</text></svg>'">
+          <div class="creator-info">
+            <h3>Acid Threads</h3>
+            <span>Illustrator / Print</span>
+          </div>
+        </div>
+        <p class="creator-desc">Hand-drawn screenprinted gig posters, patches, and custom apparel for local underground shows.</p>
+        <div class="card-footer">
+          <span class="btn-link">View Profile →</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Modal Preview Card -->
+  <div id="preview-modal">
+    <div class="modal-card">
+      <img id="modal-avatar" class="modal-avatar" src="" alt="Creator Avatar">
+      <h3 id="modal-name">Creator Name</h3>
+      <div id="modal-tag" class="modal-tag">Category</div>
+      <p id="modal-desc">Description text goes here...</p>
+      <div class="modal-actions">
+        <button class="modal-btn btn-close" onclick="closeCreatorModal()">Close</button>
+        <a id="modal-link" href="#" target="_blank" class="modal-btn btn-visit">Visit Page →</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let activeCategory = 'all';
+
+    function setCategory(cat, btnElement) {
+      activeCategory = cat;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+      filterDirectory();
+    }
+
+    function filterDirectory() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const cards = document.querySelectorAll('.creator-card');
+
+      cards.forEach(card => {
+        const category = card.getAttribute('data-category');
+        const textContent = card.innerText.toLowerCase();
+
+        const matchesCategory = (activeCategory === 'all' || category === activeCategory);
+        const matchesSearch = textContent.includes(searchTerm);
+
+        if (matchesCategory && matchesSearch) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Modal Control
+    const modal = document.getElementById('preview-modal');
+    const modalName = document.getElementById('modal-name');
+    const modalTag = document.getElementById('modal-tag');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalLink = document.getElementById('modal-link');
+    const modalAvatar = document.getElementById('modal-avatar');
+
+    function openCreatorModal(name, tag, desc, link, avatarSrc) {
+      modalName.innerText = name;
+      modalTag.innerText = tag;
+      modalDesc.innerText = desc;
+      modalLink.href = link;
+      modalAvatar.src = avatarSrc;
+      modal.style.display = 'flex';
+    }
+
+    function closeCreatorModal() {
+      modal.style.display = 'none';
+    }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeCreatorModal();
+    });
+  </script>
+</body>
+</html>
