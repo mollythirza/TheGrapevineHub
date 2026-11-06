@@ -2,243 +2,241 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Grapevine Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
+  <title>The Grapevine — Interactive Sticker Wall</title>
   <style>
-    @import url('https://db.onlinewebfonts.com/c/33a778322e7d57ee578df9e00a59d75b?family=Monte+Stella+VF+Trial+Medium');
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body, html {
+    
+    html, body {
       width: 100%;
       height: 100%;
-      overflow: hidden;
-      background-color: #0b0b0b;
-      font-family: 'Courier New', Courier, monospace;
+      background-color: #0d0d0d;
       color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      overflow: hidden;
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
-    header {
+    /* Fixed UI Header */
+    .controls-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 10000;
-      background: rgba(18, 18, 18, 0.95);
-      border-bottom: 2px solid #ff007f;
-      padding: 12px 24px;
+      top: 15px;
+      left: 15px;
+      z-index: 1000;
+      background: rgba(13, 13, 13, 0.92);
+      border: 1px solid #ff007f;
+      padding: 12px 16px;
+      border-radius: 6px;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+      backdrop-filter: blur(8px);
+      pointer-events: none;
+      max-width: 320px;
+    }
+
+    .brand-container {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      backdrop-filter: blur(6px);
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .brand-logo {
+      height: 32px;
+      width: auto;
+      filter: drop-shadow(0 0 6px #ff007f);
+      flex-shrink: 0;
     }
 
     .brand-title {
-      font-family: "Monte Stella VF Trial Medium", sans-serif;
+      max-height: 20px;
+      width: auto;
+      object-fit: contain;
+      filter: invert(1);
+    }
+
+    .controls-overlay p {
+      font-size: 11px;
+      color: #bbb;
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+
+    /* Zoom Controls */
+    .zoom-buttons {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn {
+      background: #111;
       color: #ff007f;
-      font-size: 18px;
+      border: 1px solid #ff007f;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+      user-select: none;
     }
 
-    .nav-links { display: flex; gap: 20px; align-items: center; font-size: 13px; text-transform: uppercase; }
-    .nav-links a { color: #aaa; text-decoration: none; transition: color 0.2s; }
-    .nav-links a:hover { color: #ff007f; }
+    .btn:active {
+      background: #ff007f;
+      color: #000;
+    }
 
-    /* Zoomable Viewport Canvas */
+    /* Fullscreen Viewport */
     #viewport {
-      position: absolute;
-      top: 55px;
-      left: 0;
       width: 100vw;
-      height: calc(100vh - 55px);
+      height: 100vh;
       overflow: hidden;
+      position: relative;
       cursor: grab;
-      background: #000;
+      background-color: #0d0d0d;
     }
 
-    #viewport:active { cursor: grabbing; }
+    #viewport:active {
+      cursor: grabbing;
+    }
 
+    /* Canvas Wrapper */
     #canvas {
       position: absolute;
-      width: 3000px;
-      height: 2000px;
+      top: 0;
+      left: 0;
       transform-origin: 0 0;
+      will-change: transform;
     }
 
-    /* Bathroom Wall Background */
-    #wall-bg {
+    .wall-stage {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    #wall-photo {
+      display: block;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    #hotspot-overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: url('bathroom-wall.jpg') repeat;
-      background-size: cover;
-      z-index: 1;
-    }
-
-    /* Interactive Stickers */
-    .sticker {
-      position: absolute;
-      cursor: pointer;
       z-index: 10;
-      transition: transform 0.2s ease;
-      filter: drop-shadow(3px 5px 10px rgba(0,0,0,0.8));
     }
 
-    .sticker:hover {
-      transform: scale(1.08) rotate(2deg);
+    /* Transparent Low-Opacity Neon Lines */
+    .sticker-link {
+      fill: rgba(255, 0, 127, 0.04);
+      stroke: rgba(255, 0, 127, 0.25);
+      stroke-width: 3;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      filter: drop-shadow(0 0 6px rgba(255, 0, 127, 0.3));
     }
 
-    .sticker img {
-      display: block;
-      max-width: 180px;
-      height: auto;
-      pointer-events: none;
+    .sticker-link:hover, .sticker-link:active {
+      fill: rgba(255, 0, 127, 0.35);
+      stroke: #ff007f;
+      stroke-width: 5;
+      filter: drop-shadow(0 0 25px #ff007f) drop-shadow(0 0 10px #ff007f);
     }
 
-    /* Reset View Button */
-    #reset-view {
+    /* Bottom Title Banner */
+    #tooltip-box {
       position: fixed;
       bottom: 25px;
-      right: 25px;
-      background: #1a1a1a;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(17, 17, 17, 0.95);
       border: 2px solid #ff007f;
-      color: #ff007f;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      font-size: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      z-index: 10001;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
-      transition: background 0.2s, transform 0.2s;
-    }
-
-    #reset-view:hover {
-      background: #ff007f;
-      color: #000;
-      transform: scale(1.1);
-    }
-
-    /* Information Preview Modal */
-    #preview-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 30000;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      backdrop-filter: blur(5px);
-      padding: 20px;
-    }
-
-    .modal-card {
-      background: #141414;
-      border: 2px solid #ff007f;
-      width: 100%;
-      max-width: 400px;
-      border-radius: 8px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
-    }
-
-    .modal-card img {
-      max-width: 140px;
-      max-height: 140px;
-      object-fit: contain;
-      margin-bottom: 16px;
-      border: 1px solid #333;
-    }
-
-    .modal-card h3 {
-      color: #ff007f;
-      font-size: 18px;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      text-align: center;
-    }
-
-    .modal-card p {
-      color: #ccc;
-      font-size: 13px;
-      text-align: center;
-      margin-bottom: 20px;
-      line-height: 1.4;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 12px;
-      width: 100%;
-    }
-
-    .modal-btn {
-      flex: 1;
-      padding: 10px;
+      color: #fff;
+      padding: 8px 16px;
       border-radius: 4px;
       font-size: 12px;
       font-weight: bold;
+      letter-spacing: 0.5px;
+      z-index: 2000;
+      pointer-events: none;
+      display: none;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
       text-transform: uppercase;
-      cursor: pointer;
       text-align: center;
-      text-decoration: none;
+      max-width: 85vw;
     }
-
-    .btn-visit { background: #ff007f; color: #000; border: none; }
-    .btn-visit:hover { background: #ff3399; }
-    .btn-close { background: transparent; color: #aaa; border: 1px solid #444; }
-    .btn-close:hover { color: #fff; border-color: #777; }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="brand-title">The Grapevine Hub</div>
-    <div class="nav-links">
-      <a href="notice-board.html">Notice Board</a>
-      <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank">Venue Map</a>
+  <!-- Branded Header Panel -->
+  <div class="controls-overlay">
+    <div class="brand-container">
+      <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
+      <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:14px;\'>THE GRAPEVINE</h1>'">
     </div>
-  </header>
-
-  <!-- Zoomable Viewport Canvas -->
-  <div id="viewport">
-    <div id="canvas">
-      <div id="wall-bg"></div>
-
-      <!-- Sticker 1: Notice Board -->
-      <div class="sticker" style="top: 400px; left: 600px;" onclick="openPreview('Notice Board', 'Explore community gig posters, DIY flyers, and underground announcements pinned live by creators.', 'notice-board.html', 'raccoon-sticker.png')">
-        <img src="raccoon-sticker.png" alt="Notice Board Sticker" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\'><rect width=\'120\' height=\'120\' fill=\'%23222\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'14\' text-anchor=\'middle\' dy=\'.3em\'>Notice Board</text></svg>';">
-      </div>
-
-      <!-- Sticker 2: Venue Map -->
-      <div class="sticker" style="top: 900px; left: 1600px;" onclick="openPreview('Venue Map', 'Discover independent grassroots music venues, community spaces, and safe hubs across the scene.', 'https://mollythirza.github.io/TheGrapevineMap/', 'map-sticker.png')">
-        <img src="map-sticker.png" alt="Venue Map Sticker" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\'><rect width=\'120\' height=\'120\' fill=\'%23222\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'14\' text-anchor=\'middle\' dy=\'.3em\'>Venue Map</text></svg>';">
-      </div>
-    </div>
+    <p>The Grapevine digital hub - created by the community it exists for. Tap glowing stickers to access more community content</p>
   </div>
 
-  <!-- Reset View Button -->
-  <button id="reset-view" title="Reset View" onclick="resetView()">→</button>
+  <div id="tooltip-box"></div>
 
-  <!-- Information Preview Modal -->
-  <div id="preview-modal">
-    <div class="modal-card">
-      <img id="modal-img" src="" alt="Sticker Preview">
-      <h3 id="modal-title">Title</h3>
-      <p id="modal-desc">Description text goes here...</p>
-      <div class="modal-actions">
-        <button class="modal-btn btn-close" onclick="closePreview()">Close</button>
-        <a id="modal-link" href="#" class="modal-btn btn-visit">Go to Site →</a>
+  <div class="zoom-buttons">
+    <button class="btn" id="zoom-in">+</button>
+    <button class="btn" id="zoom-out">−</button>
+    <button class="btn" id="zoom-reset">↺</button>
+  </div>
+
+  <div id="viewport">
+    <div id="canvas">
+      <div class="wall-stage">
+        <!-- Background Image -->
+        <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall" onload="initStickerWall(this)">
+
+        <!-- SVG Hotspots -->
+        <svg id="hotspot-overlay">
+          
+          <!-- 1. CASSETTE TAPE -->
+          <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram">
+            <polygon class="sticker-link" points="240,307 398,275 426,379 261,414" />
+          </a>
+
+          <!-- 2. GRENADE -->
+          <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
+            <polygon class="sticker-link" points="545,420 547,432 551,401 540,375 548,360 557,341 568,338 584,326 586,307 620,306 631,321 649,332 649,346 655,360 657,374 655,389 655,400 652,406 649,416 644,423 642,430 628,446 625,454 610,466 593,467 580,458 552,433 554,439 562,442 547,432" />
+          </a>
+
+          <!-- 3. RACCOON -->
+          <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="NOTICE BOARD">
+            <circle class="sticker-link" cx="519" cy="510" r="61" />
+          </a>
+
+          <!-- 4. GRAPES -->
+          <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map">
+            <circle class="sticker-link" cx="339" cy="650" r="82" />
+          </a>
+
+          <!-- 5. KEYS -->
+          <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport">
+            <rect class="sticker-link" x="562" y="777" width="176" height="149" rx="10" />
+          </a>
+
+        </svg>
       </div>
     </div>
   </div>
@@ -246,90 +244,174 @@
   <script>
     const viewport = document.getElementById('viewport');
     const canvas = document.getElementById('canvas');
-
+    const tooltipBox = document.getElementById('tooltip-box');
+    
+    let nativeWidth = 0;
+    let nativeHeight = 0;
     let scale = 1;
-    let panX = -400;
-    let panY = -300;
-    let isDragging = false;
-    let startX, startY;
+    let minScale = 1;
+    let pointX = 0;
+    let pointY = 0;
 
-    function updateTransform() {
-      canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+    function showTooltip(text) {
+      tooltipBox.innerText = text;
+      tooltipBox.style.display = 'block';
     }
 
-    updateTransform();
+    function hideTooltip() {
+      tooltipBox.style.display = 'none';
+    }
 
-    // Pan & Drag Controls
-    viewport.addEventListener('pointerdown', (e) => {
+    document.querySelectorAll('#hotspot-overlay a').forEach(spot => {
+      const titleText = spot.getAttribute('data-title');
+      spot.addEventListener('mouseenter', () => showTooltip(titleText));
+      spot.addEventListener('mouseleave', () => hideTooltip());
+      spot.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
+    });
+
+    window.initStickerWall = function(img) {
+      nativeWidth = img.naturalWidth;
+      nativeHeight = img.naturalHeight;
+
+      canvas.style.width = nativeWidth + 'px';
+      canvas.style.height = nativeHeight + 'px';
+
+      const svg = document.getElementById('hotspot-overlay');
+      svg.setAttribute('viewBox', `0 0 ${nativeWidth} ${nativeHeight}`);
+
+      initCanvasFit();
+    };
+
+    function clampPositions() {
+      if (!nativeWidth) return;
+      const vWidth = window.innerWidth;
+      const vHeight = window.innerHeight;
+      const cWidth = nativeWidth * scale;
+      const cHeight = nativeHeight * scale;
+
+      // Ensure canvas strictly fills screen width and height boundaries with no empty gaps
+      pointX = Math.min(0, Math.max(vWidth - cWidth, pointX));
+      pointY = Math.min(0, Math.max(vHeight - cHeight, pointY));
+    }
+
+    function setTransform() {
+      clampPositions();
+      canvas.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+    }
+
+    function initCanvasFit() {
+      if (!nativeWidth) return;
+      const vWidth = window.innerWidth;
+      const vHeight = window.innerHeight;
+      
+      const scaleX = vWidth / nativeWidth;
+      const scaleY = vHeight / nativeHeight;
+      // Forces minScale to always cover full height and width (no black bars anywhere)
+      minScale = Math.max(scaleX, scaleY); 
+      scale = minScale;
+      
+      pointX = (vWidth - nativeWidth * scale) / 2;
+      pointY = (vHeight - nativeHeight * scale) / 2;
+      setTransform();
+    }
+
+    window.addEventListener('resize', initCanvasFit);
+
+    // Pan & Zoom Engine
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialPinchDistance = null;
+    let initialScale = 1;
+
+    function getDistance(t1, t2) {
+      const dx = t1.clientX - t2.clientX;
+      const dy = t1.clientY - t2.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    viewport.addEventListener('mousedown', (e) => {
+      if (e.target.closest('a')) return;
+      e.preventDefault();
+      startX = e.clientX - pointX;
+      startY = e.clientY - pointY;
       isDragging = true;
-      startX = e.clientX - panX;
-      startY = e.clientY - panY;
-      viewport.setPointerCapture(e.pointerId);
     });
 
-    viewport.addEventListener('pointermove', (e) => {
+    window.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
-      panX = e.clientX - startX;
-      panY = e.clientY - startY;
-      updateTransform();
+      e.preventDefault();
+      pointX = e.clientX - startX;
+      pointY = e.clientY - startY;
+      setTransform();
     });
 
-    viewport.addEventListener('pointerup', (e) => {
-      isDragging = false;
-      viewport.releasePointerCapture(e.pointerId);
-    });
+    window.addEventListener('mouseup', () => { isDragging = false; });
 
-    // Zoom via Mouse Wheel
     viewport.addEventListener('wheel', (e) => {
       e.preventDefault();
-      const zoomIntensity = 0.1;
-      const prevScale = scale;
+      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
+      const newScale = Math.min(Math.max(scale * zoomFactor, minScale), 4.5);
       
-      if (e.deltaY < 0) {
-        scale = Math.min(scale + zoomIntensity, 2.5);
-      } else {
-        scale = Math.max(scale - zoomIntensity, 0.6);
-      }
-
-      const rect = viewport.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-
-      panX = mouseX - (mouseX - panX) * (scale / prevScale);
-      panY = mouseY - (mouseY - panY) * (scale / prevScale);
-
-      updateTransform();
+      const xs = (e.clientX - pointX) / scale;
+      const ys = (e.clientY - pointY) / scale;
+      
+      scale = newScale;
+      pointX = e.clientX - xs * scale;
+      pointY = e.clientY - ys * scale;
+      setTransform();
     }, { passive: false });
 
-    function resetView() {
-      scale = 1;
-      panX = -400;
-      panY = -300;
-      updateTransform();
-    }
+    viewport.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        if (e.target.closest('a')) {
+          isDragging = false;
+          return;
+        }
+        hideTooltip();
+        startX = e.touches[0].clientX - pointX;
+        startY = e.touches[0].clientY - pointY;
+        isDragging = true;
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
+        initialScale = scale;
+      }
+    }, { passive: false });
 
-    // Modal Control Functions
-    const modal = document.getElementById('preview-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalDesc = document.getElementById('modal-desc');
-    const modalLink = document.getElementById('modal-link');
-    const modalImg = document.getElementById('modal-img');
+    viewport.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && isDragging) {
+        e.preventDefault();
+        pointX = e.touches[0].clientX - startX;
+        pointY = e.touches[0].clientY - startY;
+        setTransform();
+      } else if (e.touches.length === 2 && initialPinchDistance) {
+        e.preventDefault();
+        const currentDistance = getDistance(e.touches[0], e.touches[1]);
+        const factor = currentDistance / initialPinchDistance;
+        const newScale = Math.min(Math.max(initialScale * factor, minScale), 4.5);
+        
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        
+        const xs = (midX - pointX) / scale;
+        const ys = (midY - pointY) / scale;
+        
+        scale = newScale;
+        pointX = midX - xs * scale;
+        pointY = midY - ys * scale;
+        setTransform();
+      }
+    }, { passive: false });
 
-    function openPreview(title, desc, targetUrl, imgSrc) {
-      modalTitle.innerText = title;
-      modalDesc.innerText = desc;
-      modalLink.href = targetUrl;
-      modalImg.src = imgSrc;
-      modal.style.display = 'flex';
-    }
-
-    function closePreview() {
-      modal.style.display = 'none';
-    }
-
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closePreview();
+    viewport.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) initialPinchDistance = null;
+      if (e.touches.length === 0) isDragging = false;
     });
+
+    document.getElementById('zoom-in').addEventListener('click', () => { scale = Math.min(scale * 1.3, 4.5); setTransform(); });
+    document.getElementById('zoom-out').addEventListener('click', () => { scale = Math.max(scale / 1.3, minScale); setTransform(); });
+    document.getElementById('zoom-reset').addEventListener('click', initCanvasFit);
   </script>
+
 </body>
 </html>
