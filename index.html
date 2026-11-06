@@ -293,7 +293,7 @@
         <!-- Background Image -->
         <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall" onload="initStickerWall(this)">
 
-        <!-- SVG Hotspots -->
+        <!-- SVG Hotspots (Converted from <a> tags to standard SVG shapes for clean JS modal handling) -->
         <svg id="hotspot-overlay">
           
           <!-- 1. CASSETTE TAPE -->
@@ -402,13 +402,11 @@
 
       spot.addEventListener('mouseenter', () => showTooltip(titleText));
       spot.addEventListener('mouseleave', () => hideTooltip());
-      spot.addEventListener('touchstart', (e) => {
-        showTooltip(titleText);
-      }, { passive: true });
+      spot.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
 
-      // Click / Tap opens preview modal with the thumbnail image
+      // Clean JavaScript click trigger opening the modal preview
       spot.addEventListener('click', (e) => {
-        e.preventDefault();
+        e.stopPropagation();
         openPreview(titleText, descText, targetUrl, imgSrc);
       });
     });
