@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Grapevine Hub</title>
   <style>
-    @import url('https://db.onlinewebfonts.com/c/33a778322e7d57ee578df9e00a59d75b?family=Monte+Stella+VF+Trial+Medium');
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body, html {
@@ -30,61 +28,32 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      backdrop-filter: blur(6px);
     }
 
     .brand-title {
-      font-family: "Monte Stella VF Trial Medium", sans-serif;
       color: #ff007f;
-      font-size: 18px;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
     }
 
     .nav-links { display: flex; gap: 20px; align-items: center; font-size: 13px; text-transform: uppercase; }
     .nav-links a { color: #aaa; text-decoration: none; transition: color 0.2s; }
     .nav-links a:hover { color: #ff007f; }
 
-    /* Interactive Zoom Container */
-    #viewport {
+    /* Main Wall Canvas Container */
+    #wall-canvas {
       position: absolute;
       top: 55px;
       left: 0;
       width: 100vw;
       height: calc(100vh - 55px);
+      background-color: #0d0d0d;
+      background-image: url('IMG_1397.jpg');[cite: 1]
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       overflow: hidden;
-      cursor: grab;
-      background: #0d0d0d;
-    }
-
-    #viewport:active { cursor: grabbing; }
-
-    #canvas {
-      position: absolute;
-      width: 3000px;
-      height: 2000px;
-      transform-origin: 0 0;
-      transition: filter 0.3s ease;
-    }
-
-    /* Background Wall Texture with Reliable Fallback Pattern */
-    #wall-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #111;
-      background-image: 
-        radial-gradient(rgba(255, 0, 127, 0.08) 1.5px, transparent 1.5px),
-        radial-gradient(rgba(255, 255, 255, 0.03) 1.5px, transparent 1.5px);
-      background-size: 30px 30px, 30px 30px;
-      background-position: 0 0, 15px 15px;
-      filter: saturate(100%);
-      transition: filter 0.4s ease;
-      z-index: 1;
-    }
-
-    #viewport.zoomed-in #wall-bg {
-      filter: saturate(30%) brightness(0.6);
     }
 
     /* Interactive Stickers with Pulsing Pink Glow Animation */
@@ -102,7 +71,7 @@
       animation: pinkPulse 2.5s infinite;
       border-radius: 8px;
       padding: 6px;
-      background: rgba(0,0,0,0.4);
+      background: rgba(0,0,0,0.5);
     }
 
     .sticker:hover {
@@ -117,33 +86,6 @@
       filter: drop-shadow(3px 5px 10px rgba(0,0,0,0.9));
     }
 
-    /* Reset Button with Double Circular Arrow Symbol */
-    #reset-view {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      background: #1a1a1a;
-      border: 2px solid #ff007f;
-      color: #ff007f;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      font-size: 22px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      z-index: 10001;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
-      transition: background 0.2s, transform 0.2s;
-    }
-
-    #reset-view:hover {
-      background: #ff007f;
-      color: #000;
-      transform: rotate(180deg);
-    }
-
     /* Information Preview Modal */
     #preview-modal {
       position: fixed;
@@ -156,7 +98,6 @@
       display: none;
       justify-content: center;
       align-items: center;
-      backdrop-filter: blur(5px);
       padding: 20px;
     }
 
@@ -171,7 +112,6 @@
       flex-direction: column;
       align-items: center;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
-      position: relative;
     }
 
     .modal-card img {
@@ -235,25 +175,18 @@
     </div>
   </header>
 
-  <!-- Zoomable Viewport Canvas -->
-  <div id="viewport">
-    <div id="canvas">
-      <div id="wall-bg"></div>
+  <!-- Clean Wall Canvas -->
+  <div id="wall-canvas">
+    <!-- Sticker 1: Notice Board -->
+    <div class="sticker" style="top: 25vh; left: 15vw;" onclick="openPreview('Notice Board', 'Explore community gig posters, DIY flyers, and underground announcements pinned live by creators.', 'notice-board.html', 'raccoon-sticker.png')">
+      <img src="raccoon-sticker.png" alt="Notice Board Sticker" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\'><rect width=\'120\' height=\'120\' fill=\'%23222\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'14\' text-anchor=\'middle\' dy=\'.3em\'>Notice Board</text></svg>';">
+    </div>
 
-      <!-- Sticker 1: Notice Board -->
-      <div class="sticker" style="top: 500px; left: 700px;" onclick="openPreview('Notice Board', 'Explore community gig posters, DIY flyers, and underground announcements pinned live by creators.', 'notice-board.html', 'raccoon-sticker.png')">
-        <img src="raccoon-sticker.png" alt="Notice Board Sticker" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\'><rect width=\'120\' height=\'120\' fill=\'%23222\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'14\' text-anchor=\'middle\' dy=\'.3em\'>Notice Board</text></svg>';">
-      </div>
-
-      <!-- Sticker 2: Venue Map -->
-      <div class="sticker" style="top: 1000px; left: 1800px;" onclick="openPreview('Venue Map', 'Discover independent grassroots music venues, community spaces, and safe hubs across the scene.', 'https://mollythirza.github.io/TheGrapevineMap/', 'map-sticker.png')">
-        <img src="map-sticker.png" alt="Venue Map Sticker" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\'><rect width=\'120\' height=\'120\' fill=\'%23222\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'14\' text-anchor=\'middle\' dy=\'.3em\'>Venue Map</text></svg>';">
-      </div>
+    <!-- Sticker 2: Venue Map -->
+    <div class="sticker" style="top: 55vh; left: 65vw;" onclick="openPreview('Venue Map', 'Discover independent grassroots music venues, community spaces, and safe hubs across the scene.', 'https://mollythirza.github.io/TheGrapevineMap/', 'map-sticker.png')">
+      <img src="map-sticker.png" alt="Venue Map Sticker" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\'><rect width=\'120\' height=\'120\' fill=\'%23222\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'14\' text-anchor=\'middle\' dy=\'.3em\'>Venue Map</text></svg>';">
     </div>
   </div>
-
-  <!-- Reset View Button with Double Circular Arrow Symbol -->
-  <button id="reset-view" title="Reset View" onclick="resetView()">⟳</button>
 
   <!-- Information Preview Modal -->
   <div id="preview-modal">
@@ -269,77 +202,6 @@
   </div>
 
   <script>
-    const viewport = document.getElementById('viewport');
-    const canvas = document.getElementById('canvas');
-
-    let scale = 1;
-    let panX = -400;
-    let panY = -300;
-    let isDragging = false;
-    let startX, startY;
-
-    function updateTransform() {
-      canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
-      
-      if (scale > 1.3) {
-        viewport.classList.add('zoomed-in');
-      } else {
-        viewport.classList.remove('zoomed-in');
-      }
-    }
-
-    updateTransform();
-
-    // Pan & Drag Controls
-    viewport.addEventListener('pointerdown', (e) => {
-      isDragging = true;
-      startX = e.clientX - panX;
-      startY = e.clientY - panY;
-      viewport.setPointerCapture(e.pointerId);
-    });
-
-    viewport.addEventListener('pointermove', (e) => {
-      if (!isDragging) return;
-      panX = e.clientX - startX;
-      panY = e.clientY - startY;
-      updateTransform();
-    });
-
-    viewport.addEventListener('pointerup', (e) => {
-      isDragging = false;
-      viewport.releasePointerCapture(e.pointerId);
-    });
-
-    // Zoom via Mouse Wheel
-    viewport.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      const zoomIntensity = 0.1;
-      const prevScale = scale;
-      
-      if (e.deltaY < 0) {
-        scale = Math.min(scale + zoomIntensity, 2.5);
-      } else {
-        scale = Math.max(scale - zoomIntensity, 0.6);
-      }
-
-      const rect = viewport.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-
-      panX = mouseX - (mouseX - panX) * (scale / prevScale);
-      panY = mouseY - (mouseY - panY) * (scale / prevScale);
-
-      updateTransform();
-    }, { passive: false });
-
-    function resetView() {
-      scale = 1;
-      panX = -400;
-      panY = -300;
-      updateTransform();
-    }
-
-    // Modal Control Functions
     const modal = document.getElementById('preview-modal');
     const modalTitle = document.getElementById('modal-title');
     const modalDesc = document.getElementById('modal-desc');
