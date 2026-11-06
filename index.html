@@ -142,24 +142,29 @@
       z-index: 10;
     }
 
-    /* Transparent Low-Opacity Neon Lines */
+    /* Animated Pulsing Pink Neon Lines */
+    @keyframes pinkPulse {
+      0% { fill: rgba(255, 0, 127, 0.1); stroke: rgba(255, 0, 127, 0.4); filter: drop-shadow(0 0 4px rgba(255, 0, 127, 0.4)); }
+      50% { fill: rgba(255, 0, 127, 0.3); stroke: #ff007f; filter: drop-shadow(0 0 15px #ff007f); }
+      100% { fill: rgba(255, 0, 127, 0.1); stroke: rgba(255, 0, 127, 0.4); filter: drop-shadow(0 0 4px rgba(255, 0, 127, 0.4)); }
+    }
+
     .sticker-link {
-      fill: rgba(255, 0, 127, 0.04);
-      stroke: rgba(255, 0, 127, 0.25);
       stroke-width: 3;
       cursor: pointer;
-      transition: all 0.25s ease;
-      filter: drop-shadow(0 0 6px rgba(255, 0, 127, 0.3));
+      animation: pinkPulse 2.5s infinite;
+      transition: all 0.2s ease;
     }
 
     .sticker-link:hover, .sticker-link:active {
-      fill: rgba(255, 0, 127, 0.35);
+      fill: rgba(255, 0, 127, 0.4);
       stroke: #ff007f;
       stroke-width: 5;
       filter: drop-shadow(0 0 25px #ff007f) drop-shadow(0 0 10px #ff007f);
+      animation: none;
     }
 
-    /* Bottom Title Banner */
+    /* Bottom Tooltip */
     #tooltip-box {
       position: fixed;
       bottom: 25px;
@@ -181,6 +186,86 @@
       text-align: center;
       max-width: 85vw;
     }
+
+    /* Information Preview Modal */
+    #preview-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 30000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: #141414;
+      border: 2px solid #ff007f;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
+    }
+
+    .modal-thumbnail {
+      max-width: 120px;
+      max-height: 120px;
+      object-fit: contain;
+      margin-bottom: 15px;
+      border: 1px solid #333;
+      background: #000;
+      padding: 6px;
+      border-radius: 4px;
+    }
+
+    .modal-card h3 {
+      color: #ff007f;
+      font-size: 16px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .modal-card p {
+      color: #ccc;
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      font-family: inherit;
+    }
+
+    .btn-visit { background: #ff007f; color: #000; border: none; }
+    .btn-visit:hover { background: #ff3399; }
+    .btn-close { background: transparent; color: #aaa; border: 1px solid #444; }
+    .btn-close:hover { color: #fff; border-color: #777; }
   </style>
 </head>
 <body>
@@ -212,31 +297,54 @@
         <svg id="hotspot-overlay">
           
           <!-- 1. CASSETTE TAPE -->
-          <a href="https://www.instagram.com/thegrapevineuk/" target="_blank" data-title="The Grapevine — Official Instagram">
-            <polygon class="sticker-link" points="240,307 398,275 426,379 261,414" />
-          </a>
+          <polygon class="sticker-link" points="240,307 398,275 426,379 261,414" 
+                   data-title="The Grapevine — Official Instagram" 
+                   data-desc="Check out our official Instagram feed for live updates, behind-the-scenes content, and community highlights." 
+                   data-url="https://www.instagram.com/thegrapevineuk/"
+                   data-img="cassette-sticker.png" />
 
           <!-- 2. GRENADE -->
-          <a href="https://www.instagram.com/uk_hc/" target="_blank" data-title="UK Hardcore Community Hub">
-            <polygon class="sticker-link" points="545,420 547,432 551,401 540,375 548,360 557,341 568,338 584,326 586,307 620,306 631,321 649,332 649,346 655,360 657,374 655,389 655,400 652,406 649,416 644,423 642,430 628,446 625,454 610,466 593,467 580,458 552,433 554,439 562,442 547,432" />
-          </a>
+          <polygon class="sticker-link" points="545,420 547,432 551,401 540,375 548,360 557,341 568,338 584,326 586,307 620,306 631,321 649,332 649,346 655,360 657,374 655,389 655,400 652,406 649,416 644,423 642,430 628,446 625,454 610,466 593,467 580,458 552,433 554,439 562,442 547,432" 
+                   data-title="UK Hardcore Community Hub" 
+                   data-desc="Connecting the broader UK hardcore and alternative music network, shows, and community projects." 
+                   data-url="https://www.instagram.com/uk_hc/"
+                   data-img="grenade-sticker.png" />
 
           <!-- 3. RACCOON -->
-          <a href="https://mollythirza.github.io/TheGrapevineHub/notice-board.html" target="_blank" data-title="NOTICE BOARD">
-            <circle class="sticker-link" cx="519" cy="510" r="61" />
-          </a>
+          <circle class="sticker-link" cx="519" cy="510" r="61" 
+                  data-title="Notice Board" 
+                  data-desc="Explore community gig posters, DIY flyers, and underground announcements pinned live by creators." 
+                  data-url="https://mollythirza.github.io/TheGrapevineHub/notice-board.html"
+                  data-img="raccoon-sticker.png" />
 
           <!-- 4. GRAPES -->
-          <a href="https://mollythirza.github.io/TheGrapevineMap/" target="_blank" data-title="The Grapevine — Grassroots Venue Map">
-            <circle class="sticker-link" cx="339" cy="650" r="82" />
-          </a>
+          <circle class="sticker-link" cx="339" cy="650" r="82" 
+                  data-title="The Grapevine — Grassroots Venue Map" 
+                  data-desc="Discover independent grassroots music venues, community spaces, and safe hubs across the scene." 
+                  data-url="https://mollythirza.github.io/TheGrapevineMap/"
+                  data-img="map-sticker.png" />
 
           <!-- 5. KEYS -->
-          <a href="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link" target="_blank" data-title="Community Fundraiser — Help Richard Get His Passport">
-            <rect class="sticker-link" x="562" y="777" width="176" height="149" rx="10" />
-          </a>
+          <rect class="sticker-link" x="562" y="777" width="176" height="149" rx="10" 
+                data-title="Community Fundraiser — Help Richard Get His Passport" 
+                data-desc="Support this vital community mutual aid campaign to help get Richard his British passport sorted." 
+                data-url="https://gofundme.com/f/help-richard-get-his-british-passport/cl/s?attribution_id=sl:fba8be75-19a6-4b01-ae8f-eb8c9edb77d2&lang=en_GB&ts=1792854306&utm_campaign=fp_below_fold&utm_content=amp30-treatment-3&utm_medium=customer&utm_source=copy_link"
+                data-img="keys-sticker.png" />
 
         </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Information Preview Modal -->
+  <div id="preview-modal">
+    <div class="modal-card">
+      <img id="modal-thumb" class="modal-thumbnail" src="" alt="Sticker Thumbnail" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><rect width=\'100\' height=\'100\' fill=\'%23111\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'12\' text-anchor=\'middle\' dy=\'.3em\'>Sticker</text></svg>'">
+      <h3 id="modal-title">Title</h3>
+      <p id="modal-desc">Description text goes here...</p>
+      <div class="modal-actions">
+        <button class="modal-btn btn-close" onclick="closePreview()">Close</button>
+        <a id="modal-link" href="#" target="_blank" class="modal-btn btn-visit">Visit Site →</a>
       </div>
     </div>
   </div>
@@ -262,11 +370,47 @@
       tooltipBox.style.display = 'none';
     }
 
-    document.querySelectorAll('#hotspot-overlay a').forEach(spot => {
+    // Modal elements
+    const modal = document.getElementById('preview-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalLink = document.getElementById('modal-link');
+    const modalThumb = document.getElementById('modal-thumb');
+
+    function openPreview(title, desc, targetUrl, imgSrc) {
+      modalTitle.innerText = title;
+      modalDesc.innerText = desc;
+      modalLink.href = targetUrl;
+      modalThumb.src = imgSrc;
+      modal.style.display = 'flex';
+      hideTooltip();
+    }
+
+    function closePreview() {
+      modal.style.display = 'none';
+    }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closePreview();
+    });
+
+    document.querySelectorAll('#hotspot-overlay .sticker-link').forEach(spot => {
       const titleText = spot.getAttribute('data-title');
+      const descText = spot.getAttribute('data-desc');
+      const targetUrl = spot.getAttribute('data-url');
+      const imgSrc = spot.getAttribute('data-img');
+
       spot.addEventListener('mouseenter', () => showTooltip(titleText));
       spot.addEventListener('mouseleave', () => hideTooltip());
-      spot.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
+      spot.addEventListener('touchstart', (e) => {
+        showTooltip(titleText);
+      }, { passive: true });
+
+      // Click / Tap opens preview modal with the thumbnail image
+      spot.addEventListener('click', (e) => {
+        e.preventDefault();
+        openPreview(titleText, descText, targetUrl, imgSrc);
+      });
     });
 
     window.initStickerWall = function(img) {
@@ -289,7 +433,6 @@
       const cWidth = nativeWidth * scale;
       const cHeight = nativeHeight * scale;
 
-      // Ensure canvas strictly fills screen width and height boundaries with no empty gaps
       pointX = Math.min(0, Math.max(vWidth - cWidth, pointX));
       pointY = Math.min(0, Math.max(vHeight - cHeight, pointY));
     }
@@ -306,7 +449,6 @@
       
       const scaleX = vWidth / nativeWidth;
       const scaleY = vHeight / nativeHeight;
-      // Forces minScale to always cover full height and width (no black bars anywhere)
       minScale = Math.max(scaleX, scaleY); 
       scale = minScale;
       
@@ -330,7 +472,7 @@
     }
 
     viewport.addEventListener('mousedown', (e) => {
-      if (e.target.closest('a')) return;
+      if (e.target.closest('.sticker-link')) return;
       e.preventDefault();
       startX = e.clientX - pointX;
       startY = e.clientY - pointY;
@@ -363,7 +505,7 @@
 
     viewport.addEventListener('touchstart', (e) => {
       if (e.touches.length === 1) {
-        if (e.target.closest('a')) {
+        if (e.target.closest('.sticker-link')) {
           isDragging = false;
           return;
         }
