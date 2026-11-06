@@ -373,4 +373,111 @@
     <div class="zine-grid" id="zine-grid">
       
       <!-- Zine 1 -->
-      <div class="zine-card" data-category="music"
+      <div class="zine-card" data-category="music" onclick="openZineModal('NO SLEEP TILL... #4', 'By Sarah Jenkins • 28 Pages', 'A retrospective local gig zine chronicling basement shows from 2022–2025 with photo inserts and interviews.', '#', 'safetypin-sticker.png')">
+        <span class="card-badge">Music</span>
+        <img src="safetypin-sticker.png" class="zine-cover" alt="No Sleep Till..." onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'180\'><rect width=\'100\' height=\'180\' fill=\'%23111\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'11\' text-anchor=\'middle\' dy=\'.3em\'>Zine Cover</text></svg>'">
+        <div class="zine-info">
+          <h3>No Sleep Till... #4</h3>
+          <span class="author">By Sarah Jenkins</span>
+        </div>
+        <p class="zine-desc">A retrospective local gig zine chronicling underground basement shows with exclusive photo inserts and interviews.</p>
+        <button class="btn-read">View / Read →</button>
+      </div>
+
+      <!-- Zine 2 -->
+      <div class="zine-card" data-category="art" onclick="openZineModal('XEROXED DREAMS', 'By Marcus Vance • 40 Pages', 'A risograph art and collage zine exploring urban decay and alternative architecture in industrial towns.', '#', 'raccoon-sticker.png')">
+        <span class="card-badge">Art</span>
+        <img src="raccoon-sticker.png" class="zine-cover" alt="Xeroxed Dreams" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'180\'><rect width=\'100\' height=\'180\' fill=\'%23111\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'11\' text-anchor=\'middle\' dy=\'.3em\'>Zine Cover</text></svg>'">
+        <div class="zine-info">
+          <h3>Xeroxed Dreams</h3>
+          <span class="author">By Marcus Vance</span>
+        </div>
+        <p class="zine-desc">A risograph art and collage zine exploring urban decay and alternative architecture across industrial towns.</p>
+        <button class="btn-read">View / Read →</button>
+      </div>
+
+      <!-- Zine 3 -->
+      <div class="zine-card" data-category="politics" onclick="openZineModal('COMMUNITY CARE GUIDE', 'By Mutual Aid Collective • 16 Pages', 'A pocket handbook on grassroots organizing, venue safety protocols, and setting up independent distros.', '#', 'keys-sticker.png')">
+        <span class="card-badge">DIY / Guide</span>
+        <img src="keys-sticker.png" class="zine-cover" alt="Community Care Guide" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'180\'><rect width=\'100\' height=\'180\' fill=\'%23111\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'11\' text-anchor=\'middle\' dy=\'.3em\'>Zine Cover</text></svg>'">
+        <div class="zine-info">
+          <h3>Community Care Guide</h3>
+          <span class="author">By Mutual Aid Collective</span>
+        </div>
+        <p class="zine-desc">A pocket handbook on grassroots organizing, venue safety protocols, and setting up independent community distros.</p>
+        <button class="btn-read">View / Read →</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Modal Reader Preview -->
+  <div id="preview-modal">
+    <div class="modal-card">
+      <img id="modal-cover" class="modal-cover" src="" alt="Zine Cover">
+      <h3 id="modal-title">Zine Title</h3>
+      <div id="modal-meta" class="modal-meta">Author & Pages</div>
+      <p id="modal-desc">Description text goes here...</p>
+      <div class="modal-actions">
+        <button class="modal-btn btn-close" onclick="closeZineModal()">Close</button>
+        <a id="modal-download" href="#" target="_blank" class="modal-btn btn-download">Download PDF ↓</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let activeCategory = 'all';
+
+    function setCategory(cat, btnElement) {
+      activeCategory = cat;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+      filterZines();
+    }
+
+    function filterZines() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const cards = document.querySelectorAll('.zine-card');
+
+      cards.forEach(card => {
+        const category = card.getAttribute('data-category');
+        const textContent = card.innerText.toLowerCase();
+
+        const matchesCategory = (activeCategory === 'all' || category === activeCategory);
+        const matchesSearch = textContent.includes(searchTerm);
+
+        if (matchesCategory && matchesSearch) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Modal Control
+    const modal = document.getElementById('preview-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMeta = document.getElementById('modal-meta');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalDownload = document.getElementById('modal-download');
+    const modalCover = document.getElementById('modal-cover');
+
+    function openZineModal(title, meta, desc, pdfUrl, coverSrc) {
+      modalTitle.innerText = title;
+      modalMeta.innerText = meta;
+      modalDesc.innerText = desc;
+      modalDownload.href = pdfUrl;
+      modalCover.src = coverSrc;
+      modal.style.display = 'flex';
+    }
+
+    function closeZineModal() {
+      modal.style.display = 'none';
+    }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeZineModal();
+    });
+  </script>
+</body>
+</html>
