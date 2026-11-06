@@ -143,27 +143,35 @@
       z-index: 10;
     }
 
-    /* Animated Pulsing Pink Neon Hotspots */
+    /* Animated Pulsing Pink Neon Hotspots (Flicker-Free) */
     @keyframes pinkPulse {
-      0% { fill: rgba(255, 0, 127, 0.1); stroke: rgba(255, 0, 127, 0.4); filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 4px rgba(255, 0, 127, 0.4)); }
-      50% { fill: rgba(255, 0, 127, 0.3); stroke: #ff007f; filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 15px #ff007f); }
-      100% { fill: rgba(255, 0, 127, 0.1); stroke: rgba(255, 0, 127, 0.4); filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 4px rgba(255, 0, 127, 0.4)); }
+      0% { 
+        stroke: rgba(255, 0, 127, 0.4); 
+        filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 4px rgba(255, 0, 127, 0.4)); 
+      }
+      50% { 
+        stroke: #ff007f; 
+        filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 15px #ff007f); 
+      }
+      100% { 
+        stroke: rgba(255, 0, 127, 0.4); 
+        filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 4px rgba(255, 0, 127, 0.4)); 
+      }
     }
 
     .sticker-link {
+      fill: rgba(255, 0, 127, 0.15);
       stroke-width: 3;
       cursor: pointer;
       animation: pinkPulse 2.5s infinite;
-      transition: all 0.2s ease;
+      transition: fill 0.2s ease, stroke-width 0.2s ease, filter 0.2s ease;
       transform-origin: center;
     }
 
     .sticker-link:hover, .sticker-link:active {
       fill: rgba(255, 0, 127, 0.4);
-      stroke: #ff007f;
       stroke-width: 5;
       filter: drop-shadow(6px 12px 18px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 25px #ff007f);
-      animation: none;
     }
 
     /* Bottom Tooltip */
