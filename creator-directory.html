@@ -336,6 +336,19 @@
       min-height: 80px;
     }
 
+    .file-input-wrapper {
+      background: #0d0d0d;
+      border: 1px dashed #444;
+      padding: 12px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .file-input-wrapper input[type="file"] {
+      color: #aaa;
+      font-size: 11px;
+    }
+
     .modal-actions {
       display: flex;
       gap: 12px;
@@ -457,8 +470,10 @@
         </div>
 
         <div class="form-group">
-          <label for="creator-img">Photo URL (Optional)</label>
-          <input type="url" id="creator-img" class="form-control" placeholder="https://example.com/photo.jpg">
+          <label>Photo Upload (Optional)</label>
+          <div class="file-input-wrapper">
+            <input type="file" id="creator-file" accept="image/*" class="form-control" style="border:none;">
+          </div>
         </div>
 
         <div class="form-group">
@@ -520,16 +535,28 @@
       if (e.target === creatorModal) closeCreatorModal();
     });
 
-    // Form Submission & Dynamic Card Injection
+    // Form Submission with File Upload Handling
     function submitCreator(event) {
       event.preventDefault();
 
       const title = document.getElementById('creator-title').value.trim();
       const category = document.getElementById('creator-category').value;
       const desc = document.getElementById('creator-desc').value.trim();
-      const imgUrl = document.getElementById('creator-img').value.trim();
+      const fileInput = document.getElementById('creator-file');
       const linkUrl = document.getElementById('creator-link').value.trim();
 
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          createAndAppendCard(title, category, desc, e.target.result, linkUrl);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        createAndAppendCard(title, category, desc, '', linkUrl);
+      }
+    }
+
+    function createAndAppendCard(title, category, desc, imgSrc, linkUrl) {
       const categoryLabels = {
         'band': 'Band',
         'artist': 'Artist / Zine',
@@ -540,7 +567,7 @@
       card.className = 'creator-card';
       card.setAttribute('data-category', category);
 
-      let imageHTML = imgUrl ? `<img src="${imgUrl}" class="creator-img" alt="${title}" onerror="this.style.display='none'">` : '';
+      let imageHTML = imgSrc ? `<img src="${imgSrc}" class="creator-img" alt="${title}" onerror="this.style.display='none'">` : '';
       
       let linkHTML = '';
       if (linkUrl) {
