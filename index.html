@@ -11,6 +11,11 @@
       width: 100%;
       min-height: 100%;
       background-color: #0d0d0d;
+      /* Background Image Layer */
+      background-image: radial-gradient(circle at center, rgba(13,13,13,0.75) 0%, rgba(13,13,13,0.95) 100%), url('hero-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
       color: #fff;
       font-family: 'Courier New', Courier, monospace;
       overflow-x: hidden;
@@ -22,13 +27,13 @@
       left: 0;
       width: 100%;
       z-index: 10000;
-      background: rgba(13, 13, 13, 0.95);
+      background: rgba(13, 13, 13, 0.92);
       border-bottom: 2px solid #ff007f;
       padding: 12px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
       box-shadow: 0 0 20px rgba(255, 0, 127, 0.3);
     }
 
@@ -74,16 +79,19 @@
       max-width: 1200px;
       margin: 100px auto 60px;
       padding: 0 24px;
+      position: relative;
+      z-index: 2;
     }
 
     .hero-banner {
       border: 1px solid #ff007f;
-      background: rgba(20, 20, 20, 0.8);
+      background: rgba(20, 20, 20, 0.85);
       padding: 32px;
       border-radius: 6px;
       box-shadow: 0 0 25px rgba(255, 0, 127, 0.25);
       margin-bottom: 40px;
       text-align: center;
+      backdrop-filter: blur(4px);
     }
 
     .hero-banner h1 {
@@ -92,6 +100,7 @@
       margin-bottom: 12px;
       text-transform: uppercase;
       letter-spacing: 1px;
+      text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
     }
 
     .hero-banner p {
@@ -102,6 +111,84 @@
       line-height: 1.6;
     }
 
+    /* Sticker Wall Container */
+    .sticker-wall-section {
+      margin-bottom: 50px;
+      position: relative;
+    }
+
+    .section-title {
+      font-size: 14px;
+      color: #ff007f;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 0, 127, 0.3);
+    }
+
+    .sticker-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      background: rgba(15, 15, 15, 0.7);
+      border: 1px dashed rgba(255, 0, 127, 0.4);
+      border-radius: 8px;
+      min-height: 120px;
+    }
+
+    /* Pulsing Highlights around Sticker Links */
+    .sticker-link {
+      display: inline-block;
+      position: relative;
+      border-radius: 50%;
+      padding: 6px;
+      transition: transform 0.25s ease;
+      animation: neonPulse 2s infinite ease-in-out;
+    }
+
+    .sticker-link:hover {
+      transform: scale(1.15) rotate(-3deg);
+      animation: none;
+      box-shadow: 0 0 25px #ff007f, 0 0 50px #ff007f;
+    }
+
+    .sticker-img {
+      height: 75px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
+      display: block;
+    }
+
+    /* Pulsing Animation */
+    @keyframes neonPulse {
+      0% {
+        box-shadow: 0 0 5px rgba(255, 0, 127, 0.4), inset 0 0 5px rgba(255, 0, 127, 0.2);
+        border: 1px solid rgba(255, 0, 127, 0.5);
+      }
+      50% {
+        box-shadow: 0 0 18px rgba(255, 0, 127, 0.9), 0 0 30px rgba(255, 0, 127, 0.6);
+        border: 1px solid rgba(255, 0, 127, 1);
+      }
+      100% {
+        box-shadow: 0 0 5px rgba(255, 0, 127, 0.4), inset 0 0 5px rgba(255, 0, 127, 0.2);
+        border: 1px solid rgba(255, 0, 127, 0.5);
+      }
+    }
+
+    /* Hub Grid Cards */
     .hub-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -109,7 +196,7 @@
     }
 
     .hub-card {
-      background: #141414;
+      background: rgba(20, 20, 20, 0.85);
       border: 1px solid #222;
       border-radius: 6px;
       padding: 24px;
@@ -118,6 +205,7 @@
       justify-content: space-between;
       text-decoration: none;
       color: inherit;
+      backdrop-filter: blur(4px);
       transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
     }
 
@@ -177,6 +265,8 @@
       font-size: 11px;
       color: #666;
       text-transform: uppercase;
+      position: relative;
+      z-index: 2;
     }
   </style>
 </head>
@@ -201,6 +291,31 @@
       <p>An algorithm-free, community-driven digital hub for the local DIY scene. Share pinned announcements, browse artist listings, recount underground oral histories, and log past gig setlists with real-time updates across all devices.</p>
     </div>
 
+    <!-- Interactive Pulsing Sticker Links -->
+    <div class="sticker-wall-section">
+      <div class="section-title">⚡ Interactive Scene Badges</div>
+      <div class="sticker-container">
+        
+        <a href="notice-board.html" class="sticker-link" title="Community Notice Board">
+          <img src="sticker-notice.png" class="sticker-img" alt="Notice Board Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
+        </a>
+
+        <a href="creator-directory.html" class="sticker-link" title="Band & Creator Directory">
+          <img src="sticker-directory.png" class="sticker-img" alt="Directory Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
+        </a>
+
+        <a href="oral-history.html" class="sticker-link" title="Oral History Vault">
+          <img src="sticker-audio.png" class="sticker-img" alt="Oral History Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
+        </a>
+
+        <a href="past-gigs.html" class="sticker-link" title="Past Gig Archive">
+          <img src="sticker-gigs.png" class="sticker-img" alt="Gig Timeline Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
+        </a>
+
+      </div>
+    </div>
+
+    <!-- Main Navigation Hub Cards -->
     <div class="hub-grid">
       
       <!-- Notice Board -->
