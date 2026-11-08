@@ -138,41 +138,67 @@
     .sticker-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 28px;
+      gap: 32px;
       justify-content: center;
       align-items: center;
-      padding: 35px 24px;
+      padding: 40px 24px;
       background: rgba(10, 10, 10, 0.65);
       border: 2px dashed rgba(255, 0, 127, 0.5);
       border-radius: 8px;
       backdrop-filter: blur(4px);
-      box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.9);
     }
 
-    /* Sticker Links with Pulsing Neon Highlights */
+    /* Sticker Links with Pulsing Neon Highlights & Tooltip Pop-ups */
     .sticker-link {
       display: inline-block;
       position: relative;
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 8px;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.45);
       transition: transform 0.25s ease, box-shadow 0.25s ease;
       animation: neonPulse 2.5s infinite ease-in-out;
+      text-decoration: none;
     }
 
-    .sticker-link:nth-child(odd) {
-      transform: rotate(-3deg);
+    /* Unique random rotations for authentic bathroom wall feel */
+    .sticker-link:nth-child(1) { transform: rotate(-5deg); }
+    .sticker-link:nth-child(2) { transform: rotate(4deg); }
+    .sticker-link:nth-child(3) { transform: rotate(-3deg); }
+    .sticker-link:nth-child(4) { transform: rotate(6deg); }
+
+    /* Tooltip Pop-up on Hover */
+    .sticker-link::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: -32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(5px);
+      background: #ff007f;
+      color: #000;
+      font-size: 10px;
+      font-weight: bold;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 3px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 0 10px rgba(255, 0, 127, 0.8);
+      z-index: 20;
     }
 
-    .sticker-link:nth-child(even) {
-      transform: rotate(3deg);
+    .sticker-link:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     .sticker-link:hover {
       transform: scale(1.15) rotate(0deg);
       animation: none;
-      box-shadow: 0 0 30px #ff007f, 0 0 60px #ff007f;
-      background: rgba(255, 0, 127, 0.2);
+      box-shadow: 0 0 35px #ff007f, 0 0 70px #ff007f;
+      background: rgba(255, 0, 127, 0.25);
       z-index: 10;
     }
 
@@ -191,7 +217,7 @@
         border: 1px solid rgba(255, 0, 127, 0.6);
       }
       50% {
-        box-shadow: 0 0 20px rgba(255, 0, 127, 0.95), 0 0 35px rgba(255, 0, 127, 0.7);
+        box-shadow: 0 0 22px rgba(255, 0, 127, 0.95), 0 0 40px rgba(255, 0, 127, 0.7);
         border: 1px solid rgba(255, 0, 127, 1);
       }
       100% {
@@ -307,23 +333,27 @@
 
     <!-- Bathroom Wall / Sticker Board Section -->
     <div class="sticker-wall-section">
-      <div class="section-title">⚡ Bathroom Door Sticker Wall</div>
+      <div class="section-title">⚡ Bathroom Wall Sticker Board</div>
       <div class="sticker-container">
         
-        <a href="notice-board.html" class="sticker-link" title="Community Notice Board">
-          <img src="sticker-notice.png" class="sticker-img" alt="Notice Board Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
+        <!-- Notice Board Sticker -->
+        <a href="notice-board.html" class="sticker-link" data-tooltip="Notice Board" title="Community Notice Board">
+          <img src="grapes-sticker.png" class="sticker-img" alt="Notice Board Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
         </a>
 
-        <a href="creator-directory.html" class="sticker-link" title="Band & Creator Directory">
-          <img src="sticker-directory.png" class="sticker-img" alt="Directory Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
+        <!-- Creator Directory Sticker -->
+        <a href="creator-directory.html" class="sticker-link" data-tooltip="Creator Directory" title="Band & Creator Directory">
+          <img src="keys-sticker.png" class="sticker-img" alt="Directory Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
         </a>
 
-        <a href="oral-history.html" class="sticker-link" title="Oral History Vault">
-          <img src="sticker-audio.png" class="sticker-img" alt="Oral History Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
+        <!-- Oral History Sticker -->
+        <a href="oral-history.html" class="sticker-link" data-tooltip="Oral History Vault" title="Oral History Vault">
+          <img src="cassette-sticker.png" class="sticker-img" alt="Oral History Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
         </a>
 
-        <a href="past-gigs.html" class="sticker-link" title="Past Gig Archive">
-          <img src="sticker-gigs.png" class="sticker-img" alt="Gig Timeline Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
+        <!-- Past Gig Archive Sticker -->
+        <a href="past-gigs.html" class="sticker-link" data-tooltip="Past Gig Archive" title="Past Gig Archive">
+          <img src="grenade-sticker.png" class="sticker-img" alt="Gig Timeline Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
         </a>
 
       </div>
