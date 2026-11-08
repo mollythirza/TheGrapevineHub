@@ -369,7 +369,7 @@
           <textarea id="audio-desc" class="form-control" rows="3" placeholder="What is this note about?" required></textarea>
         </div>
         <div class="form-group">
-          <label>Audio File *</label>
+          <label>Audio File (Max 4MB) *</label>
           <input type="file" id="audio-file" accept="audio/*" class="form-control" required>
         </div>
         <div class="modal-actions">
@@ -433,24 +433,33 @@
     document.getElementById('audio-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submit-btn');
-      submitBtn.innerText = "Processing Audio...";
+      const fileInput = document.getElementById('audio-file');
+
+      if (!fileInput.files || !fileInput.files[0]) return;
+
+      const file = fileInput.files[0];
+
+      if (file.size > 4 * 1024 * 1024) {
+        alert("Audio file is too large! Please keep voice notes under 4MB for fast uploads.");
+        return;
+      }
+
+      submitBtn.innerText = "Encoding & Saving...";
       submitBtn.disabled = true;
 
       const title = document.getElementById('audio-title').value.trim();
       const speaker = document.getElementById('audio-speaker').value.trim();
       const category = document.getElementById('audio-category').value;
       const desc = document.getElementById('audio-desc').value.trim();
-      const fileInput = document.getElementById('audio-file');
 
       const categoryLabels = { 'gig': 'Gig Memory', 'venue': 'Venue Lore', 'history': 'Oral History' };
 
-      if (fileInput.files && fileInput.files[0]) {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
+      const reader = new FileReader();
 
-        reader.onload = async function(event) {
-          const audioSrc = event.target.result; // Encoded Base64 String
+      reader.onload = async function(event) {
+        const audioSrc = event.target.result;
 
+        try {
           await push(audioRef, {
             title,
             speaker,
@@ -464,13 +473,21 @@
           submitBtn.innerText = "Submit Recording →";
           submitBtn.disabled = false;
           closeAudioModal();
-        };
+        } catch (err) {
+          console.error("Database error:", err);
+          alert("Error saving story. Check your connection.");
+          submitBtn.innerText = "Submit Recording →";
+          submitBtn.disabled = false;
+        }
+      };
 
-        reader.readAsDataURL(file);
-      } else {
+      reader.onerror = function() {
+        alert("Error reading file.");
         submitBtn.innerText = "Submit Recording →";
         submitBtn.disabled = false;
-      }
+      };
+
+      reader.readAsDataURL(file);
     });
 
     window.setCategory = function(cat, btnElement) {
