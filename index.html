@@ -2,139 +2,210 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Grapevine — Underground Community Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
+  <title>The Grapevine — Interactive Sticker Wall</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body, html {
+    
+    html, body {
       width: 100%;
       height: 100%;
       background-color: #0d0d0d;
-      /* Fullscreen cover background image */
-      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('bathroom-wall.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
       color: #fff;
       font-family: 'Courier New', Courier, monospace;
       overflow: hidden;
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
-    /* Fixed top black header bar */
-    header {
+    /* Fixed UI Header */
+    .controls-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 10000;
-      background: rgba(13, 13, 13, 0.95);
-      border-bottom: 2px solid #ff007f;
-      padding: 12px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      top: 15px;
+      left: 15px;
+      z-index: 1000;
+      background: rgba(13, 13, 13, 0.92);
+      border: 1px solid #ff007f;
+      padding: 12px 16px;
+      border-radius: 6px;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
       backdrop-filter: blur(8px);
-      box-shadow: 0 0 20px rgba(255, 0, 127, 0.3);
+      pointer-events: none;
+      max-width: 320px;
     }
 
     .brand-container {
       display: flex;
       align-items: center;
-      gap: 12px;
-      text-decoration: none;
+      gap: 10px;
+      margin-bottom: 6px;
     }
 
     .brand-logo {
-      height: 36px;
+      height: 32px;
       width: auto;
       filter: drop-shadow(0 0 6px #ff007f);
       flex-shrink: 0;
     }
 
     .brand-title {
-      max-height: 22px;
+      max-height: 20px;
       width: auto;
       object-fit: contain;
       filter: invert(1);
     }
 
-    .hub-tagline {
+    .controls-overlay p {
       font-size: 11px;
-      color: #aaa;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      color: #bbb;
+      line-height: 1.4;
+      margin-top: 4px;
     }
 
-    /* Fullscreen hotspot canvas overlay */
-    main {
-      position: absolute;
-      top: 60px;
-      left: 0;
-      width: 100%;
-      height: calc(100vh - 60px);
-      z-index: 1;
-    }
-
-    /* Pulsing pink neon hotspots placed over the background wall */
-    .hotspot {
-      position: absolute;
-      border-radius: 50%;
-      cursor: pointer;
-      background: rgba(255, 0, 127, 0.2);
-      animation: neonPulse 2s infinite ease-in-out;
-      transform: translate(-50%, -50%);
-      width: 80px;
-      height: 80px;
-      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .hotspot:hover {
-      background: rgba(255, 0, 127, 0.45);
-      transform: translate(-50%, -50%) scale(1.15);
-      animation: none;
-      box-shadow: 0 0 30px #ff007f, 0 0 60px #ff007f;
-    }
-
-    /* Neon Pulse Keyframes */
-    @keyframes neonPulse {
-      0% {
-        box-shadow: 0 0 8px rgba(255, 0, 127, 0.5), inset 0 0 8px rgba(255, 0, 127, 0.3);
-        border: 2px solid rgba(255, 0, 127, 0.6);
-      }
-      50% {
-        box-shadow: 0 0 24px rgba(255, 0, 127, 0.95), 0 0 45px rgba(255, 0, 127, 0.7);
-        border: 2px solid rgba(255, 0, 127, 1);
-      }
-      100% {
-        box-shadow: 0 0 8px rgba(255, 0, 127, 0.5), inset 0 0 8px rgba(255, 0, 127, 0.3);
-        border: 2px solid rgba(255, 0, 127, 0.6);
-      }
-    }
-
-    /* Bottom hover marquee title */
-    #hover-marquee {
+    /* Zoom Controls */
+    .zoom-buttons {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(13, 13, 13, 0.95);
-      border-top: 2px solid #ff007f;
-      color: #ff007f;
-      font-size: 13px;
-      text-transform: uppercase;
-      padding: 10px;
-      text-align: center;
-      letter-spacing: 2px;
+      bottom: 20px;
+      right: 20px;
       z-index: 1000;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
-      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    /* Modal Popup when Hotspot Clicked */
-    #sticker-modal {
+    .btn {
+      background: #111;
+      color: #ff007f;
+      border: 1px solid #ff007f;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+      user-select: none;
+    }
+
+    .btn:active {
+      background: #ff007f;
+      color: #000;
+    }
+
+    /* Fullscreen Viewport */
+    #viewport {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      cursor: grab;
+      background-color: #0d0d0d;
+    }
+
+    #viewport:active {
+      cursor: grabbing;
+    }
+
+    /* Canvas Wrapper */
+    #canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+
+    .wall-stage {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    #wall-photo {
+      display: block;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      filter: contrast(1.05) brightness(0.9);
+    }
+
+    #hotspot-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+    }
+
+    /* Enhanced Vibrant Pulsing Pink Neon Hotspots */
+    @keyframes pinkPulse {
+      0% { 
+        stroke: rgba(255, 0, 127, 0.6); 
+        fill: rgba(255, 0, 127, 0.2);
+        filter: drop-shadow(2px 4px 8px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 8px rgba(255, 0, 127, 0.6)); 
+      }
+      50% { 
+        stroke: #ff1493; 
+        fill: rgba(255, 0, 127, 0.35);
+        filter: drop-shadow(2px 4px 8px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 25px #ff007f) drop-shadow(0 0 10px #ff69b4); 
+      }
+      100% { 
+        stroke: rgba(255, 0, 127, 0.6); 
+        fill: rgba(255, 0, 127, 0.2);
+        filter: drop-shadow(2px 4px 8px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 8px rgba(255, 0, 127, 0.6)); 
+      }
+    }
+
+    .sticker-link {
+      fill: rgba(255, 0, 127, 0.2);
+      stroke-width: 3.5;
+      cursor: pointer;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+      animation: pinkPulse 2s infinite;
+      transition: fill 0.3s ease, stroke 0.3s ease, stroke-width 0.3s ease, filter 0.3s ease;
+      transform-origin: center;
+    }
+
+    .sticker-link:hover, .sticker-link:active, .sticker-link:focus {
+      fill: rgba(255, 0, 127, 0.5);
+      stroke: #ff007f;
+      stroke-width: 6;
+      outline: none;
+      filter: drop-shadow(6px 12px 18px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 35px #ff007f) drop-shadow(0 0 15px #ff69b4);
+    }
+
+    /* Bottom Tooltip */
+    #tooltip-box {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(17, 17, 17, 0.95);
+      border: 2px solid #ff007f;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      z-index: 2000;
+      pointer-events: none;
+      display: none;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+      text-transform: uppercase;
+      text-align: center;
+      max-width: 85vw;
+    }
+
+    /* Information Preview Modal */
+    #preview-modal {
       position: fixed;
       top: 0;
       left: 0;
@@ -145,7 +216,7 @@
       display: none;
       justify-content: center;
       align-items: center;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(5px);
       padding: 20px;
     }
 
@@ -153,133 +224,371 @@
       background: #141414;
       border: 2px solid #ff007f;
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
       border-radius: 8px;
       padding: 24px;
-      text-align: center;
-      box-shadow: 0 0 40px rgba(255, 0, 127, 0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
     }
 
-    .modal-sticker-img {
-      height: 90px;
-      width: auto;
+    .modal-thumbnail {
+      max-width: 120px;
+      max-height: 120px;
       object-fit: contain;
-      margin-bottom: 16px;
-      filter: drop-shadow(0 0 10px rgba(255, 0, 127, 0.5));
+      margin-bottom: 15px;
+      border: 1px solid #333;
+      background: #000;
+      padding: 6px;
+      border-radius: 4px;
     }
 
-    .modal-title {
+    .modal-card h3 {
       color: #ff007f;
-      font-size: 18px;
+      font-size: 16px;
+      margin-bottom: 8px;
       text-transform: uppercase;
-      margin-bottom: 10px;
-      letter-spacing: 1px;
+      text-align: center;
     }
 
-    .modal-desc {
+    .modal-card p {
       color: #ccc;
-      font-size: 12px;
-      line-height: 1.5;
-      margin-bottom: 24px;
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.4;
     }
 
     .modal-actions {
       display: flex;
-      gap: 10px;
+      gap: 12px;
+      width: 100%;
     }
 
     .modal-btn {
       flex: 1;
       padding: 10px;
       border-radius: 4px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: bold;
       text-transform: uppercase;
       cursor: pointer;
-      font-family: inherit;
+      text-align: center;
       text-decoration: none;
+      font-family: inherit;
     }
 
     .btn-visit { background: #ff007f; color: #000; border: none; }
+    .btn-visit:hover { background: #ff3399; }
     .btn-close { background: transparent; color: #aaa; border: 1px solid #444; }
+    .btn-close:hover { color: #fff; border-color: #777; }
   </style>
 </head>
 <body>
 
-  <!-- Top Black Header -->
-  <header>
-    <a href="index.html" class="brand-container">
+  <!-- Branded Header Panel -->
+  <div class="controls-overlay">
+    <div class="brand-container">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
-      <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:16px;\'>THE GRAPEVINE</h1>'">
-    </a>
-    <span class="hub-tagline">Underground DIY Hub</span>
-  </header>
+      <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:14px;\'>THE GRAPEVINE</h1>'">
+    </div>
+    <p>The Grapevine digital hub - created by the community it exists for. Tap glowing stickers to access more community content</p>
+  </div>
 
-  <!-- Interactive Wall Surface -->
-  <main>
-    <!-- Adjust top% and left% coordinates as needed to align with your background image features -->
-    
-    <!-- Notice Board Hotspot -->
-    <div class="hotspot" style="top: 35%; left: 30%;" 
-         onclick="openStickerModal('Notice Board', 'Pinned gig announcements, musicians wanted posts, local DIY workshops, and scene classifieds updated live in real time.', 'grapes-sticker.png', 'notice-board.html')"
-         onmouseenter="showMarquee('Notice Board')" onmouseleave="hideMarquee()"></div>
+  <div id="tooltip-box"></div>
 
-    <!-- Creator Directory Hotspot -->
-    <div class="hotspot" style="top: 35%; left: 70%;" 
-         onclick="openStickerModal('Creator Directory', 'An open directory of underground bands, zine makers, visual artists, independent venues, and local collectives.', 'keys-sticker.png', 'creator-directory.html')"
-         onmouseenter="showMarquee('Creator Directory')" onmouseleave="hideMarquee()"></div>
+  <div class="zoom-buttons">
+    <button class="btn" id="zoom-in">+</button>
+    <button class="btn" id="zoom-out">−</button>
+    <button class="btn" id="zoom-reset">↺</button>
+  </div>
 
-    <!-- Oral History Hotspot -->
-    <div class="hotspot" style="top: 65%; left: 30%;" 
-         onclick="openStickerModal('Oral History Vault', 'Raw voice notes, gig memories, venue lore, and spoken stories submitted directly by members of our scene.', 'cassette-sticker.png', 'oral-history.html')"
-         onmouseenter="showMarquee('Oral History Vault')" onmouseleave="hideMarquee()"></div>
+  <div id="viewport">
+    <div id="canvas">
+      <div class="wall-stage">
+        <!-- Background Image -->
+        <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall" onload="initStickerWall(this)">
 
-    <!-- Past Gig Archive Hotspot -->
-    <div class="hotspot" style="top: 65%; left: 70%;" 
-         onclick="openStickerModal('Past Gig Archive', 'A crowd-sourced timeline of past local shows. Log headliners, support acts, setlist highlight songs, and photo stubs.', 'grenade-sticker.png', 'past-gigs.html')"
-         onmouseenter="showMarquee('Past Gig Archive')" onmouseleave="hideMarquee()"></div>
-  </main>
+        <!-- SVG Hotspots with Staggered Pulse Delays -->
+        <svg id="hotspot-overlay">
+          
+          <!-- 1. CASSETTE = Scene Oral History / Voice Note Vault -->
+          <polygon class="sticker-link" style="animation-delay: 0s;" points="240,307 398,275 426,379 261,414" 
+                   data-title="Scene Oral History — Voice Note Vault" 
+                   data-desc="Listen to short voice notes, live gig snippets, and anecdotes recorded directly by members of the scene." 
+                   data-url="oral-history.html"
+                   data-img="cassette-sticker.png" />
 
-  <!-- Bottom Screen Marquee Bar -->
-  <div id="hover-marquee"></div>
+          <!-- 2. GRENADE = Grapevine Instagram -->
+          <polygon class="sticker-link" style="animation-delay: 0.7s;" points="545,420 547,432 551,401 540,375 548,360 557,341 568,338 584,326 586,307 620,306 631,321 649,332 649,346 655,360 657,374 655,389 655,400 652,406 649,416 644,423 642,430 628,446 625,454 610,466 593,467 580,458 552,433 554,439 562,442 547,432" 
+                   data-title="The Grapevine — Official Instagram" 
+                   data-desc="Follow our official page for updates, behind-the-scenes content, and community highlights." 
+                   data-url="https://www.instagram.com/thegrapevineuk/"
+                   data-img="grenade-sticker.png" />
 
-  <!-- Click Modal Popup -->
-  <div id="sticker-modal" onclick="closeStickerModal(event)">
-    <div class="modal-card" onclick="event.stopPropagation()">
-      <img id="modal-img" src="" class="modal-sticker-img" alt="Sticker">
-      <h2 id="modal-title" class="modal-title"></h2>
-      <p id="modal-desc" class="modal-desc"></p>
+          <!-- 3. RACCOON = Hardcore Hub -->
+          <circle class="sticker-link" style="animation-delay: 1.4s;" cx="519" cy="510" r="61" 
+                  data-title="UK Hardcore Community Hub" 
+                  data-desc="Connecting the broader UK hardcore and alternative music network, shows, and community projects." 
+                  data-url="https://www.instagram.com/uk_hc/"
+                  data-img="raccoon-sticker.png" />
+
+          <!-- 4. GRAPES = Venue Map -->
+          <circle class="sticker-link" style="animation-delay: 0.3s;" cx="339" cy="650" r="82" 
+                  data-title="The Grapevine — Grassroots Venue Map" 
+                  data-desc="Discover independent grassroots music venues, community spaces, and safe hubs across the scene." 
+                  data-url="https://mollythirza.github.io/TheGrapevineMap/"
+                  data-img="grapes-sticker.png" />
+
+          <!-- 5. KEYS = Notice Board -->
+          <rect class="sticker-link" style="animation-delay: 1.1s;" x="562" y="777" width="176" height="149" rx="10" 
+                data-title="Notice Board" 
+                data-desc="Explore community gig posters, DIY flyers, and underground announcements pinned live by creators." 
+                data-url="notice-board.html"
+                data-img="keys-sticker.png" />
+
+          <!-- 6. SAFETY PIN = Past Gig Archive & Timeline -->
+          <polygon class="sticker-link" style="animation-delay: 1.8s;" points="248,1015 337,910 347,903 369,881 380,877 395,880 405,889 407,906 393,929 369,954 350,973 327,997 302,1020 281,1037 266,1043 252,1035 245,1025" 
+                   data-title="Past Gig Archive & Timeline" 
+                   data-desc="A crowd-sourced timeline of past local shows. Log headliners, support acts, setlist highlight songs, and photo stubs." 
+                   data-url="past-gigs.html"
+                   data-img="safetypin-sticker.png" />
+
+          <!-- 7. SPRAY CANS = Band & Creator Directory -->
+          <polygon class="sticker-link" style="animation-delay: 0.5s;" points="424,1055 407,915 408,906 413,903 418,892 424,887 426,876 431,871 440,870 444,875 448,885 456,887 461,891 466,896 472,900 477,911 478,923 482,905 486,899 494,894 501,889 506,888 509,878 519,876 526,877 532,880 534,893 544,900 552,914 535,1050 527,1057 509,1058 492,1056 482,1053 474,1057 458,1061 447,1062 430,1058" 
+                   data-title="Band & Creator Directory" 
+                   data-desc="Browse an algorithm-free roster of local independent bands, DIY zine makers, and visual artists." 
+                   data-url="creator-directory.html"
+                   data-img="spraycan-sticker.png" />
+
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Information Preview Modal -->
+  <div id="preview-modal">
+    <div class="modal-card">
+      <img id="modal-thumb" class="modal-thumbnail" src="" alt="Sticker Thumbnail" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><rect width=\'100\' height=\'100\' fill=\'%23111\'/><text x=\'50%\' y=\'50%\' fill=\'%23ff007f\' font-size=\'12\' text-anchor=\'middle\' dy=\'.3em\'>Sticker</text></svg>'">
+      <h3 id="modal-title">Title</h3>
+      <p id="modal-desc">Description text goes here...</p>
       <div class="modal-actions">
-        <button class="modal-btn btn-close" onclick="closeStickerModal()">Back to Wall</button>
-        <a id="modal-link" href="#" class="modal-btn btn-visit">Enter Page →</a>
+        <button class="modal-btn btn-close" onclick="closePreview()">Close</button>
+        <a id="modal-link" href="#" target="_blank" class="modal-btn btn-visit">Visit Site →</a>
       </div>
     </div>
   </div>
 
   <script>
-    const marquee = document.getElementById('hover-marquee');
+    const viewport = document.getElementById('viewport');
+    const canvas = document.getElementById('canvas');
+    const tooltipBox = document.getElementById('tooltip-box');
+    
+    let nativeWidth = 0;
+    let nativeHeight = 0;
+    let scale = 1;
+    let minScale = 1;
+    let pointX = 0;
+    let pointY = 0;
 
-    function showMarquee(title) {
-      marquee.innerText = `>>> ${title} <<<`;
-      marquee.style.opacity = '1';
+    function showTooltip(text) {
+      tooltipBox.innerText = text;
+      tooltipBox.style.display = 'block';
     }
 
-    function hideMarquee() {
-      marquee.style.opacity = '0';
+    function hideTooltip() {
+      tooltipBox.style.display = 'none';
     }
 
-    function openStickerModal(title, desc, imgSrc, url) {
-      document.getElementById('modal-title').innerText = title;
-      document.getElementById('modal-desc').innerText = desc;
-      document.getElementById('modal-img').src = imgSrc;
-      document.getElementById('modal-link').href = url;
-      document.getElementById('sticker-modal').style.display = 'flex';
-      hideMarquee();
+    // Modal elements
+    const modal = document.getElementById('preview-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalLink = document.getElementById('modal-link');
+    const modalThumb = document.getElementById('modal-thumb');
+
+    function openPreview(title, desc, targetUrl, imgSrc) {
+      modalTitle.innerText = title;
+      modalDesc.innerText = desc;
+      modalThumb.src = imgSrc;
+
+      if (targetUrl) {
+        modalLink.href = targetUrl;
+        modalLink.style.display = 'inline-block';
+      } else {
+        modalLink.style.display = 'none';
+      }
+
+      modal.style.display = 'flex';
+      hideTooltip();
     }
 
-    function closeStickerModal() {
-      document.getElementById('sticker-modal').style.display = 'none';
+    function closePreview() {
+      modal.style.display = 'none';
     }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closePreview();
+    });
+
+    document.querySelectorAll('#hotspot-overlay .sticker-link').forEach(spot => {
+      const titleText = spot.getAttribute('data-title');
+      const descText = spot.getAttribute('data-desc');
+      const targetUrl = spot.getAttribute('data-url');
+      const imgSrc = spot.getAttribute('data-img');
+
+      spot.addEventListener('mouseenter', () => showTooltip(titleText));
+      spot.addEventListener('mouseleave', () => hideTooltip());
+      spot.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
+
+      spot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openPreview(titleText, descText, targetUrl, imgSrc);
+      });
+    });
+
+    window.initStickerWall = function(img) {
+      nativeWidth = img.naturalWidth;
+      nativeHeight = img.naturalHeight;
+
+      canvas.style.width = nativeWidth + 'px';
+      canvas.style.height = nativeHeight + 'px';
+
+      const svg = document.getElementById('hotspot-overlay');
+      svg.setAttribute('viewBox', `0 0 ${nativeWidth} ${nativeHeight}`);
+
+      initCanvasFit();
+    };
+
+    function clampPositions() {
+      if (!nativeWidth) return;
+      const vWidth = window.innerWidth;
+      const vHeight = window.innerHeight;
+      const cWidth = nativeWidth * scale;
+      const cHeight = nativeHeight * scale;
+
+      pointX = Math.min(0, Math.max(vWidth - cWidth, pointX));
+      pointY = Math.min(0, Math.max(vHeight - cHeight, pointY));
+    }
+
+    function setTransform() {
+      clampPositions();
+      canvas.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+    }
+
+    function initCanvasFit() {
+      if (!nativeWidth) return;
+      const vWidth = window.innerWidth;
+      const vHeight = window.innerHeight;
+      
+      const scaleX = vWidth / nativeWidth;
+      const scaleY = vHeight / nativeHeight;
+      minScale = Math.max(scaleX, scaleY); 
+      scale = minScale;
+      
+      pointX = (vWidth - nativeWidth * scale) / 2;
+      pointY = (vHeight - nativeHeight * scale) / 2;
+      setTransform();
+    }
+
+    window.addEventListener('resize', initCanvasFit);
+
+    // Pan & Zoom Engine
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialPinchDistance = null;
+    let initialScale = 1;
+
+    function getDistance(t1, t2) {
+      const dx = t1.clientX - t2.clientX;
+      const dy = t1.clientY - t2.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    viewport.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.sticker-link')) return;
+      e.preventDefault();
+      startX = e.clientX - pointX;
+      startY = e.clientY - pointY;
+      isDragging = true;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      pointX = e.clientX - startX;
+      pointY = e.clientY - startY;
+      setTransform();
+    });
+
+    window.addEventListener('mouseup', () => { isDragging = false; });
+
+    viewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
+      const newScale = Math.min(Math.max(scale * zoomFactor, minScale), 4.5);
+      
+      const xs = (e.clientX - pointX) / scale;
+      const ys = (e.clientY - pointY) / scale;
+      
+      scale = newScale;
+      pointX = e.clientX - xs * scale;
+      pointY = e.clientY - ys * scale;
+      setTransform();
+    }, { passive: false });
+
+    viewport.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        if (e.target.closest('.sticker-link')) {
+          isDragging = false;
+          return;
+        }
+        hideTooltip();
+        startX = e.touches[0].clientX - pointX;
+        startY = e.touches[0].clientY - pointY;
+        isDragging = true;
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
+        initialScale = scale;
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && isDragging) {
+        e.preventDefault();
+        pointX = e.touches[0].clientX - startX;
+        pointY = e.touches[0].clientY - startY;
+        setTransform();
+      } else if (e.touches.length === 2 && initialPinchDistance) {
+        e.preventDefault();
+        const currentDistance = getDistance(e.touches[0], e.touches[1]);
+        const factor = currentDistance / initialPinchDistance;
+        const newScale = Math.min(Math.max(initialScale * factor, minScale), 4.5);
+        
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        
+        const xs = (midX - pointX) / scale;
+        const ys = (midY - pointY) / scale;
+        
+        scale = newScale;
+        pointX = midX - xs * scale;
+        pointY = midY - ys * scale;
+        setTransform();
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) initialPinchDistance = null;
+      if (e.touches.length === 0) isDragging = false;
+    });
+
+    document.getElementById('zoom-in').addEventListener('click', () => { scale = Math.min(scale * 1.3, 4.5); setTransform(); });
+    document.getElementById('zoom-out').addEventListener('click', () => { scale = Math.max(scale / 1.3, minScale); setTransform(); });
+    document.getElementById('zoom-reset').addEventListener('click', initCanvasFit);
   </script>
+
 </body>
 </html>
