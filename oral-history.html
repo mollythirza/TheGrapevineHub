@@ -383,7 +383,6 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBozbn-0iQNhjuAcmL-dYOUtbhIYTjccYk",
@@ -398,7 +397,6 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const storage = getStorage(app);
     const audioRef = ref(db, 'oral_histories');
 
     let activeCategory = 'all';
@@ -432,10 +430,10 @@
       filterAudio();
     });
 
-    document.getElementById('audio-form').addEventListener('submit', async (e) => {
+    document.getElementById('audio-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submit-btn');
-      submitBtn.innerText = "Uploading Audio...";
+      submitBtn.innerText = "Processing Audio...";
       submitBtn.disabled = true;
 
       const title = document.getElementById('audio-title').value.trim();
@@ -446,27 +444,33 @@
 
       const categoryLabels = { 'gig': 'Gig Memory', 'venue': 'Venue Lore', 'history': 'Oral History' };
 
-      let audioSrc = '';
-      if (fileInput.files[0]) {
+      if (fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
-        const fileRef = storageRef(storage, 'audio/' + Date.now() + '_' + file.name);
-        await uploadBytes(fileRef, file);
-        audioSrc = await getDownloadURL(fileRef);
+        const reader = new FileReader();
+
+        reader.onload = async function(event) {
+          const audioSrc = event.target.result; // Encoded Base64 String
+
+          await push(audioRef, {
+            title,
+            speaker,
+            category,
+            desc,
+            audioSrc,
+            badge: categoryLabels[category] || 'Oral History',
+            timestamp: Date.now()
+          });
+
+          submitBtn.innerText = "Submit Recording →";
+          submitBtn.disabled = false;
+          closeAudioModal();
+        };
+
+        reader.readAsDataURL(file);
+      } else {
+        submitBtn.innerText = "Submit Recording →";
+        submitBtn.disabled = false;
       }
-
-      await push(audioRef, {
-        title,
-        speaker,
-        category,
-        desc,
-        audioSrc,
-        badge: categoryLabels[category] || 'Oral History',
-        timestamp: Date.now()
-      });
-
-      submitBtn.innerText = "Submit Recording →";
-      submitBtn.disabled = false;
-      closeAudioModal();
     });
 
     window.setCategory = function(cat, btnElement) {
