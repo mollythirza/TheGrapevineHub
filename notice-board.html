@@ -16,7 +16,6 @@
       overflow-x: hidden;
     }
 
-    /* Header with Image Logo Branding */
     header {
       position: fixed;
       top: 0;
@@ -53,18 +52,12 @@
       filter: invert(1);
     }
 
-    .nav-links {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      font-size: 12px;
-      text-transform: uppercase;
-    }
-
     .nav-links a {
       color: #aaa;
       text-decoration: none;
-      transition: color 0.2s, text-shadow 0.2s;
+      font-size: 12px;
+      text-transform: uppercase;
+      transition: color 0.2s;
     }
 
     .nav-links a:hover {
@@ -72,7 +65,6 @@
       text-shadow: 0 0 8px #ff007f;
     }
 
-    /* Main Container */
     main {
       max-width: 1200px;
       margin: 100px auto 60px;
@@ -98,13 +90,11 @@
       font-size: 24px;
       margin-bottom: 8px;
       text-transform: uppercase;
-      letter-spacing: 1px;
     }
 
     .hero-text p {
       color: #bbb;
       font-size: 13px;
-      line-height: 1.5;
     }
 
     .btn-create-post {
@@ -119,16 +109,8 @@
       border-radius: 4px;
       cursor: pointer;
       box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
-      transition: background 0.2s, transform 0.2s;
-      white-space: nowrap;
     }
 
-    .btn-create-post:hover {
-      background: #ff3399;
-      transform: translateY(-2px);
-    }
-
-    /* Search & Filter Controls */
     .filter-controls {
       display: flex;
       flex-wrap: wrap;
@@ -149,11 +131,6 @@
       outline: none;
       min-width: 260px;
       flex: 1;
-      box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
-    }
-
-    .search-input:focus {
-      box-shadow: 0 0 12px rgba(255, 0, 127, 0.5);
     }
 
     .category-buttons {
@@ -172,18 +149,15 @@
       text-transform: uppercase;
       cursor: pointer;
       border-radius: 4px;
-      transition: all 0.2s;
     }
 
-    .filter-btn:hover, .filter-btn.active {
+    .filter-btn.active {
       background: #ff007f;
       color: #000;
       border-color: #ff007f;
       font-weight: bold;
-      box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
     }
 
-    /* Pinboard Grid */
     .pinboard-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -198,12 +172,11 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
       position: relative;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .notice-card:hover {
-      transform: translateY(-4px);
       border-color: #ff007f;
       box-shadow: 0 0 20px rgba(255, 0, 127, 0.35);
     }
@@ -252,12 +225,6 @@
       margin-bottom: 18px;
     }
 
-    .card-footer-links {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
     .btn-action {
       width: 100%;
       padding: 9px;
@@ -271,7 +238,6 @@
       font-weight: bold;
       border-radius: 3px;
       display: block;
-      transition: background 0.2s, color 0.2s;
     }
 
     .btn-action:hover {
@@ -279,13 +245,7 @@
       color: #000;
     }
 
-    .social-handle {
-      font-size: 11px;
-      color: #888;
-      text-align: center;
-    }
-
-    /* Post Creation Modal */
+    /* Modal Form */
     #post-modal {
       position: fixed;
       top: 0;
@@ -345,16 +305,6 @@
       outline: none;
     }
 
-    .form-control:focus {
-      border-color: #ff007f;
-      box-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
-    }
-
-    textarea.form-control {
-      resize: vertical;
-      min-height: 80px;
-    }
-
     .modal-actions {
       display: flex;
       gap: 12px;
@@ -369,19 +319,15 @@
       font-weight: bold;
       text-transform: uppercase;
       cursor: pointer;
-      text-align: center;
       font-family: inherit;
     }
 
     .btn-submit { background: #ff007f; color: #000; border: none; }
-    .btn-submit:hover { background: #ff3399; }
     .btn-cancel { background: transparent; color: #aaa; border: 1px solid #444; }
-    .btn-cancel:hover { color: #fff; border-color: #777; }
   </style>
 </head>
 <body>
 
-  <!-- Navigation Bar -->
   <header>
     <a href="index.html" class="brand-container" style="text-decoration: none;">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
@@ -393,19 +339,16 @@
   </header>
 
   <main>
-    <!-- Intro Banner -->
     <div class="hero-section">
       <div class="hero-text">
         <h1>Community Notice Board</h1>
-        <p>Explore pinned gig announcements, member-wanted posts, DIY workshops, and local classifieds posted live by our scene.</p>
+        <p>Explore pinned gig announcements, member wanted posts, DIY workshops, and local classifieds posted live across all devices.</p>
       </div>
       <button class="btn-create-post" onclick="openPostModal()">+ Pin a Notice</button>
     </div>
 
-    <!-- Filters & Search -->
     <div class="filter-controls">
       <input type="text" id="search-input" class="search-input" placeholder="Search notices, gigs, musicians wanted..." oninput="filterNotices()">
-      
       <div class="category-buttons">
         <button class="filter-btn active" onclick="setCategory('all', this)">All</button>
         <button class="filter-btn" onclick="setCategory('gig', this)">Gigs & Shows</button>
@@ -414,200 +357,172 @@
       </div>
     </div>
 
-    <!-- Pinboard Grid -->
-    <div class="pinboard-grid" id="pinboard-grid">
-      
-      <!-- Notice 1 -->
-      <div class="notice-card" data-category="wanted">
-        <span class="card-badge">Member Wanted</span>
-        <div class="notice-info">
-          <h3>Drummer Needed for Fast Hardcore Project</h3>
-          <span class="meta-tag">Posted by @dave_shred • London</span>
-        </div>
-        <p class="notice-desc">Influenced by Minor Threat & Gel. Rehearsing weekly in North London. Have 5-track demo ready to record.</p>
-        <div class="card-footer-links">
-          <a href="mailto:dave@example.com" class="btn-action">Get in Touch →</a>
-          <span class="social-handle">@dave_shred</span>
-        </div>
-      </div>
-
-      <!-- Notice 2 -->
-      <div class="notice-card" data-category="gig">
-        <span class="card-badge">Gig Flyer</span>
-        <img src="keys-sticker.png" class="notice-img" alt="DIY Benefit Show" onerror="this.style.display='none'">
-        <div class="notice-info">
-          <h3>DIY Benefit Show for Local Refuge</h3>
-          <span class="meta-tag">Posted by @unc_collective • Bristol</span>
-        </div>
-        <p class="notice-desc">Featuring 4 local acts. All ticket proceeds go directly to community support groups. £5 OTD or pay what you can.</p>
-        <div class="card-footer-links">
-          <a href="https://instagram.com" target="_blank" class="btn-action">View Event Info →</a>
-          <span class="social-handle">@unc_collective</span>
-        </div>
-      </div>
-
-      <!-- Notice 3 -->
-      <div class="notice-card" data-category="workshop">
-        <span class="card-badge">Workshop</span>
-        <div class="notice-info">
-          <h3>Screenprinting & Zine Making 101</h3>
-          <span class="meta-tag">Posted by @mutant_press • Manchester</span>
-        </div>
-        <p class="notice-desc">Free drop-in workshop covering basic paper folding, single-color silk screening, and booklet assembly.</p>
-        <div class="card-footer-links">
-          <a href="https://instagram.com" target="_blank" class="btn-action">Sign Up →</a>
-        </div>
-      </div>
-
-    </div>
+    <div class="pinboard-grid" id="pinboard-grid"></div>
   </main>
 
-  <!-- Post Submission Modal -->
   <div id="post-modal">
     <div class="modal-card">
       <h2>Pin a New Notice</h2>
-      <form id="notice-form" onsubmit="submitNotice(event)">
-        
+      <form id="notice-form">
         <div class="form-group">
-          <label for="post-title">Notice Title *</label>
-          <input type="text" id="post-title" class="form-control" placeholder="e.g. Bassist Wanted / Album Launch Show" required>
+          <label>Notice Title *</label>
+          <input type="text" id="post-title" class="form-control" placeholder="Title..." required>
         </div>
-
         <div class="form-group">
-          <label for="post-category">Category *</label>
+          <label>Category *</label>
           <select id="post-category" class="form-control" required>
             <option value="gig">Gig / Show Announcement</option>
             <option value="wanted">Musicians / Members Wanted</option>
             <option value="workshop">Workshop / DIY</option>
           </select>
         </div>
-
         <div class="form-group">
-          <label for="post-desc">Description *</label>
-          <textarea id="post-desc" class="form-control" placeholder="Provide full details about your post..." required></textarea>
+          <label>Description *</label>
+          <textarea id="post-desc" class="form-control" rows="3" placeholder="Details..." required></textarea>
         </div>
-
         <div class="form-group">
-          <label for="post-img">Image URL (Optional)</label>
-          <input type="url" id="post-img" class="form-control" placeholder="https://example.com/flyer.jpg">
+          <label>Image File (Optional)</label>
+          <input type="file" id="post-file" accept="image/*" class="form-control">
         </div>
-
         <div class="form-group">
-          <label for="post-link">Link / Email URL (Optional)</label>
-          <input type="text" id="post-link" class="form-control" placeholder="https://... or mailto:you@example.com">
+          <label>Link / Email URL (Optional)</label>
+          <input type="text" id="post-link" class="form-control" placeholder="https://...">
         </div>
-
         <div class="form-group">
-          <label for="post-social">Social Handle (Optional)</label>
-          <input type="text" id="post-social" class="form-control" placeholder="@yourhandle">
+          <label>Social Handle (Optional)</label>
+          <input type="text" id="post-social" class="form-control" placeholder="@handle">
         </div>
-
         <div class="modal-actions">
           <button type="button" class="modal-btn btn-cancel" onclick="closePostModal()">Cancel</button>
-          <button type="submit" class="modal-btn btn-submit">Pin Post →</button>
+          <button type="submit" class="modal-btn btn-submit" id="submit-btn">Pin Post →</button>
         </div>
-
       </form>
     </div>
   </div>
 
-  <script>
+  <!-- Firebase Modular Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+    // Replace with your actual Firebase config keys from Firebase Console:
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const storage = getStorage(app);
+    const noticesRef = ref(db, 'notices');
+
     let activeCategory = 'all';
 
-    function setCategory(cat, btnElement) {
-      activeCategory = cat;
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
+    // REAL-TIME LISTENER: Updates instantly across all connected devices
+    onValue(noticesRef, (snapshot) => {
+      const data = snapshot.val();
+      const grid = document.getElementById('pinboard-grid');
+      grid.innerHTML = '';
+
+      if (data) {
+        // Convert object to array and reverse to show newest first
+        const notices = Object.values(data).reverse();
+        
+        notices.forEach(notice => {
+          const card = document.createElement('div');
+          card.className = 'notice-card';
+          card.setAttribute('data-category', notice.category);
+
+          let imageHTML = notice.imgSrc ? `<img src="${notice.imgSrc}" class="notice-img" alt="${notice.title}">` : '';
+          let metaText = notice.social ? `Posted by ${notice.social}` : 'Posted by Scene Member';
+          let linkHTML = notice.linkUrl ? `<a href="${notice.linkUrl}" target="_blank" class="btn-action">View Link / Contact →</a>` : '';
+
+          card.innerHTML = `
+            <span class="card-badge">${notice.badge}</span>
+            ${imageHTML}
+            <div class="notice-info">
+              <h3>${notice.title}</h3>
+              <span class="meta-tag">${metaText}</span>
+            </div>
+            <p class="notice-desc">${notice.desc}</p>
+            ${linkHTML}
+          `;
+          grid.appendChild(card);
+        });
+      }
       filterNotices();
-    }
-
-    function filterNotices() {
-      const searchTerm = document.getElementById('search-input').value.toLowerCase();
-      const cards = document.querySelectorAll('.notice-card');
-
-      cards.forEach(card => {
-        const category = card.getAttribute('data-category');
-        const textContent = card.innerText.toLowerCase();
-
-        const matchesCategory = (activeCategory === 'all' || category === activeCategory);
-        const matchesSearch = textContent.includes(searchTerm);
-
-        if (matchesCategory && matchesSearch) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-
-    // Modal Control
-    const postModal = document.getElementById('post-modal');
-
-    function openPostModal() {
-      postModal.style.display = 'flex';
-    }
-
-    function closePostModal() {
-      postModal.style.display = 'none';
-      document.getElementById('notice-form').reset();
-    }
-
-    postModal.addEventListener('click', (e) => {
-      if (e.target === postModal) closePostModal();
     });
 
-    // Form Submission & Dynamic Card Injection
-    function submitNotice(event) {
-      event.preventDefault();
+    // Handle Form Submit
+    document.getElementById('notice-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.innerText = "Posting...";
+      submitBtn.disabled = true;
 
       const title = document.getElementById('post-title').value.trim();
       const category = document.getElementById('post-category').value;
       const desc = document.getElementById('post-desc').value.trim();
-      const imgUrl = document.getElementById('post-img').value.trim();
+      const fileInput = document.getElementById('post-file');
       const linkUrl = document.getElementById('post-link').value.trim();
       const social = document.getElementById('post-social').value.trim();
 
-      const categoryLabels = {
-        'gig': 'Gig Flyer',
-        'wanted': 'Member Wanted',
-        'workshop': 'Workshop'
-      };
+      const categoryLabels = { 'gig': 'Gig Flyer', 'wanted': 'Member Wanted', 'workshop': 'Workshop' };
 
-      const card = document.createElement('div');
-      card.className = 'notice-card';
-      card.setAttribute('data-category', category);
-
-      let imageHTML = imgUrl ? `<img src="${imgUrl}" class="notice-img" alt="${title}" onerror="this.style.display='none'">` : '';
-      let metaText = social ? `Posted by ${social}` : 'Posted by Scene Member';
-      
-      let linkHTML = '';
-      if (linkUrl) {
-        let finalUrl = (linkUrl.startsWith('http') || linkUrl.startsWith('mailto:')) ? linkUrl : `https://${linkUrl}`;
-        linkHTML = `<a href="${finalUrl}" target="_blank" class="btn-action">View Link / Contact →</a>`;
+      let imgSrc = '';
+      if (fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const fileRef = storageRef(storage, 'notices/' + Date.now() + '_' + file.name);
+        await uploadBytes(fileRef, file);
+        imgSrc = await getDownloadURL(fileRef);
       }
 
-      let socialHTML = social ? `<span class="social-handle">${social}</span>` : '';
+      await push(noticesRef, {
+        title,
+        category,
+        desc,
+        imgSrc,
+        linkUrl,
+        social,
+        badge: categoryLabels[category] || 'Notice',
+        timestamp: Date.now()
+      });
 
-      card.innerHTML = `
-        <span class="card-badge">${categoryLabels[category] || 'Community Notice'}</span>
-        ${imageHTML}
-        <div class="notice-info">
-          <h3>${title}</h3>
-          <span class="meta-tag">${metaText}</span>
-        </div>
-        <p class="notice-desc">${desc}</p>
-        <div class="card-footer-links">
-          ${linkHTML}
-          ${socialHTML}
-        </div>
-      `;
-
-      const grid = document.getElementById('pinboard-grid');
-      grid.prepend(card);
-
+      submitBtn.innerText = "Pin Post →";
+      submitBtn.disabled = false;
       closePostModal();
+    });
+
+    // Global Functions for UI Controls
+    window.setCategory = function(cat, btnElement) {
+      activeCategory = cat;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
       filterNotices();
-    }
+    };
+
+    window.filterNotices = function() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      document.querySelectorAll('.notice-card').forEach(card => {
+        const category = card.getAttribute('data-category');
+        const textContent = card.innerText.toLowerCase();
+        const matchesCategory = (activeCategory === 'all' || category === activeCategory);
+        const matchesSearch = textContent.includes(searchTerm);
+        card.style.display = (matchesCategory && matchesSearch) ? 'flex' : 'none';
+      });
+    };
+
+    window.openPostModal = () => document.getElementById('post-modal').style.display = 'flex';
+    window.closePostModal = () => {
+      document.getElementById('post-modal').style.display = 'none';
+      document.getElementById('notice-form').reset();
+    };
   </script>
 </body>
 </html>
