@@ -86,9 +86,14 @@
       border-radius: 6px;
       box-shadow: 0 0 25px rgba(255, 0, 127, 0.25);
       margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    .hero-section h1 {
+    .hero-text h1 {
       color: #ff007f;
       font-size: 24px;
       margin-bottom: 8px;
@@ -96,10 +101,31 @@
       letter-spacing: 1px;
     }
 
-    .hero-section p {
+    .hero-text p {
       color: #bbb;
       font-size: 13px;
       line-height: 1.5;
+    }
+
+    .btn-create-audio {
+      background: #ff007f;
+      color: #000;
+      border: none;
+      padding: 12px 20px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+      transition: background 0.2s, transform 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-create-audio:hover {
+      background: #ff3399;
+      transform: translateY(-2px);
     }
 
     /* Search & Filter Bar */
@@ -199,6 +225,7 @@
       font-size: 16px;
       text-transform: uppercase;
       margin-bottom: 4px;
+      padding-right: 70px;
     }
 
     .audio-info .speaker {
@@ -282,32 +309,111 @@
       color: #777;
     }
 
-    .transcript-toggle {
-      background: transparent;
-      border: none;
+    /* Modal Form Styling */
+    #audio-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 30000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: #141414;
+      border: 2px solid #ff007f;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-card h2 {
       color: #ff007f;
-      font-family: inherit;
+      font-size: 18px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
       font-size: 11px;
+      color: #aaa;
+      text-transform: uppercase;
+    }
+
+    .form-control {
+      background: #0d0d0d;
+      border: 1px solid #333;
+      color: #fff;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 12px;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: #ff007f;
+      box-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .file-input-wrapper {
+      background: #0d0d0d;
+      border: 1px dashed #444;
+      padding: 12px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .file-input-wrapper input[type="file"] {
+      color: #aaa;
+      font-size: 11px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
       text-transform: uppercase;
       cursor: pointer;
-      text-align: left;
-      margin-top: 4px;
-      padding: 0;
+      text-align: center;
+      font-family: inherit;
     }
 
-    .transcript-toggle:hover {
-      text-decoration: underline;
-    }
-
-    .transcript-box {
-      display: none;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px dashed #333;
-      font-size: 11px;
-      color: #ccc;
-      line-height: 1.4;
-    }
+    .btn-submit { background: #ff007f; color: #000; border: none; }
+    .btn-submit:hover { background: #ff3399; }
+    .btn-cancel { background: transparent; color: #aaa; border: 1px solid #444; }
+    .btn-cancel:hover { color: #fff; border-color: #777; }
   </style>
 </head>
 <body>
@@ -326,8 +432,11 @@
   <main>
     <!-- Intro Banner -->
     <div class="hero-section">
-      <h1>Scene Oral History & Voice Note Vault</h1>
-      <p>Listen to raw 60-second voice notes, gig memories, venue lore, and underground oral histories recorded directly by members of our local DIY community.</p>
+      <div class="hero-text">
+        <h1>Scene Oral History & Voice Note Vault</h1>
+        <p>Listen to raw voice notes, gig memories, venue lore, and underground oral histories recorded directly by members of our local DIY community.</p>
+      </div>
+      <button class="btn-create-audio" onclick="openAudioModal()">+ Record / Share Story</button>
     </div>
 
     <!-- Filters & Search -->
@@ -350,7 +459,7 @@
         <span class="card-badge">Gig Memory</span>
         <div class="audio-info">
           <h3>The Boiler Room Show (2018)</h3>
-          <span class="speaker">Recounted by Dave (Static Shred) • 0:54</span>
+          <span class="speaker">Recounted by Dave (Static Shred)</span>
         </div>
         <p class="audio-desc">Remembering when the power cut out halfway through the headline set and the crowd finished the vocals through a megaphone.</p>
         
@@ -365,10 +474,6 @@
             <span>0:00</span>
             <span>0:54</span>
           </div>
-          <button class="transcript-toggle" onclick="toggleTranscript(this)">Show Transcript</button>
-          <div class="transcript-box">
-            "We thought the breaker had tripped for good. The lights went pitch black, but someone had a battery megaphone in the back and the whole room just took over the chorus. Unreal energy."
-          </div>
         </div>
       </div>
 
@@ -377,7 +482,7 @@
         <span class="card-badge">Venue Lore</span>
         <div class="audio-info">
           <h3>The Old Crown Basement</h3>
-          <span class="speaker">Recounted by Elena (Mutant Press) • 1:12</span>
+          <span class="speaker">Recounted by Elena (Mutant Press)</span>
         </div>
         <p class="audio-desc">How a damp storage cellar underneath a local pub turned into the central pillar of the underground hardcore scene.</p>
         
@@ -392,10 +497,6 @@
             <span>0:00</span>
             <span>1:12</span>
           </div>
-          <button class="transcript-toggle" onclick="toggleTranscript(this)">Show Transcript</button>
-          <div class="transcript-box">
-            "It smelled permanently of stale beer and ozone, but the acoustics were surprisingly killer. Every touring band wanted to play that room because the ceiling was so low you could touch the pipes."
-          </div>
         </div>
       </div>
 
@@ -404,7 +505,7 @@
         <span class="card-badge">Oral History</span>
         <div class="audio-info">
           <h3>Why We Make Zines</h3>
-          <span class="speaker">Recounted by Liam (Acid Threads) • 0:45</span>
+          <span class="speaker">Recounted by Liam (Acid Threads)</span>
         </div>
         <p class="audio-desc">Reflections on why physical print culture matters in an era dominated by algorithmic social media feeds.</p>
         
@@ -419,15 +520,59 @@
             <span>0:00</span>
             <span>0:45</span>
           </div>
-          <button class="transcript-toggle" onclick="toggleTranscript(this)">Show Transcript</button>
-          <div class="transcript-box">
-            "Algorithms decide who sees what online. When you hand someone a printed zine or a cassette tape, nobody can shadowban it. It's direct from human to human."
-          </div>
         </div>
       </div>
 
     </div>
   </main>
+
+  <!-- Audio Submission Modal -->
+  <div id="audio-modal">
+    <div class="modal-card">
+      <h2>Share Your Story</h2>
+      <form id="audio-form" onsubmit="submitAudio(event)">
+        
+        <div class="form-group">
+          <label for="audio-title">Story / Note Title *</label>
+          <input type="text" id="audio-title" class="form-control" placeholder="e.g. Basement Show Lore / First DIY Tape" required>
+        </div>
+
+        <div class="form-group">
+          <label for="audio-speaker">Your Name / Speaker *</label>
+          <input type="text" id="audio-speaker" class="form-control" placeholder="e.g. Alex (Noise Collective)" required>
+        </div>
+
+        <div class="form-group">
+          <label for="audio-category">Category *</label>
+          <select id="audio-category" class="form-control" required>
+            <option value="gig">Gig Memory</option>
+            <option value="venue">Venue Lore</option>
+            <option value="history">Oral History</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="audio-desc">Brief Description *</label>
+          <textarea id="audio-desc" class="form-control" placeholder="What is this voice note about?" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Audio File or URL *</label>
+          <div class="file-input-wrapper">
+            <input type="file" id="audio-file" accept="audio/*" class="form-control" style="border:none; margin-bottom: 8px;">
+            <p style="font-size: 10px; color: #777;">OR enter an audio link below:</p>
+            <input type="url" id="audio-url" class="form-control" placeholder="https://example.com/recording.mp3" style="margin-top:6px;">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="modal-btn btn-cancel" onclick="closeAudioModal()">Cancel</button>
+          <button type="submit" class="modal-btn btn-submit">Submit Recording →</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
 
   <script>
     let activeCategory = 'all';
@@ -458,17 +603,72 @@
       });
     }
 
-    function toggleTranscript(btn) {
-      const box = btn.nextElementSibling;
-      if (box.style.display === 'block') {
-        box.style.display = 'none';
-        btn.innerText = 'Show Transcript';
-      } else {
-        box.style.display = 'block';
-        btn.innerText = 'Hide Transcript';
-      }
+    // Modal Control
+    const audioModal = document.getElementById('audio-modal');
+
+    function openAudioModal() {
+      audioModal.style.display = 'flex';
     }
 
+    function closeAudioModal() {
+      audioModal.style.display = 'none';
+      document.getElementById('audio-form').reset();
+    }
+
+    audioModal.addEventListener('click', (e) => {
+      if (e.target === audioModal) closeAudioModal();
+    });
+
+    // Form Submission & Dynamic Audio Card Injection
+    function submitAudio(event) {
+      event.preventDefault();
+
+      const title = document.getElementById('audio-title').value.trim();
+      const speaker = document.getElementById('audio-speaker').value.trim();
+      const category = document.getElementById('audio-category').value;
+      const desc = document.getElementById('audio-desc').value.trim();
+      const fileInput = document.getElementById('audio-file');
+      const urlInput = document.getElementById('audio-url').value.trim();
+
+      const categoryLabels = {
+        'gig': 'Gig Memory',
+        'venue': 'Venue Lore',
+        'history': 'Oral History'
+      };
+
+      const card = document.createElement('div');
+      card.className = 'audio-card';
+      card.setAttribute('data-category', category);
+
+      card.innerHTML = `
+        <span class="card-badge">${categoryLabels[category] || 'Oral History'}</span>
+        <div class="audio-info">
+          <h3>${title}</h3>
+          <span class="speaker">Recounted by ${speaker}</span>
+        </div>
+        <p class="audio-desc">${desc}</p>
+        <div class="player-box">
+          <div class="player-controls">
+            <button class="btn-play" onclick="togglePlay(this)">▶</button>
+            <div class="waveform-bar" onclick="seekAudio(event, this)">
+              <div class="waveform-progress" style="width: 0%;"></div>
+            </div>
+          </div>
+          <div class="time-readout">
+            <span>0:00</span>
+            <span>AUDIO NOTE</span>
+          </div>
+        </div>
+      `;
+
+      const grid = document.getElementById('audio-grid');
+      grid.prepend(card);
+
+      closeAudioModal();
+      filterAudio();
+    }
+
+    // Audio Playback Simulator
     let activeInterval = null;
 
     function togglePlay(btn) {
@@ -479,7 +679,7 @@
         if (b !== btn) {
           b.innerText = '▶';
           const otherProg = b.closest('.audio-card').querySelector('.waveform-progress');
-          otherProg.style.width = '0%';
+          if (otherProg) otherProg.style.width = '0%';
         }
       });
 
