@@ -16,7 +16,6 @@
       overflow-x: hidden;
     }
 
-    /* Header with Image Logo Branding */
     header {
       position: fixed;
       top: 0;
@@ -53,18 +52,12 @@
       filter: invert(1);
     }
 
-    .nav-links {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      font-size: 12px;
-      text-transform: uppercase;
-    }
-
     .nav-links a {
       color: #aaa;
       text-decoration: none;
-      transition: color 0.2s, text-shadow 0.2s;
+      font-size: 12px;
+      text-transform: uppercase;
+      transition: color 0.2s;
     }
 
     .nav-links a:hover {
@@ -72,7 +65,6 @@
       text-shadow: 0 0 8px #ff007f;
     }
 
-    /* Main Container */
     main {
       max-width: 1200px;
       margin: 100px auto 60px;
@@ -98,13 +90,11 @@
       font-size: 24px;
       margin-bottom: 8px;
       text-transform: uppercase;
-      letter-spacing: 1px;
     }
 
     .hero-text p {
       color: #bbb;
       font-size: 13px;
-      line-height: 1.5;
     }
 
     .btn-create-creator {
@@ -119,16 +109,8 @@
       border-radius: 4px;
       cursor: pointer;
       box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
-      transition: background 0.2s, transform 0.2s;
-      white-space: nowrap;
     }
 
-    .btn-create-creator:hover {
-      background: #ff3399;
-      transform: translateY(-2px);
-    }
-
-    /* Search & Filter Controls */
     .filter-controls {
       display: flex;
       flex-wrap: wrap;
@@ -149,11 +131,6 @@
       outline: none;
       min-width: 260px;
       flex: 1;
-      box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
-    }
-
-    .search-input:focus {
-      box-shadow: 0 0 12px rgba(255, 0, 127, 0.5);
     }
 
     .category-buttons {
@@ -172,18 +149,15 @@
       text-transform: uppercase;
       cursor: pointer;
       border-radius: 4px;
-      transition: all 0.2s;
     }
 
-    .filter-btn:hover, .filter-btn.active {
+    .filter-btn.active {
       background: #ff007f;
       color: #000;
       border-color: #ff007f;
       font-weight: bold;
-      box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
     }
 
-    /* Directory Grid */
     .creator-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -198,12 +172,11 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
       position: relative;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .creator-card:hover {
-      transform: translateY(-4px);
       border-color: #ff007f;
       box-shadow: 0 0 20px rgba(255, 0, 127, 0.35);
     }
@@ -258,7 +231,6 @@
       font-weight: bold;
       border-radius: 3px;
       display: block;
-      transition: background 0.2s, color 0.2s;
     }
 
     .btn-link:hover {
@@ -266,7 +238,6 @@
       color: #000;
     }
 
-    /* Modal Form Styling */
     #creator-modal {
       position: fixed;
       top: 0;
@@ -326,29 +297,6 @@
       outline: none;
     }
 
-    .form-control:focus {
-      border-color: #ff007f;
-      box-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
-    }
-
-    textarea.form-control {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    .file-input-wrapper {
-      background: #0d0d0d;
-      border: 1px dashed #444;
-      padding: 12px;
-      border-radius: 4px;
-      text-align: center;
-    }
-
-    .file-input-wrapper input[type="file"] {
-      color: #aaa;
-      font-size: 11px;
-    }
-
     .modal-actions {
       display: flex;
       gap: 12px;
@@ -363,19 +311,15 @@
       font-weight: bold;
       text-transform: uppercase;
       cursor: pointer;
-      text-align: center;
       font-family: inherit;
     }
 
     .btn-submit { background: #ff007f; color: #000; border: none; }
-    .btn-submit:hover { background: #ff3399; }
     .btn-cancel { background: transparent; color: #aaa; border: 1px solid #444; }
-    .btn-cancel:hover { color: #fff; border-color: #777; }
   </style>
 </head>
 <body>
 
-  <!-- Navigation Bar -->
   <header>
     <a href="index.html" class="brand-container" style="text-decoration: none;">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
@@ -387,16 +331,14 @@
   </header>
 
   <main>
-    <!-- Intro Banner -->
     <div class="hero-section">
       <div class="hero-text">
         <h1>Band & Creator Directory</h1>
-        <p>An algorithm-free roster of underground bands, DIY zine makers, visual artists, and independent venues across our local scene.</p>
+        <p>An algorithm-free roster of underground bands, DIY zine makers, visual artists, and independent venues live synced across the scene.</p>
       </div>
       <button class="btn-create-creator" onclick="openCreatorModal()">+ Join Directory</button>
     </div>
 
-    <!-- Filters & Search -->
     <div class="filter-controls">
       <input type="text" id="search-input" class="search-input" placeholder="Search creators, bands, genres..." oninput="filterDirectory()">
       
@@ -408,136 +350,103 @@
       </div>
     </div>
 
-    <!-- Directory Grid -->
-    <div class="creator-grid" id="creator-grid">
-      
-      <!-- Entry 1 -->
-      <div class="creator-card" data-category="band">
-        <span class="card-badge">Band</span>
-        <div class="creator-info">
-          <h3>Static Shred</h3>
-        </div>
-        <p class="creator-desc">Fast, aggressive 4-piece hardcore punk playing house shows and independent basements across the UK.</p>
-        <a href="https://instagram.com" target="_blank" class="btn-link">Listen / Follow →</a>
-      </div>
-
-      <!-- Entry 2 -->
-      <div class="creator-card" data-category="artist">
-        <span class="card-badge">Artist / Zine</span>
-        <div class="creator-info">
-          <h3>Mutant Press</h3>
-        </div>
-        <p class="creator-desc">Risograph printing studio specializing in DIY gig posters, cassette inserts, and quarterly zine runs.</p>
-        <a href="https://instagram.com" target="_blank" class="btn-link">View Portfolio →</a>
-      </div>
-
-      <!-- Entry 3 -->
-      <div class="creator-card" data-category="venue">
-        <span class="card-badge">Promoter</span>
-        <div class="creator-info">
-          <h3>Underground Noise Collective</h3>
-        </div>
-        <p class="creator-desc">Non-profit DIY booking group organizing accessible, low-cost community shows and benefit gigs.</p>
-        <a href="https://instagram.com" target="_blank" class="btn-link">Show Listings →</a>
-      </div>
-
-    </div>
+    <div class="creator-grid" id="creator-grid"></div>
   </main>
 
-  <!-- Creator Submission Modal -->
   <div id="creator-modal">
     <div class="modal-card">
       <h2>Add Yourself to Directory</h2>
-      <form id="creator-form" onsubmit="submitCreator(event)">
-        
+      <form id="creator-form">
         <div class="form-group">
-          <label for="creator-title">Band / Creator Name *</label>
-          <input type="text" id="creator-title" class="form-control" placeholder="e.g. Acid Threads / Studio Z" required>
+          <label>Band / Creator Name *</label>
+          <input type="text" id="creator-title" class="form-control" placeholder="Name..." required>
         </div>
-
         <div class="form-group">
-          <label for="creator-category">Category *</label>
+          <label>Category *</label>
           <select id="creator-category" class="form-control" required>
             <option value="band">Band / Musical Act</option>
             <option value="artist">Artist / Zine Maker</option>
             <option value="venue">Venue / Promoter / Collective</option>
           </select>
         </div>
-
         <div class="form-group">
-          <label for="creator-desc">Description *</label>
-          <textarea id="creator-desc" class="form-control" placeholder="Tell us what you do, location, genre, etc..." required></textarea>
+          <label>Description *</label>
+          <textarea id="creator-desc" class="form-control" rows="3" placeholder="Tell us about yourself..." required></textarea>
         </div>
-
         <div class="form-group">
           <label>Photo Upload (Optional)</label>
-          <div class="file-input-wrapper">
-            <input type="file" id="creator-file" accept="image/*" class="form-control" style="border:none;">
-          </div>
+          <input type="file" id="creator-file" accept="image/*" class="form-control">
         </div>
-
         <div class="form-group">
-          <label for="creator-link">Link / Social / Portfolio URL (Optional)</label>
-          <input type="text" id="creator-link" class="form-control" placeholder="https://instagram.com/yourhandle">
+          <label>Link / Social / Portfolio URL (Optional)</label>
+          <input type="text" id="creator-link" class="form-control" placeholder="https://...">
         </div>
-
         <div class="modal-actions">
           <button type="button" class="modal-btn btn-cancel" onclick="closeCreatorModal()">Cancel</button>
-          <button type="submit" class="modal-btn btn-submit">Submit Listing →</button>
+          <button type="submit" class="modal-btn btn-submit" id="submit-btn">Submit Listing →</button>
         </div>
-
       </form>
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBozbn-0iQNhjuAcmL-dYOUtbhIYTjccYk",
+      authDomain: "the-grapevine-5c046.firebaseapp.com",
+      databaseURL: "https://the-grapevine-5c046-default-rtdb.firebaseio.com",
+      projectId: "the-grapevine-5c046",
+      storageBucket: "the-grapevine-5c046.firebasestorage.app",
+      messagingSenderId: "606976230856",
+      appId: "1:606976230856:web:161a12734239f248ce2cfd",
+      measurementId: "G-V1KW1QSNWS"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const storage = getStorage(app);
+    const creatorsRef = ref(db, 'creators');
+
     let activeCategory = 'all';
 
-    function setCategory(cat, btnElement) {
-      activeCategory = cat;
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
+    onValue(creatorsRef, (snapshot) => {
+      const data = snapshot.val();
+      const grid = document.getElementById('creator-grid');
+      grid.innerHTML = '';
+
+      if (data) {
+        const creators = Object.values(data).reverse();
+        creators.forEach(creator => {
+          const card = document.createElement('div');
+          card.className = 'creator-card';
+          card.setAttribute('data-category', creator.category);
+
+          let imageHTML = creator.imgSrc ? `<img src="${creator.imgSrc}" class="creator-img" alt="${creator.title}">` : '';
+          let linkHTML = creator.linkUrl ? `<a href="${creator.linkUrl}" target="_blank" class="btn-link">View Profile / Link →</a>` : `<a href="#" class="btn-link" style="opacity:0.5;pointer-events:none;">Independent Listing</a>`;
+
+          card.innerHTML = `
+            <span class="card-badge">${creator.badge}</span>
+            ${imageHTML}
+            <div class="creator-info">
+              <h3>${creator.title}</h3>
+            </div>
+            <p class="creator-desc">${creator.desc}</p>
+            ${linkHTML}
+          `;
+          grid.appendChild(card);
+        });
+      }
       filterDirectory();
-    }
-
-    function filterDirectory() {
-      const searchTerm = document.getElementById('search-input').value.toLowerCase();
-      const cards = document.querySelectorAll('.creator-card');
-
-      cards.forEach(card => {
-        const category = card.getAttribute('data-category');
-        const textContent = card.innerText.toLowerCase();
-
-        const matchesCategory = (activeCategory === 'all' || category === activeCategory);
-        const matchesSearch = textContent.includes(searchTerm);
-
-        if (matchesCategory && matchesSearch) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-
-    // Modal Control
-    const creatorModal = document.getElementById('creator-modal');
-
-    function openCreatorModal() {
-      creatorModal.style.display = 'flex';
-    }
-
-    function closeCreatorModal() {
-      creatorModal.style.display = 'none';
-      document.getElementById('creator-form').reset();
-    }
-
-    creatorModal.addEventListener('click', (e) => {
-      if (e.target === creatorModal) closeCreatorModal();
     });
 
-    // Form Submission with File Upload Handling
-    function submitCreator(event) {
-      event.preventDefault();
+    document.getElementById('creator-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.innerText = "Submitting...";
+      submitBtn.disabled = true;
 
       const title = document.getElementById('creator-title').value.trim();
       const category = document.getElementById('creator-category').value;
@@ -545,54 +454,54 @@
       const fileInput = document.getElementById('creator-file');
       const linkUrl = document.getElementById('creator-link').value.trim();
 
-      if (fileInput.files && fileInput.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          createAndAppendCard(title, category, desc, e.target.result, linkUrl);
-        };
-        reader.readAsDataURL(fileInput.files[0]);
-      } else {
-        createAndAppendCard(title, category, desc, '', linkUrl);
-      }
-    }
+      const categoryLabels = { 'band': 'Band', 'artist': 'Artist / Zine', 'venue': 'Promoter / Venue' };
 
-    function createAndAppendCard(title, category, desc, imgSrc, linkUrl) {
-      const categoryLabels = {
-        'band': 'Band',
-        'artist': 'Artist / Zine',
-        'venue': 'Promoter / Venue'
-      };
-
-      const card = document.createElement('div');
-      card.className = 'creator-card';
-      card.setAttribute('data-category', category);
-
-      let imageHTML = imgSrc ? `<img src="${imgSrc}" class="creator-img" alt="${title}" onerror="this.style.display='none'">` : '';
-      
-      let linkHTML = '';
-      if (linkUrl) {
-        let finalUrl = (linkUrl.startsWith('http')) ? linkUrl : `https://${linkUrl}`;
-        linkHTML = `<a href="${finalUrl}" target="_blank" class="btn-link">View Profile / Link →</a>`;
-      } else {
-        linkHTML = `<a href="#" class="btn-link" style="opacity: 0.5; pointer-events: none;">Independent Listing</a>`;
+      let imgSrc = '';
+      if (fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const fileRef = storageRef(storage, 'creators/' + Date.now() + '_' + file.name);
+        await uploadBytes(fileRef, file);
+        imgSrc = await getDownloadURL(fileRef);
       }
 
-      card.innerHTML = `
-        <span class="card-badge">${categoryLabels[category] || 'Creator'}</span>
-        ${imageHTML}
-        <div class="creator-info">
-          <h3>${title}</h3>
-        </div>
-        <p class="creator-desc">${desc}</p>
-        ${linkHTML}
-      `;
+      await push(creatorsRef, {
+        title,
+        category,
+        desc,
+        imgSrc,
+        linkUrl: linkUrl.startsWith('http') ? linkUrl : (linkUrl ? `https://${linkUrl}` : ''),
+        badge: categoryLabels[category] || 'Creator',
+        timestamp: Date.now()
+      });
 
-      const grid = document.getElementById('creator-grid');
-      grid.prepend(card);
-
+      submitBtn.innerText = "Submit Listing →";
+      submitBtn.disabled = false;
       closeCreatorModal();
+    });
+
+    window.setCategory = function(cat, btnElement) {
+      activeCategory = cat;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
       filterDirectory();
-    }
+    };
+
+    window.filterDirectory = function() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      document.querySelectorAll('.creator-card').forEach(card => {
+        const category = card.getAttribute('data-category');
+        const textContent = card.innerText.toLowerCase();
+        const matchesCategory = (activeCategory === 'all' || category === activeCategory);
+        const matchesSearch = textContent.includes(searchTerm);
+        card.style.display = (matchesCategory && matchesSearch) ? 'flex' : 'none';
+      });
+    };
+
+    window.openCreatorModal = () => document.getElementById('creator-modal').style.display = 'flex';
+    window.closeCreatorModal = () => {
+      document.getElementById('creator-modal').style.display = 'none';
+      document.getElementById('creator-form').reset();
+    };
   </script>
 </body>
 </html>
