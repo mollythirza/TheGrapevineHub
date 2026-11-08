@@ -2,470 +2,340 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
-  <title>Notice Board — The Grapevine</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Grapevine — Community Notice Board</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    html, body {
+
+    body, html {
       width: 100%;
-      height: 100%;
-      background-color: #0b0b0b;
+      min-height: 100%;
+      background-color: #0d0d0d;
       color: #fff;
       font-family: 'Courier New', Courier, monospace;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
-    /* Header */
+    /* Header with Image Logo Branding */
     header {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       z-index: 10000;
-      background: rgba(13, 13, 13, 0.9);
-      border-bottom: 1px solid #ff007f;
-      padding: 12px 25px;
+      background: rgba(13, 13, 13, 0.95);
+      border-bottom: 2px solid #ff007f;
+      padding: 12px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       backdrop-filter: blur(8px);
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.3);
     }
 
-    .brand-container { display: flex; align-items: center; gap: 10px; }
-    .brand-logo { height: 28px; width: auto; filter: drop-shadow(0 0 6px #ff007f); }
-    .brand-title-img { max-height: 18px; width: auto; filter: invert(1); }
-
-    .header-actions { display: flex; align-items: center; gap: 15px; }
-    .back-link { color: #aaa; font-size: 12px; text-decoration: none; text-transform: uppercase; }
-    .back-link:hover { color: #ff007f; }
-
-    .submit-btn {
-      background: #ff007f;
-      color: #000;
-      padding: 8px 16px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: bold;
-      text-transform: uppercase;
-      box-shadow: 0 0 12px rgba(255, 0, 127, 0.5);
-      cursor: pointer;
-      border: none;
-    }
-
-    /* Freeform Wall Canvas with Graffiti Background */
-    #wall-canvas {
-      position: absolute;
-      top: 60px;
-      left: 0;
-      width: 100vw;
-      height: calc(100vh - 60px);
-      background-color: #0d0d0d;
-      background-image: url('IMG_1397.jpg'); /*[span_0](start_span)[span_0](end_span) */
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      overflow: hidden;
-      touch-action: none;
-    }
-
-    /* Freeform Flyer Styling */
-    .flyer-card {
-      position: absolute;
-      width: 80px;
-      background: #161616;
-      border: 1px solid rgba(255, 0, 127, 0.4);
-      padding: 4px;
-      box-shadow: 3px 5px 12px rgba(0, 0, 0, 0.9), 0 0 8px rgba(255, 0, 127, 0.2);
-      cursor: grab;
-      user-select: none;
-      touch-action: none;
-      transition: box-shadow 0.15s ease;
-      will-change: transform;
-      
-      clip-path: polygon(
-        0% 1.5%, 12% 0%, 25% 1.8%, 38% 0.5%, 52% 2%, 67% 0.2%, 81% 1.6%, 94% 0%, 100% 1%,
-        99% 14%, 100% 28%, 98.5% 42%, 100% 57%, 99% 71%, 100% 86%, 98.8% 99%,
-        88% 98%, 74% 100%, 59% 98.4%, 43% 100%, 29% 98.2%, 14% 100%, 0% 98.5%,
-        1.2% 84%, 0% 69%, 1.5% 53%, 0.2% 38%, 1.8% 24%, 0.5% 10%
-      );
-    }
-
-    .flyer-card:active {
-      cursor: grabbing;
-      box-shadow: 8px 12px 25px rgba(0, 0, 0, 0.95), 0 0 20px rgba(255, 0, 127, 0.5);
-    }
-
-    .flyer-card::before {
-      content: '';
-      position: absolute;
-      top: -6px;
-      left: 30%;
-      width: 28px;
-      height: 12px;
-      background: rgba(255, 255, 255, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      transform: rotate(-4deg);
-      backdrop-filter: blur(2px);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-      z-index: 10;
-    }
-
-    .flyer-image-container {
-      width: 100%;
-      aspect-ratio: 3 / 4;
-      background: #000;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .flyer-image-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .flyer-title {
-      font-size: 8px;
-      font-weight: bold;
-      color: #fff;
-      margin-top: 3px;
-      pointer-events: none;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      text-align: center;
-    }
-
-    /* Modal Overlays */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.88);
-      z-index: 20000;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      backdrop-filter: blur(6px);
-      padding: 10px;
-    }
-
-    .modal-content {
-      background: #141414;
-      border: 2px solid #ff007f;
-      width: 100%;
-      max-width: 550px;
-      max-height: 90vh; /* Prevents modal from overflowing screen height */
-      border-radius: 8px;
+    .brand-container {
       display: flex;
-      flex-direction: column;
-      box-shadow: 0 0 30px rgba(255, 0, 127, 0.5);
-      overflow: hidden;
+      align-items: center;
+      gap: 10px;
     }
 
-    .modal-header {
-      background: #1a1a1a;
-      padding: 10px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #ff007f;
+    .brand-logo {
+      height: 32px;
+      width: auto;
+      filter: drop-shadow(0 0 6px #ff007f);
       flex-shrink: 0;
     }
 
-    .modal-header span { font-size: 13px; font-weight: bold; color: #ff007f; text-transform: uppercase; }
-    .close-modal { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
-    
-    /* Scrollable body wrapper for the Airtable embed */
-    .modal-body { 
-      flex-grow: 1; 
-      width: 100%; 
-      background: #fff; 
-      overflow-y: auto; /* Enables smooth scrolling inside the modal box */
-      -webkit-overflow-scrolling: touch; 
-    }
-    
-    .modal-body iframe { 
-      width: 100%; 
-      height: 100%; 
-      min-height: 650px; 
-      border: none; 
-      display: block;
+    .brand-title {
+      max-height: 20px;
+      width: auto;
+      object-fit: contain;
+      filter: invert(1);
     }
 
-    /* Fully Fitted Click-to-Enlarge Lightbox Card */
-    #enlarge-modal-content {
-      background: #121212;
-      border: 2px solid #ff007f;
-      width: 90vw;
-      max-width: 480px;
-      max-height: 90vh;
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .nav-links a {
+      color: #aaa;
+      text-decoration: none;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #ff007f;
+      text-shadow: 0 0 8px #ff007f;
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1200px;
+      margin: 100px auto 60px;
+      padding: 0 24px;
+    }
+
+    .hero-section {
+      border: 1px solid #ff007f;
+      background: rgba(20, 20, 20, 0.8);
+      padding: 24px;
+      border-radius: 6px;
+      box-shadow: 0 0 25px rgba(255, 0, 127, 0.25);
+      margin-bottom: 30px;
+    }
+
+    .hero-section h1 {
+      color: #ff007f;
+      font-size: 24px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero-section p {
+      color: #bbb;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* Search & Filter Controls */
+    .filter-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 30px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .search-input {
+      background: #111;
+      border: 1px solid #ff007f;
+      color: #fff;
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 13px;
+      border-radius: 4px;
+      outline: none;
+      min-width: 260px;
+      flex: 1;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
+    }
+
+    .search-input:focus {
+      box-shadow: 0 0 12px rgba(255, 0, 127, 0.5);
+    }
+
+    .category-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: #141414;
+      color: #aaa;
+      border: 1px solid #333;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 11px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: #ff007f;
+      color: #000;
+      border-color: #ff007f;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+    }
+
+    /* Pinboard Grid */
+    .pinboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .notice-card {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 6px;
       padding: 20px;
-      border-radius: 8px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 40px rgba(255, 0, 127, 0.6);
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
       position: relative;
     }
 
-    #enlarge-image {
-      width: 100%;
-      height: auto;
-      max-height: 68vh;
-      object-fit: contain;
-      border: 1px solid #333;
-      border-radius: 4px;
-      background: #000;
+    .notice-card:hover {
+      transform: translateY(-4px);
+      border-color: #ff007f;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.35);
     }
 
-    #enlarge-title {
+    .card-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 10px;
+      color: #ff007f;
+      border: 1px solid #ff007f;
+      padding: 2px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    .notice-info h3 {
       color: #fff;
-      font-size: 14px;
-      font-weight: bold;
-      margin: 12px 0 6px 0;
-      text-align: center;
-      width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 16px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
     }
 
-    #enlarge-link {
-      display: inline-block;
+    .notice-info .date {
+      color: #888;
+      font-size: 11px;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .notice-desc {
+      color: #bbb;
+      font-size: 12px;
+      line-height: 1.4;
+      margin-bottom: 18px;
+    }
+
+    .btn-action {
+      width: 100%;
+      padding: 9px;
+      background: transparent;
+      border: 1px solid #ff007f;
+      color: #ff007f;
+      text-align: center;
+      text-decoration: none;
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: bold;
+      border-radius: 3px;
+      display: block;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-action:hover {
       background: #ff007f;
       color: #000;
-      padding: 8px 16px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: bold;
-      text-decoration: none;
-      text-transform: uppercase;
-      margin-top: 4px;
     }
   </style>
 </head>
 <body>
 
+  <!-- Navigation Bar -->
   <header>
-    <div class="brand-container">
+    <a href="index.html" class="brand-container" style="text-decoration: none;">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
-      <img src="grapevine-title.png" alt="The Grapevine" class="brand-title-img" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:14px;\'>THE GRAPEVINE</h1>'">
-    </div>
-    <div class="header-actions">
-      <a href="index.html" class="back-link">← Wall</a>
-      <button class="submit-btn" id="open-modal-btn">+ Pin a Flyer</button>
+      <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:14px;\'>THE GRAPEVINE</h1>'">
+    </a>
+    <div class="nav-links">
+      <a href="index.html">← Back to Hub</a>
     </div>
   </header>
 
-  <!-- Interactive Canvas -->
-  <div id="wall-canvas"></div>
+  <main>
+    <!-- Intro Banner -->
+    <div class="hero-section">
+      <h1>Community Notice Board</h1>
+      <p>Explore pinned gig announcements, member wanted posts, DIY workshops, and local classifieds posted live by our scene.</p>
+    </div>
 
-  <!-- AirTable Submission Modal -->
-  <div class="modal-overlay" id="modal-overlay">
-    <div class="modal-content">
-      <div class="modal-header">
-        <span>Pin Your Flyer to The Grapevine</span>
-        <button class="close-modal" id="close-modal-btn">&times;</button>
-      </div>
-      <div class="modal-body">
-        <iframe class="airtable-embed" src="https://airtable.com/embed/appPjSSpMgtmXBouN/shrWKs6smV8calxpB" frameborder="0" width="100%" height="100%"></iframe>
+    <!-- Filters & Search -->
+    <div class="filter-controls">
+      <input type="text" id="search-input" class="search-input" placeholder="Search notices, gigs, musicians wanted..." oninput="filterNotices()">
+      
+      <div class="category-buttons">
+        <button class="filter-btn active" onclick="setCategory('all', this)">All</button>
+        <button class="filter-btn" onclick="setCategory('gig', this)">Gigs & Shows</button>
+        <button class="filter-btn" onclick="setCategory('wanted', this)">Musicians Wanted</button>
+        <button class="filter-btn" onclick="setCategory('workshop', this)">Workshops & DIY</button>
       </div>
     </div>
-  </div>
 
-  <!-- Click to Enlarge Flyer Lightbox Overlay -->
-  <div class="modal-overlay" id="enlarge-modal">
-    <div id="enlarge-modal-content">
-      <button class="close-modal" id="close-enlarge-btn" style="position: absolute; top: 10px; right: 15px;">&times;</button>
-      <img id="enlarge-image" src="" alt="Enlarged Flyer">
-      <div id="enlarge-title"></div>
-      <a id="enlarge-link" href="#" target="_blank" style="display: none;">View Event Link →</a>
+    <!-- Pinboard Grid -->
+    <div class="pinboard-grid" id="pinboard-grid">
+      
+      <!-- Notice 1 -->
+      <div class="notice-card" data-category="wanted">
+        <span class="card-badge">Member Wanted</span>
+        <div class="notice-info">
+          <h3>Drummer Needed for Fast Hardcore Project</h3>
+          <span class="date">Posted 2 days ago • London</span>
+        </div>
+        <p class="notice-desc">Influenced by Minor Threat & Gel. Rehearsing weekly in North London. Have 5-track demo ready to record.</p>
+        <a href="mailto:contact@example.com" class="btn-action">Get in Touch →</a>
+      </div>
+
+      <!-- Notice 2 -->
+      <div class="notice-card" data-category="gig">
+        <span class="card-badge">Gig Flyer</span>
+        <div class="notice-info">
+          <h3>DIY Benefit Show for Local Refuge</h3>
+          <span class="date">Date: Nov 22, 2026 • The Basement</span>
+        </div>
+        <p class="notice-desc">Featuring 4 local acts. All ticket proceeds go directly to community support groups. £5 OTD or pay what you can.</p>
+        <a href="#" class="btn-action">View Event Info →</a>
+      </div>
+
+      <!-- Notice 3 -->
+      <div class="notice-card" data-category="workshop">
+        <span class="card-badge">Workshop</span>
+        <div class="notice-info">
+          <h3>Screenprinting & Zine Making 101</h3>
+          <span class="date">Date: Dec 5, 2026 • Print Co-op</span>
+        </div>
+        <p class="notice-desc">Free drop-in workshop covering basic paper folding, single-color silk screening, and booklet assembly.</p>
+        <a href="#" class="btn-action">Sign Up →</a>
+      </div>
+
     </div>
-  </div>
+  </main>
 
   <script>
-    const AIRTABLE_API_KEY = 'patofpH96mlcRFtil.2e58895959f770a5c40cfc49ff4d858652b847b259ee8f443e4dc770242bb107';
-    const BASE_ID = 'appPjSSpMgtmXBouN';
-    const TABLE_NAME = 'Table 1';
+    let activeCategory = 'all';
 
-    let highestZIndex = 10;
-
-    // Submission Modal Controls
-    const modalOverlay = document.getElementById('modal-overlay');
-    document.getElementById('open-modal-btn').addEventListener('click', () => modalOverlay.style.display = 'flex');
-    document.getElementById('close-modal-btn').addEventListener('click', () => modalOverlay.style.display = 'none');
-    modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.style.display = 'none'; });
-
-    // Enlarge Lightbox Modal Controls
-    const enlargeModal = document.getElementById('enlarge-modal');
-    const enlargeImg = document.getElementById('enlarge-image');
-    const enlargeTitle = document.getElementById('enlarge-title');
-    const enlargeLink = document.getElementById('enlarge-link');
-    
-    document.getElementById('close-enlarge-btn').addEventListener('click', () => enlargeModal.style.display = 'none');
-    enlargeModal.addEventListener('click', (e) => { if (e.target === enlargeModal) enlargeModal.style.display = 'none'; });
-
-    function openEnlargedFlyer(imageUrl, title, link) {
-      enlargeImg.src = imageUrl;
-      enlargeTitle.innerText = title;
-      if (link) {
-        enlargeLink.href = link;
-        enlargeLink.style.display = 'inline-block';
-      } else {
-        enlargeLink.style.display = 'none';
-      }
-      enlargeModal.style.display = 'flex';
+    function setCategory(cat, btnElement) {
+      activeCategory = cat;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+      filterNotices();
     }
 
-    async function fetchAndScatterFlyers() {
-      const wall = document.getElementById('wall-canvas');
-      
-      try {
-        const response = await fetch(`https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}`, {
-          headers: { Authorization: `Bearer ${AIRTABLE_API_KEY}` }
-        });
+    function filterNotices() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const cards = document.querySelectorAll('.notice-card');
 
-        if (!response.ok) throw new Error('Fetch failed');
+      cards.forEach(card => {
+        const category = card.getAttribute('data-category');
+        const textContent = card.innerText.toLowerCase();
 
-        const data = await response.json();
-        wall.innerHTML = '';
+        const matchesCategory = (activeCategory === 'all' || category === activeCategory);
+        const matchesSearch = textContent.includes(searchTerm);
 
-        const wallWidth = wall.clientWidth - 100;
-        const wallHeight = wall.clientHeight - 140;
-
-        data.records.forEach((record, index) => {
-          const fields = record.fields;
-          const title = fields.Title || 'Community Notice';
-          const imageUrl = fields.FlyerImage && fields.FlyerImage[0] ? fields.FlyerImage[0].url : '';
-          const eventLink = fields.EventLink || '';
-
-          if (!imageUrl) return;
-
-          const randomX = Math.max(10, Math.floor(Math.random() * wallWidth));
-          const randomY = Math.max(10, Math.floor(Math.random() * wallHeight));
-          const randomRotation = (Math.random() * 18 - 9).toFixed(1);
-
-          const card = document.createElement('div');
-          card.className = 'flyer-card';
-          card.style.left = `${randomX}px`;
-          card.style.top = `${randomY}px`;
-          card.style.zIndex = index + 1;
-
-          card.innerHTML = `
-            <div class="flyer-image-container">
-              <img src="${imageUrl}" alt="${title}" loading="lazy">
-            </div>
-            <div class="flyer-title">${title}</div>
-          `;
-
-          makeInteractive(card, randomRotation, imageUrl, title, eventLink);
-          wall.appendChild(card);
-        });
-
-      } catch (err) {
-        console.error(err);
-        wall.innerHTML = '<div style="padding: 40px; text-align: center; color: #aaa;">Unable to load flyers right now.</div>';
-      }
-    }
-
-    function makeInteractive(element, baseRotation, imageUrl, title, eventLink) {
-      let xOffset = 0, yOffset = 0;
-      let currentScale = 1;
-      let isDragging = false;
-      let hasDraggedSignificantly = false;
-      let initialX, initialY;
-
-      const activeTouches = new Map();
-      let initialPinchDistance = null;
-      let initialPinchScale = 1;
-
-      function updateTransform(tx = xOffset, ty = yOffset) {
-        element.style.transform = `translate(${tx}px, ${ty}px) rotate(${baseRotation}deg) scale(${currentScale})`;
-      }
-
-      updateTransform(0, 0);
-
-      element.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const delta = e.deltaY < 0 ? 0.1 : -0.1;
-        currentScale = Math.min(Math.max(currentScale + delta, 0.6), 3.0);
-        updateTransform();
-      }, { passive: false });
-
-      element.addEventListener('pointerdown', (e) => {
-        highestZIndex++;
-        element.style.zIndex = highestZIndex;
-
-        hasDraggedSignificantly = false;
-        activeTouches.set(e.pointerId, { x: e.clientX, y: e.clientY });
-
-        if (activeTouches.size === 1) {
-          isDragging = true;
-          initialX = e.clientX - xOffset;
-          initialY = e.clientY - yOffset;
-        } else if (activeTouches.size === 2) {
-          isDragging = false;
-          const points = Array.from(activeTouches.values());
-          initialPinchDistance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
-          initialPinchScale = currentScale;
-        }
-
-        element.setPointerCapture(e.pointerId);
-      });
-
-      element.addEventListener('pointermove', (e) => {
-        if (!activeTouches.has(e.pointerId)) return;
-
-        activeTouches.set(e.pointerId, { x: e.clientX, y: e.clientY });
-
-        if (activeTouches.size === 2 && initialPinchDistance) {
-          const points = Array.from(activeTouches.values());
-          const currentDistance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
-          const pinchFactor = currentDistance / initialPinchDistance;
-          
-          currentScale = Math.min(Math.max(initialPinchScale * pinchFactor, 0.6), 3.0);
-          updateTransform();
-        } else if (isDragging && activeTouches.size === 1) {
-          const dx = Math.abs((e.clientX - initialX) - xOffset);
-          const dy = Math.abs((e.clientY - initialY) - yOffset);
-          if (dx > 5 || dy > 5) hasDraggedSignificantly = true;
-
-          xOffset = e.clientX - initialX;
-          yOffset = e.clientY - initialY;
-          updateTransform(xOffset, yOffset);
-        }
-      });
-
-      const handlePointerEnd = (e) => {
-        activeTouches.delete(e.pointerId);
-
-        if (!hasDraggedSignificantly && activeTouches.size === 0) {
-          openEnlargedFlyer(imageUrl, title, eventLink);
-        }
-
-        if (activeTouches.size < 2) initialPinchDistance = null;
-        if (activeTouches.size === 1) {
-          const remainingPoint = Array.from(activeTouches.values())[0];
-          isDragging = true;
-          initialX = remainingPoint.x - xOffset;
-          initialY = remainingPoint.y - yOffset;
+        if (matchesCategory && matchesSearch) {
+          card.style.display = 'flex';
         } else {
-          isDragging = false;
+          card.style.display = 'none';
         }
-      };
-
-      element.addEventListener('pointerup', handlePointerEnd);
-      element.addEventListener('pointercancel', handlePointerEnd);
+      });
     }
-
-    fetchAndScatterFlyers();
   </script>
-
 </body>
 </html>
