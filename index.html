@@ -11,8 +11,8 @@
       width: 100%;
       min-height: 100vh;
       background-color: #0d0d0d;
-      /* Bathroom Wall Background Image with dark vignette */
-      background-image: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.75)), url('bathroom-wall.jpg');
+      /* Bathroom wall background texture with dark vignette */
+      background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.75)), url('bathroom-wall.jpg');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -22,392 +22,277 @@
     }
 
     header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 10000;
-      background: rgba(13, 13, 13, 0.92);
-      border-bottom: 2px solid #ff007f;
-      padding: 12px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 20px rgba(255, 0, 127, 0.3);
+      padding: 30px 24px 10px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
     }
 
     .brand-container {
-      display: flex;
+      display: inline-flex;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      text-decoration: none;
     }
 
     .brand-logo {
-      height: 32px;
+      height: 48px;
       width: auto;
-      filter: drop-shadow(0 0 6px #ff007f);
-      flex-shrink: 0;
+      filter: drop-shadow(0 0 8px #ff007f);
     }
 
     .brand-title {
-      max-height: 20px;
+      max-height: 24px;
       width: auto;
       object-fit: contain;
       filter: invert(1);
     }
 
-    .nav-links {
-      display: flex;
-      gap: 16px;
-    }
-
-    .nav-links a {
+    .hub-description {
       color: #aaa;
-      text-decoration: none;
-      font-size: 11px;
+      font-size: 12px;
       text-transform: uppercase;
-      transition: color 0.2s;
+      letter-spacing: 1px;
+      margin-top: 6px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
 
-    .nav-links a:hover {
-      color: #ff007f;
-      text-shadow: 0 0 8px #ff007f;
-    }
-
+    /* Sticker Wall Main Area */
     main {
-      max-width: 1200px;
-      margin: 100px auto 60px;
-      padding: 0 24px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero-banner {
-      border: 1px solid #ff007f;
-      background: rgba(15, 15, 15, 0.88);
-      padding: 32px;
-      border-radius: 6px;
-      box-shadow: 0 0 25px rgba(255, 0, 127, 0.3);
-      margin-bottom: 40px;
-      text-align: center;
-      backdrop-filter: blur(6px);
-    }
-
-    .hero-banner h1 {
-      color: #ff007f;
-      font-size: 28px;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-shadow: 0 0 10px rgba(255, 0, 127, 0.6);
-    }
-
-    .hero-banner p {
-      color: #ccc;
-      font-size: 14px;
-      max-width: 750px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-
-    /* Bathroom Wall Sticker Section */
-    .sticker-wall-section {
-      margin-bottom: 50px;
-    }
-
-    .section-title {
-      font-size: 13px;
-      color: #ff007f;
-      text-transform: uppercase;
-      margin-bottom: 14px;
-      letter-spacing: 1px;
-      text-shadow: 0 0 6px rgba(255, 0, 127, 0.8);
+      min-height: calc(100vh - 160px);
       display: flex;
+      justify-content: center;
       align-items: center;
-      gap: 8px;
-    }
-
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(255, 0, 127, 0.4);
+      position: relative;
+      padding: 40px 20px;
     }
 
     .sticker-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 32px;
+      gap: 50px;
       justify-content: center;
       align-items: center;
-      padding: 40px 24px;
-      background: rgba(10, 10, 10, 0.65);
-      border: 2px dashed rgba(255, 0, 127, 0.5);
-      border-radius: 8px;
-      backdrop-filter: blur(4px);
-      box-shadow: inset 0 0 40px rgba(0,0,0,0.9);
+      max-width: 900px;
     }
 
-    /* Sticker Links with Pulsing Neon Highlights & Tooltip Pop-ups */
-    .sticker-link {
-      display: inline-block;
+    /* Sticker styling with pulsing pink light */
+    .sticker-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
       position: relative;
-      border-radius: 10px;
-      padding: 8px;
-      background: rgba(0, 0, 0, 0.45);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      animation: neonPulse 2.5s infinite ease-in-out;
-      text-decoration: none;
+      border-radius: 50%;
+      transition: transform 0.25s ease;
+      animation: neonPulse 2s infinite ease-in-out;
     }
 
-    /* Unique random rotations for authentic bathroom wall feel */
-    .sticker-link:nth-child(1) { transform: rotate(-5deg); }
-    .sticker-link:nth-child(2) { transform: rotate(4deg); }
-    .sticker-link:nth-child(3) { transform: rotate(-3deg); }
-    .sticker-link:nth-child(4) { transform: rotate(6deg); }
+    /* Unique tilts for graffiti feel */
+    .sticker-btn:nth-child(1) { transform: rotate(-6deg); }
+    .sticker-btn:nth-child(2) { transform: rotate(5deg); }
+    .sticker-btn:nth-child(3) { transform: rotate(-4deg); }
+    .sticker-btn:nth-child(4) { transform: rotate(7deg); }
 
-    /* Tooltip Pop-up on Hover */
-    .sticker-link::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: -32px;
-      left: 50%;
-      transform: translateX(-50%) translateY(5px);
-      background: #ff007f;
-      color: #000;
-      font-size: 10px;
-      font-weight: bold;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 3px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      box-shadow: 0 0 10px rgba(255, 0, 127, 0.8);
-      z-index: 20;
-    }
-
-    .sticker-link:hover::after {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .sticker-link:hover {
+    .sticker-btn:hover {
       transform: scale(1.15) rotate(0deg);
       animation: none;
-      box-shadow: 0 0 35px #ff007f, 0 0 70px #ff007f;
-      background: rgba(255, 0, 127, 0.25);
-      z-index: 10;
+      box-shadow: 0 0 35px #ff007f, 0 0 65px #ff007f;
+      background: rgba(255, 0, 127, 0.2);
     }
 
     .sticker-img {
-      height: 85px;
+      height: 110px;
       width: auto;
       object-fit: contain;
-      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.9));
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.9));
       display: block;
+    }
+
+    /* Bottom screen marquee hover title */
+    #hover-marquee {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(13, 13, 13, 0.95);
+      border-top: 2px solid #ff007f;
+      color: #ff007f;
+      font-size: 13px;
+      text-transform: uppercase;
+      padding: 10px;
+      text-align: center;
+      letter-spacing: 2px;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
     }
 
     /* Neon Pulse Keyframes */
     @keyframes neonPulse {
       0% {
-        box-shadow: 0 0 6px rgba(255, 0, 127, 0.5), inset 0 0 6px rgba(255, 0, 127, 0.3);
+        box-shadow: 0 0 8px rgba(255, 0, 127, 0.5), inset 0 0 8px rgba(255, 0, 127, 0.3);
         border: 1px solid rgba(255, 0, 127, 0.6);
       }
       50% {
-        box-shadow: 0 0 22px rgba(255, 0, 127, 0.95), 0 0 40px rgba(255, 0, 127, 0.7);
+        box-shadow: 0 0 25px rgba(255, 0, 127, 0.95), 0 0 45px rgba(255, 0, 127, 0.7);
         border: 1px solid rgba(255, 0, 127, 1);
       }
       100% {
-        box-shadow: 0 0 6px rgba(255, 0, 127, 0.5), inset 0 0 6px rgba(255, 0, 127, 0.3);
+        box-shadow: 0 0 8px rgba(255, 0, 127, 0.5), inset 0 0 8px rgba(255, 0, 127, 0.3);
         border: 1px solid rgba(255, 0, 127, 0.6);
       }
     }
 
-    /* Hub Cards */
-    .hub-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
-    }
-
-    .hub-card {
-      background: rgba(18, 18, 18, 0.88);
-      border: 1px solid #222;
-      border-radius: 6px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      text-decoration: none;
-      color: inherit;
+    /* Modal Popup when Clicked */
+    #sticker-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 30000;
+      display: none;
+      justify-content: center;
+      align-items: center;
       backdrop-filter: blur(6px);
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      padding: 20px;
     }
 
-    .hub-card:hover {
-      transform: translateY(-4px);
-      border-color: #ff007f;
-      box-shadow: 0 0 25px rgba(255, 0, 127, 0.4);
+    .modal-card {
+      background: #141414;
+      border: 2px solid #ff007f;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(255, 0, 127, 0.6);
     }
 
-    .card-tag {
-      font-size: 10px;
+    .modal-sticker-img {
+      height: 90px;
+      width: auto;
+      object-fit: contain;
+      margin-bottom: 16px;
+      filter: drop-shadow(0 0 10px rgba(255, 0, 127, 0.5));
+    }
+
+    .modal-title {
       color: #ff007f;
-      border: 1px solid #ff007f;
-      padding: 2px 6px;
-      border-radius: 3px;
-      text-transform: uppercase;
-      align-self: flex-start;
-      margin-bottom: 12px;
-    }
-
-    .card-title {
       font-size: 18px;
-      color: #fff;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
     }
 
-    .card-desc {
+    .modal-desc {
+      color: #ccc;
       font-size: 12px;
-      color: #aaa;
       line-height: 1.5;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
-    .card-btn {
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .modal-btn {
+      flex: 1;
       padding: 10px;
-      background: transparent;
-      border: 1px solid #ff007f;
-      color: #ff007f;
-      text-align: center;
+      border-radius: 4px;
       font-size: 11px;
-      text-transform: uppercase;
       font-weight: bold;
-      border-radius: 3px;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .hub-card:hover .card-btn {
-      background: #ff007f;
-      color: #000;
-    }
-
-    footer {
-      border-top: 1px solid #222;
-      padding: 20px 24px;
-      text-align: center;
-      font-size: 11px;
-      color: #666;
       text-transform: uppercase;
-      position: relative;
-      z-index: 2;
-      margin-top: 40px;
-      background: rgba(13, 13, 13, 0.85);
+      cursor: pointer;
+      font-family: inherit;
+      text-decoration: none;
     }
+
+    .btn-visit { background: #ff007f; color: #000; border: none; }
+    .btn-close { background: transparent; color: #aaa; border: 1px solid #444; }
   </style>
 </head>
 <body>
 
   <header>
-    <a href="index.html" class="brand-container" style="text-decoration: none;">
+    <div class="brand-container">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
-      <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:14px;\'>THE GRAPEVINE</h1>'">
-    </a>
-    <nav class="nav-links">
-      <a href="notice-board.html">Notice Board</a>
-      <a href="creator-directory.html">Directory</a>
-      <a href="oral-history.html">Oral History</a>
-      <a href="past-gigs.html">Gig Archive</a>
-    </nav>
+      <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:16px;\'>THE GRAPEVINE</h1>'">
+      <p class="hub-description">Algorithm-free digital hub for the local underground DIY scene</p>
+    </div>
   </header>
 
   <main>
-    <div class="hero-banner">
-      <h1>The Grapevine</h1>
-      <p>An algorithm-free, community-driven digital hub for the local DIY scene. Share pinned announcements, browse artist listings, recount underground oral histories, and log past gig setlists with real-time updates across all devices.</p>
-    </div>
-
-    <!-- Bathroom Wall / Sticker Board Section -->
-    <div class="sticker-wall-section">
-      <div class="section-title">⚡ Bathroom Wall Sticker Board</div>
-      <div class="sticker-container">
-        
-        <!-- Notice Board Sticker -->
-        <a href="notice-board.html" class="sticker-link" data-tooltip="Notice Board" title="Community Notice Board">
-          <img src="grapes-sticker.png" class="sticker-img" alt="Notice Board Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
-        </a>
-
-        <!-- Creator Directory Sticker -->
-        <a href="creator-directory.html" class="sticker-link" data-tooltip="Creator Directory" title="Band & Creator Directory">
-          <img src="keys-sticker.png" class="sticker-img" alt="Directory Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
-        </a>
-
-        <!-- Oral History Sticker -->
-        <a href="oral-history.html" class="sticker-link" data-tooltip="Oral History Vault" title="Oral History Vault">
-          <img src="cassette-sticker.png" class="sticker-img" alt="Oral History Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
-        </a>
-
-        <!-- Past Gig Archive Sticker -->
-        <a href="past-gigs.html" class="sticker-link" data-tooltip="Past Gig Archive" title="Past Gig Archive">
-          <img src="grenade-sticker.png" class="sticker-img" alt="Gig Timeline Sticker" onerror="this.onerror=null; this.src='grape-logo.png';">
-        </a>
-
-      </div>
-    </div>
-
-    <!-- Main Navigation Hub Cards -->
-    <div class="hub-grid">
+    <div class="sticker-container">
       
-      <!-- Notice Board -->
-      <a href="notice-board.html" class="hub-card">
-        <div>
-          <span class="card-tag">Live Feed</span>
-          <h2 class="card-title">Notice Board</h2>
-          <p class="card-desc">Pinned gig announcements, musicians wanted posts, local DIY workshops, and scene classifieds updated live.</p>
-        </div>
-        <div class="card-btn">Explore Notices →</div>
-      </a>
+      <!-- Notice Board Sticker -->
+      <button class="sticker-btn" onclick="openStickerModal('Notice Board', 'Pinned gig announcements, musicians wanted posts, local DIY workshops, and scene classifieds updated live in real time.', 'grapes-sticker.png', 'notice-board.html')">
+        <img src="grapes-sticker.png" class="sticker-img" alt="Notice Board" onmouseenter="showMarquee('Notice Board')" onmouseleave="hideMarquee()">
+      </button>
 
-      <!-- Creator Directory -->
-      <a href="creator-directory.html" class="hub-card">
-        <div>
-          <span class="card-tag">Community Roster</span>
-          <h2 class="card-title">Creator Directory</h2>
-          <p class="card-desc">An open directory of underground bands, zine makers, visual artists, independent venues, and local collectives.</p>
-        </div>
-        <div class="card-btn">Browse Directory →</div>
-      </a>
+      <!-- Creator Directory Sticker -->
+      <button class="sticker-btn" onclick="openStickerModal('Creator Directory', 'An open directory of underground bands, zine makers, visual artists, independent venues, and local collectives.', 'keys-sticker.png', 'creator-directory.html')">
+        <img src="keys-sticker.png" class="sticker-img" alt="Creator Directory" onmouseenter="showMarquee('Creator Directory')" onmouseleave="hideMarquee()">
+      </button>
 
-      <!-- Oral History -->
-      <a href="oral-history.html" class="hub-card">
-        <div>
-          <span class="card-tag">Audio Vault</span>
-          <h2 class="card-title">Oral History</h2>
-          <p class="card-desc">Raw voice notes, gig memories, venue lore, and spoken stories submitted directly by members of our scene.</p>
-        </div>
-        <div class="card-btn">Listen to Vault →</div>
-      </a>
+      <!-- Oral History Sticker -->
+      <button class="sticker-btn" onclick="openStickerModal('Oral History Vault', 'Raw voice notes, gig memories, venue lore, and spoken stories submitted directly by members of our scene.', 'cassette-sticker.png', 'oral-history.html')">
+        <img src="cassette-sticker.png" class="sticker-img" alt="Oral History Vault" onmouseenter="showMarquee('Oral History Vault')" onmouseleave="hideMarquee()">
+      </button>
 
-      <!-- Past Gig Archive & Timeline -->
-      <a href="past-gigs.html" class="hub-card">
-        <div>
-          <span class="card-tag">Scene History</span>
-          <h2 class="card-title">Past Gig Archive</h2>
-          <p class="card-desc">A crowd-sourced timeline of past local shows. Log headliners, support acts, setlist highlight songs, and photo stubs.</p>
-        </div>
-        <div class="card-btn">View Timeline →</div>
-      </a>
+      <!-- Past Gig Archive Sticker -->
+      <button class="sticker-btn" onclick="openStickerModal('Past Gig Archive', 'A crowd-sourced timeline of past local shows. Log headliners, support acts, setlist highlight songs, and photo stubs.', 'grenade-sticker.png', 'past-gigs.html')">
+        <img src="grenade-sticker.png" class="sticker-img" alt="Past Gig Archive" onmouseenter="showMarquee('Past Gig Archive')" onmouseleave="hideMarquee()">
+      </button>
 
     </div>
   </main>
 
-  <footer>
-    The Grapevine DIY Network • Independent &amp; Open Source
-  </footer>
+  <!-- Bottom Hover Marquee -->
+  <div id="hover-marquee"></div>
 
+  <!-- Click Modal Popup -->
+  <div id="sticker-modal" onclick="closeStickerModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <img id="modal-img" src="" class="modal-sticker-img" alt="Sticker">
+      <h2 id="modal-title" class="modal-title"></h2>
+      <p id="modal-desc" class="modal-desc"></p>
+      <div class="modal-actions">
+        <button class="modal-btn btn-close" onclick="closeStickerModal()">Back to Wall</button>
+        <a id="modal-link" href="#" class="modal-btn btn-visit">Enter Page →</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const marquee = document.getElementById('hover-marquee');
+
+    function showMarquee(title) {
+      marquee.innerText = `>>> ${title} <<<`;
+      marquee.style.opacity = '1';
+    }
+
+    function hideMarquee() {
+      marquee.style.opacity = '0';
+    }
+
+    function openStickerModal(title, desc, imgSrc, url) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-desc').innerText = desc;
+      document.getElementById('modal-img').src = imgSrc;
+      document.getElementById('modal-link').href = url;
+      document.getElementById('sticker-modal').style.display = 'flex';
+      hideMarquee();
+    }
+
+    function closeStickerModal() {
+      document.getElementById('sticker-modal').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
