@@ -2,44 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
-  <title>The Grapevine — Interactive Sticker Wall</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Grapevine — Underground Community Hub</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    html, body {
+
+    body, html {
       width: 100%;
-      height: 100%;
+      min-height: 100%;
       background-color: #0d0d0d;
       color: #fff;
       font-family: 'Courier New', Courier, monospace;
-      overflow: hidden;
-      touch-action: none;
-      -webkit-user-select: none;
-      user-select: none;
+      overflow-x: hidden;
     }
 
-    /* Fixed UI Header */
-    .controls-overlay {
+    header {
       position: fixed;
-      top: 15px;
-      left: 15px;
-      z-index: 1000;
-      background: rgba(13, 13, 13, 0.92);
-      border: 1px solid #ff007f;
-      padding: 12px 16px;
-      border-radius: 6px;
-      box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10000;
+      background: rgba(13, 13, 13, 0.95);
+      border-bottom: 2px solid #ff007f;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       backdrop-filter: blur(8px);
-      pointer-events: none;
-      max-width: 320px;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.3);
     }
 
     .brand-container {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 6px;
     }
 
     .brand-logo {
@@ -56,549 +52,203 @@
       filter: invert(1);
     }
 
-    .controls-overlay p {
-      font-size: 11px;
-      color: #bbb;
-      line-height: 1.4;
-      margin-top: 4px;
+    .nav-links {
+      display: flex;
+      gap: 16px;
     }
 
-    /* Zoom Controls */
-    .zoom-buttons {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
+    .nav-links a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 11px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #ff007f;
+      text-shadow: 0 0 8px #ff007f;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 100px auto 60px;
+      padding: 0 24px;
+    }
+
+    .hero-banner {
+      border: 1px solid #ff007f;
+      background: rgba(20, 20, 20, 0.8);
+      padding: 32px;
+      border-radius: 6px;
+      box-shadow: 0 0 25px rgba(255, 0, 127, 0.25);
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .hero-banner h1 {
+      color: #ff007f;
+      font-size: 28px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero-banner p {
+      color: #bbb;
+      font-size: 14px;
+      max-width: 750px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .hub-card {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 6px;
+      padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      justify-content: space-between;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
     }
 
-    .btn {
-      background: #111;
+    .hub-card:hover {
+      transform: translateY(-4px);
+      border-color: #ff007f;
+      box-shadow: 0 0 25px rgba(255, 0, 127, 0.4);
+    }
+
+    .card-tag {
+      font-size: 10px;
       color: #ff007f;
       border: 1px solid #ff007f;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      font-size: 20px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.8);
-      user-select: none;
+      padding: 2px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      align-self: flex-start;
+      margin-bottom: 12px;
     }
 
-    .btn:active {
+    .card-title {
+      font-size: 18px;
+      color: #fff;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .card-btn {
+      padding: 10px;
+      background: transparent;
+      border: 1px solid #ff007f;
+      color: #ff007f;
+      text-align: center;
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: bold;
+      border-radius: 3px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .hub-card:hover .card-btn {
       background: #ff007f;
       color: #000;
     }
 
-    /* Fullscreen Viewport */
-    #viewport {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      position: relative;
-      cursor: grab;
-      background-color: #0d0d0d;
-    }
-
-    #viewport:active {
-      cursor: grabbing;
-    }
-
-    /* Canvas Wrapper */
-    #canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      transform-origin: 0 0;
-      will-change: transform;
-    }
-
-    .wall-stage {
-      position: relative;
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    #wall-photo {
-      display: block;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      filter: contrast(1.05) brightness(0.9);
-    }
-
-    #hotspot-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 10;
-    }
-
-    /* High-Impact Dramatic Pulsing Pink Neon Hotspots */
-    @keyframes dramaticPulse {
-      0% { 
-        fill: rgba(255, 0, 127, 0.1);
-        stroke: rgba(255, 0, 127, 0.5); 
-        stroke-width: 3.5;
-        filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 6px rgba(255, 0, 127, 0.5)); 
-      }
-      50% { 
-        fill: rgba(255, 0, 127, 0.35);
-        stroke: #ff007f; 
-        stroke-width: 7;
-        filter: drop-shadow(2px 4px 8px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 25px #ff007f) drop-shadow(0 0 45px #ff007f); 
-      }
-      100% { 
-        fill: rgba(255, 0, 127, 0.1);
-        stroke: rgba(255, 0, 127, 0.5); 
-        stroke-width: 3.5;
-        filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 6px rgba(255, 0, 127, 0.5)); 
-      }
-    }
-
-    .sticker-link {
-      fill: rgba(255, 0, 127, 0.15);
-      stroke-width: 4;
-      cursor: pointer;
-      outline: none;
-      -webkit-tap-highlight-color: transparent;
-      animation: dramaticPulse 2.2s infinite ease-in-out;
-      transition: fill 0.3s ease, stroke 0.3s ease, stroke-width 0.3s ease, filter 0.3s ease;
-      transform-origin: center;
-    }
-
-    .sticker-link:hover, .sticker-link:active, .sticker-link:focus {
-      fill: rgba(255, 0, 127, 0.5);
-      stroke: #ff007f;
-      stroke-width: 8;
-      outline: none;
-      filter: drop-shadow(6px 12px 20px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 35px #ff007f) drop-shadow(0 0 60px #ff007f);
-    }
-
-    /* Bottom Tooltip */
-    #tooltip-box {
-      position: fixed;
-      bottom: 25px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(17, 17, 17, 0.95);
-      border: 2px solid #ff007f;
-      color: #fff;
-      padding: 8px 16px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-      z-index: 2000;
-      pointer-events: none;
-      display: none;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+    footer {
+      border-top: 1px solid #222;
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 11px;
+      color: #666;
       text-transform: uppercase;
-      text-align: center;
-      max-width: 85vw;
     }
-
-    /* Information Preview Modal */
-    #preview-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 30000;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      backdrop-filter: blur(5px);
-      padding: 20px;
-    }
-
-    .modal-card {
-      background: #141414;
-      border: 2px solid #ff007f;
-      width: 100%;
-      max-width: 400px;
-      border-radius: 8px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
-    }
-
-    .modal-thumbnail {
-      max-width: 120px;
-      max-height: 120px;
-      object-fit: contain;
-      margin-bottom: 15px;
-      border: 1px solid #ff007f;
-      background: #000;
-      padding: 6px;
-      border-radius: 4px;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
-    }
-
-    .modal-card h3 {
-      color: #ff007f;
-      font-size: 16px;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      text-align: center;
-    }
-
-    .modal-card p {
-      color: #ccc;
-      font-size: 13px;
-      text-align: center;
-      margin-bottom: 20px;
-      line-height: 1.4;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 12px;
-      width: 100%;
-    }
-
-    .modal-btn {
-      flex: 1;
-      padding: 10px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: bold;
-      text-transform: uppercase;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      font-family: inherit;
-    }
-
-    .btn-visit { background: #ff007f; color: #000; border: none; }
-    .btn-visit:hover { background: #ff3399; }
-    .btn-close { background: transparent; color: #aaa; border: 1px solid #444; }
-    .btn-close:hover { color: #fff; border-color: #777; }
   </style>
 </head>
 <body>
 
-  <!-- Branded Header Panel -->
-  <div class="controls-overlay">
-    <div class="brand-container">
+  <header>
+    <a href="index.html" class="brand-container" style="text-decoration: none;">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
       <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:14px;\'>THE GRAPEVINE</h1>'">
+    </a>
+    <nav class="nav-links">
+      <a href="notice-board.html">Notice Board</a>
+      <a href="creator-directory.html">Directory</a>
+      <a href="oral-history.html">Oral History</a>
+      <a href="past-gigs.html">Gig Archive</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero-banner">
+      <h1>The Grapevine</h1>
+      <p>An algorithm-free, community-driven digital hub for the local DIY scene. Share pinned announcements, browse artist listings, recount underground oral histories, and log past gig setlists with real-time updates across all devices.</p>
     </div>
-    <p>The Grapevine digital hub - created by the community it exists for. Tap glowing stickers to access more community content</p>
-  </div>
 
-  <div id="tooltip-box"></div>
+    <div class="hub-grid">
+      
+      <!-- Notice Board -->
+      <a href="notice-board.html" class="hub-card">
+        <div>
+          <span class="card-tag">Live Feed</span>
+          <h2 class="card-title">Notice Board</h2>
+          <p class="card-desc">Pinned gig announcements, musicians wanted posts, local DIY workshops, and scene classifieds updated live.</p>
+        </div>
+        <div class="card-btn">Explore Notices →</div>
+      </a>
 
-  <div class="zoom-buttons">
-    <button class="btn" id="zoom-in">+</button>
-    <button class="btn" id="zoom-out">−</button>
-    <button class="btn" id="zoom-reset">↺</button>
-  </div>
+      <!-- Creator Directory -->
+      <a href="creator-directory.html" class="hub-card">
+        <div>
+          <span class="card-tag">Community Roster</span>
+          <h2 class="card-title">Creator Directory</h2>
+          <p class="card-desc">An open directory of underground bands, zine makers, visual artists, independent venues, and local collectives.</p>
+        </div>
+        <div class="card-btn">Browse Directory →</div>
+      </a>
 
-  <div id="viewport">
-    <div id="canvas">
-      <div class="wall-stage">
-        <!-- Background Image -->
-        <img id="wall-photo" src="bathroom-wall.jpg" alt="The Grapevine Bathroom Wall" onload="initStickerWall(this)">
+      <!-- Oral History -->
+      <a href="oral-history.html" class="hub-card">
+        <div>
+          <span class="card-tag">Audio Vault</span>
+          <h2 class="card-title">Oral History</h2>
+          <p class="card-desc">Raw voice notes, gig memories, venue lore, and spoken stories submitted directly by members of our scene.</p>
+        </div>
+        <div class="card-btn">Listen to Vault →</div>
+      </a>
 
-        <!-- SVG Hotspots -->
-        <svg id="hotspot-overlay">
-          
-          <!-- 1. CASSETTE = Scene Oral History / Voice Note Vault -->
-          <polygon class="sticker-link" style="animation-delay: 0s;" points="240,307 398,275 426,379 261,414" 
-                   data-title="Scene Oral History — Voice Note Vault" 
-                   data-desc="Listen to short voice notes, live gig snippets, and anecdotes recorded directly by members of the scene." 
-                   data-url="oral-history.html"
-                   data-img="cassette-sticker.png" />
+      <!-- Past Gig Archive & Timeline -->
+      <a href="past-gigs.html" class="hub-card">
+        <div>
+          <span class="card-tag">Scene History</span>
+          <h2 class="card-title">Past Gig Archive</h2>
+          <p class="card-desc">A crowd-sourced timeline of past local shows. Log headliners, support acts, setlist highlight songs, and photo stubs.</p>
+        </div>
+        <div class="card-btn">View Timeline →</div>
+      </a>
 
-          <!-- 2. GRENADE = Grapevine Instagram -->
-          <polygon class="sticker-link" style="animation-delay: 0.7s;" points="545,420 547,432 551,401 540,375 548,360 557,341 568,338 584,326 586,307 620,306 631,321 649,332 649,346 655,360 657,374 655,389 655,400 652,406 649,416 644,423 642,430 628,446 625,454 610,466 593,467 580,458 552,433 554,439 562,442 547,432" 
-                   data-title="The Grapevine — Official Instagram" 
-                   data-desc="Follow our official page for updates, behind-the-scenes content, and community highlights." 
-                   data-url="https://www.instagram.com/thegrapevineuk/"
-                   data-img="grenade-sticker.png" />
-
-          <!-- 3. RACCOON = Hardcore Hub -->
-          <circle class="sticker-link" style="animation-delay: 1.4s;" cx="519" cy="510" r="61" 
-                  data-title="UK Hardcore Community Hub" 
-                  data-desc="Connecting the broader UK hardcore and alternative music network, shows, and community projects." 
-                  data-url="https://www.instagram.com/uk_hc/"
-                  data-img="raccoon-sticker.png" />
-
-          <!-- 4. GRAPES = Venue Map -->
-          <circle class="sticker-link" style="animation-delay: 0.3s;" cx="339" cy="650" r="82" 
-                  data-title="The Grapevine — Grassroots Venue Map" 
-                  data-desc="Discover independent grassroots music venues, community spaces, and safe hubs across the scene." 
-                  data-url="https://mollythirza.github.io/TheGrapevineMap/"
-                  data-img="grapes-sticker.png" />
-
-          <!-- 5. KEYS = Notice Board -->
-          <rect class="sticker-link" style="animation-delay: 1.1s;" x="562" y="777" width="176" height="149" rx="10" 
-                data-title="Notice Board" 
-                data-desc="Explore community gig posters, DIY flyers, and underground announcements pinned live by creators." 
-                data-url="notice-board.html"
-                data-img="keys-sticker.png" />
-
-          <!-- 6. SAFETY PIN = Digital Zine Library -->
-          <polygon class="sticker-link" style="animation-delay: 1.8s;" points="248,1015 337,910 347,903 369,881 380,877 395,880 405,889 407,906 393,929 369,954 350,973 327,997 302,1020 281,1037 266,1043 252,1035 245,1025" 
-                   data-title="DIY Distro — Digital Zine Library" 
-                   data-desc="Flip page-by-page through digital archives and scans of local underground zines and mini-pubs." 
-                   data-url="zine-library.html"
-                   data-img="safetypin-sticker.png" />
-
-          <!-- 7. SPRAY CANS = Band & Creator Directory -->
-          <polygon class="sticker-link" style="animation-delay: 0.5s;" points="424,1055 407,915 408,906 413,903 418,892 424,887 426,876 431,871 440,870 444,875 448,885 456,887 461,891 466,896 472,900 477,911 478,923 482,905 486,899 494,894 501,889 506,888 509,878 519,876 526,877 532,880 534,893 544,900 552,914 535,1050 527,1057 509,1058 492,1056 482,1053 474,1057 458,1061 447,1062 430,1058" 
-                   data-title="Band & Creator Directory" 
-                   data-desc="Browse an algorithm-free roster of local independent bands, DIY zine makers, and visual artists." 
-                   data-url="creator-directory.html"
-                   data-img="spraycan-sticker.png" />
-
-        </svg>
-      </div>
     </div>
-  </div>
+  </main>
 
-  <!-- Information Preview Modal -->
-  <div id="preview-modal">
-    <div class="modal-card">
-      <img id="modal-thumb" class="modal-thumbnail" src="" alt="Sticker Thumbnail">
-      <h3 id="modal-title">Title</h3>
-      <p id="modal-desc">Description text goes here...</p>
-      <div class="modal-actions">
-        <button class="modal-btn btn-close" onclick="closePreview()">Close</button>
-        <a id="modal-link" href="#" target="_blank" class="modal-btn btn-visit">Visit Site →</a>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const viewport = document.getElementById('viewport');
-    const canvas = document.getElementById('canvas');
-    const tooltipBox = document.getElementById('tooltip-box');
-    
-    let nativeWidth = 0;
-    let nativeHeight = 0;
-    let scale = 1;
-    let minScale = 1;
-    let pointX = 0;
-    let pointY = 0;
-
-    function showTooltip(text) {
-      tooltipBox.innerText = text;
-      tooltipBox.style.display = 'block';
-    }
-
-    function hideTooltip() {
-      tooltipBox.style.display = 'none';
-    }
-
-    // SVG Fallback for Missing Sticker Images
-    const svgFallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23141414'/><circle cx='50' cy='50' r='38' fill='%230d0d0d' stroke='%23ff007f' stroke-width='3'/><path d='M35 50 L45 60 L65 40' stroke='%23ff007f' stroke-width='4' fill='none' stroke-linecap='round'/></svg>";
-
-    const modal = document.getElementById('preview-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalDesc = document.getElementById('modal-desc');
-    const modalLink = document.getElementById('modal-link');
-    const modalThumb = document.getElementById('modal-thumb');
-
-    modalThumb.onerror = function() {
-      this.src = svgFallback;
-    };
-
-    function openPreview(title, desc, targetUrl, imgSrc) {
-      modalTitle.innerText = title;
-      modalDesc.innerText = desc;
-      modalThumb.src = imgSrc || svgFallback;
-
-      if (targetUrl) {
-        modalLink.href = targetUrl;
-        modalLink.style.display = 'inline-block';
-      } else {
-        modalLink.style.display = 'none';
-      }
-
-      modal.style.display = 'flex';
-      hideTooltip();
-    }
-
-    function closePreview() {
-      modal.style.display = 'none';
-    }
-
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closePreview();
-    });
-
-    document.querySelectorAll('#hotspot-overlay .sticker-link').forEach(spot => {
-      const titleText = spot.getAttribute('data-title');
-      const descText = spot.getAttribute('data-desc');
-      const targetUrl = spot.getAttribute('data-url');
-      const imgSrc = spot.getAttribute('data-img');
-
-      spot.addEventListener('mouseenter', () => showTooltip(titleText));
-      spot.addEventListener('mouseleave', () => hideTooltip());
-      spot.addEventListener('touchstart', () => showTooltip(titleText), { passive: true });
-
-      spot.addEventListener('click', (e) => {
-        e.stopPropagation();
-        openPreview(titleText, descText, targetUrl, imgSrc);
-      });
-    });
-
-    window.initStickerWall = function(img) {
-      nativeWidth = img.naturalWidth;
-      nativeHeight = img.naturalHeight;
-
-      canvas.style.width = nativeWidth + 'px';
-      canvas.style.height = nativeHeight + 'px';
-
-      const svg = document.getElementById('hotspot-overlay');
-      svg.setAttribute('viewBox', `0 0 ${nativeWidth} ${nativeHeight}`);
-
-      initCanvasFit();
-    };
-
-    function clampPositions() {
-      if (!nativeWidth) return;
-      const vWidth = window.innerWidth;
-      const vHeight = window.innerHeight;
-      const cWidth = nativeWidth * scale;
-      const cHeight = nativeHeight * scale;
-
-      pointX = Math.min(0, Math.max(vWidth - cWidth, pointX));
-      pointY = Math.min(0, Math.max(vHeight - cHeight, pointY));
-    }
-
-    function setTransform() {
-      clampPositions();
-      canvas.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
-    }
-
-    function initCanvasFit() {
-      if (!nativeWidth) return;
-      const vWidth = window.innerWidth;
-      const vHeight = window.innerHeight;
-      
-      const scaleX = vWidth / nativeWidth;
-      const scaleY = vHeight / nativeHeight;
-      minScale = Math.max(scaleX, scaleY); 
-      scale = minScale;
-      
-      pointX = (vWidth - nativeWidth * scale) / 2;
-      pointY = (vHeight - nativeHeight * scale) / 2;
-      setTransform();
-    }
-
-    window.addEventListener('resize', initCanvasFit);
-
-    // Pan & Zoom Engine
-    let isDragging = false;
-    let startX = 0, startY = 0;
-    let initialPinchDistance = null;
-    let initialScale = 1;
-
-    function getDistance(t1, t2) {
-      const dx = t1.clientX - t2.clientX;
-      const dy = t1.clientY - t2.clientY;
-      return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    viewport.addEventListener('mousedown', (e) => {
-      if (e.target.closest('.sticker-link')) return;
-      e.preventDefault();
-      startX = e.clientX - pointX;
-      startY = e.clientY - pointY;
-      isDragging = true;
-    });
-
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      e.preventDefault();
-      pointX = e.clientX - startX;
-      pointY = e.clientY - startY;
-      setTransform();
-    });
-
-    window.addEventListener('mouseup', () => { isDragging = false; });
-
-    viewport.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
-      const newScale = Math.min(Math.max(scale * zoomFactor, minScale), 4.5);
-      
-      const xs = (e.clientX - pointX) / scale;
-      const ys = (e.clientY - pointY) / scale;
-      
-      scale = newScale;
-      pointX = e.clientX - xs * scale;
-      pointY = e.clientY - ys * scale;
-      setTransform();
-    }, { passive: false });
-
-    viewport.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        if (e.target.closest('.sticker-link')) {
-          isDragging = false;
-          return;
-        }
-        hideTooltip();
-        startX = e.touches[0].clientX - pointX;
-        startY = e.touches[0].clientY - pointY;
-        isDragging = true;
-      } else if (e.touches.length === 2) {
-        isDragging = false;
-        initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
-        initialScale = scale;
-      }
-    }, { passive: false });
-
-    viewport.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 1 && isDragging) {
-        e.preventDefault();
-        pointX = e.touches[0].clientX - startX;
-        pointY = e.touches[0].clientY - startY;
-        setTransform();
-      } else if (e.touches.length === 2 && initialPinchDistance) {
-        e.preventDefault();
-        const currentDistance = getDistance(e.touches[0], e.touches[1]);
-        const factor = currentDistance / initialPinchDistance;
-        const newScale = Math.min(Math.max(initialScale * factor, minScale), 4.5);
-        
-        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-        
-        const xs = (midX - pointX) / scale;
-        const ys = (midY - pointY) / scale;
-        
-        scale = newScale;
-        pointX = midX - xs * scale;
-        pointY = midY - ys * scale;
-        setTransform();
-      }
-    }, { passive: false });
-
-    viewport.addEventListener('touchend', (e) => {
-      if (e.touches.length < 2) initialPinchDistance = null;
-      if (e.touches.length === 0) isDragging = false;
-    });
-
-    document.getElementById('zoom-in').addEventListener('click', () => { scale = Math.min(scale * 1.3, 4.5); setTransform(); });
-    document.getElementById('zoom-out').addEventListener('click', () => { scale = Math.max(scale / 1.3, minScale); setTransform(); });
-    document.getElementById('zoom-reset').addEventListener('click', initCanvasFit);
-  </script>
+  <footer>
+    The Grapevine DIY Network • Independent &amp; Open Source
+  </footer>
 
 </body>
 </html>
