@@ -11,8 +11,8 @@
       width: 100%;
       min-height: 100vh;
       background-color: #0d0d0d;
-      /* Bathroom wall background texture with dark vignette */
-      background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.75)), url('bathroom-wall.jpg');
+      /* Bathroom wall background texture */
+      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('bathroom-wall.jpg');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -22,7 +22,7 @@
     }
 
     header {
-      padding: 30px 24px 10px;
+      padding: 20px 24px 10px;
       text-align: center;
       position: relative;
       z-index: 10;
@@ -32,18 +32,18 @@
       display: inline-flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       text-decoration: none;
     }
 
     .brand-logo {
-      height: 48px;
+      height: 42px;
       width: auto;
       filter: drop-shadow(0 0 8px #ff007f);
     }
 
     .brand-title {
-      max-height: 24px;
+      max-height: 22px;
       width: auto;
       object-fit: contain;
       filter: invert(1);
@@ -51,63 +51,76 @@
 
     .hub-description {
       color: #aaa;
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-top: 6px;
+      margin-top: 4px;
       text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
 
-    /* Sticker Wall Main Area */
+    /* Main wall container holding the background hotspots */
     main {
-      min-height: calc(100vh - 160px);
+      width: 100%;
+      max-width: 1200px;
+      margin: 20px auto;
+      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 0 20px;
+    }
+
+    .wall-wrapper {
       position: relative;
-      padding: 40px 20px;
+      display: inline-block;
+      max-width: 100%;
     }
 
-    .sticker-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 50px;
-      justify-content: center;
-      align-items: center;
-      max-width: 900px;
-    }
-
-    /* Sticker styling with pulsing pink light */
-    .sticker-btn {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 10px;
-      position: relative;
-      border-radius: 50%;
-      transition: transform 0.25s ease;
-      animation: neonPulse 2s infinite ease-in-out;
-    }
-
-    /* Unique tilts for graffiti feel */
-    .sticker-btn:nth-child(1) { transform: rotate(-6deg); }
-    .sticker-btn:nth-child(2) { transform: rotate(5deg); }
-    .sticker-btn:nth-child(3) { transform: rotate(-4deg); }
-    .sticker-btn:nth-child(4) { transform: rotate(7deg); }
-
-    .sticker-btn:hover {
-      transform: scale(1.15) rotate(0deg);
-      animation: none;
-      box-shadow: 0 0 35px #ff007f, 0 0 65px #ff007f;
-      background: rgba(255, 0, 127, 0.2);
-    }
-
-    .sticker-img {
-      height: 110px;
-      width: auto;
-      object-fit: contain;
-      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.9));
+    .wall-bg {
       display: block;
+      width: 100%;
+      height: auto;
+      max-height: 75vh;
+      object-fit: contain;
+      border: 2px solid #ff007f;
+      border-radius: 6px;
+      box-shadow: 0 0 30px rgba(255, 0, 127, 0.4);
+    }
+
+    /* Hotspot areas with pulsing pink neon highlight rings */
+    .hotspot {
+      position: absolute;
+      border-radius: 50%;
+      cursor: pointer;
+      background: rgba(255, 0, 127, 0.15);
+      animation: neonPulse 2s infinite ease-in-out;
+      transform: translate(-50%, -50%);
+      width: 70px;
+      height: 70px;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .hotspot:hover {
+      background: rgba(255, 0, 127, 0.4);
+      transform: translate(-50%, -50%) scale(1.1);
+      animation: none;
+      box-shadow: 0 0 25px #ff007f, 0 0 50px #ff007f;
+    }
+
+    /* Neon Pulse Keyframes */
+    @keyframes neonPulse {
+      0% {
+        box-shadow: 0 0 6px rgba(255, 0, 127, 0.5), inset 0 0 6px rgba(255, 0, 127, 0.3);
+        border: 2px solid rgba(255, 0, 127, 0.6);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(255, 0, 127, 0.95), 0 0 35px rgba(255, 0, 127, 0.7);
+        border: 2px solid rgba(255, 0, 127, 1);
+      }
+      100% {
+        box-shadow: 0 0 6px rgba(255, 0, 127, 0.5), inset 0 0 6px rgba(255, 0, 127, 0.3);
+        border: 2px solid rgba(255, 0, 127, 0.6);
+      }
     }
 
     /* Bottom screen marquee hover title */
@@ -128,25 +141,10 @@
       opacity: 0;
       transition: opacity 0.2s ease;
       box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+      pointer-events: none;
     }
 
-    /* Neon Pulse Keyframes */
-    @keyframes neonPulse {
-      0% {
-        box-shadow: 0 0 8px rgba(255, 0, 127, 0.5), inset 0 0 8px rgba(255, 0, 127, 0.3);
-        border: 1px solid rgba(255, 0, 127, 0.6);
-      }
-      50% {
-        box-shadow: 0 0 25px rgba(255, 0, 127, 0.95), 0 0 45px rgba(255, 0, 127, 0.7);
-        border: 1px solid rgba(255, 0, 127, 1);
-      }
-      100% {
-        box-shadow: 0 0 8px rgba(255, 0, 127, 0.5), inset 0 0 8px rgba(255, 0, 127, 0.3);
-        border: 1px solid rgba(255, 0, 127, 0.6);
-      }
-    }
-
-    /* Modal Popup when Clicked */
+    /* Modal Popup when Hotspot Clicked */
     #sticker-modal {
       position: fixed;
       top: 0;
@@ -228,28 +226,27 @@
   </header>
 
   <main>
-    <div class="sticker-container">
-      
-      <!-- Notice Board Sticker -->
-      <button class="sticker-btn" onclick="openStickerModal('Notice Board', 'Pinned gig announcements, musicians wanted posts, local DIY workshops, and scene classifieds updated live in real time.', 'grapes-sticker.png', 'notice-board.html')">
-        <img src="grapes-sticker.png" class="sticker-img" alt="Notice Board" onmouseenter="showMarquee('Notice Board')" onmouseleave="hideMarquee()">
-      </button>
+    <div class="wall-wrapper">
+      <!-- Bathroom wall image reference -->
+      <img src="bathroom-wall.jpg" class="wall-bg" alt="Bathroom Wall Background">
 
-      <!-- Creator Directory Sticker -->
-      <button class="sticker-btn" onclick="openStickerModal('Creator Directory', 'An open directory of underground bands, zine makers, visual artists, independent venues, and local collectives.', 'keys-sticker.png', 'creator-directory.html')">
-        <img src="keys-sticker.png" class="sticker-img" alt="Creator Directory" onmouseenter="showMarquee('Creator Directory')" onmouseleave="hideMarquee()">
-      </button>
+      <!-- Interactive Hotspots positioned over the wall stickers -->
+      <!-- Adjust top% and left% values if needed to match your exact sticker positions on bathroom-wall.jpg -->
+      <div class="hotspot" style="top: 30%; left: 25%;" 
+           onclick="openStickerModal('Notice Board', 'Pinned gig announcements, musicians wanted posts, local DIY workshops, and scene classifieds updated live in real time.', 'grapes-sticker.png', 'notice-board.html')"
+           onmouseenter="showMarquee('Notice Board')" onmouseleave="hideMarquee()"></div>
 
-      <!-- Oral History Sticker -->
-      <button class="sticker-btn" onclick="openStickerModal('Oral History Vault', 'Raw voice notes, gig memories, venue lore, and spoken stories submitted directly by members of our scene.', 'cassette-sticker.png', 'oral-history.html')">
-        <img src="cassette-sticker.png" class="sticker-img" alt="Oral History Vault" onmouseenter="showMarquee('Oral History Vault')" onmouseleave="hideMarquee()">
-      </button>
+      <div class="hotspot" style="top: 30%; left: 75%;" 
+           onclick="openStickerModal('Creator Directory', 'An open directory of underground bands, zine makers, visual artists, independent venues, and local collectives.', 'keys-sticker.png', 'creator-directory.html')"
+           onmouseenter="showMarquee('Creator Directory')" onmouseleave="hideMarquee()"></div>
 
-      <!-- Past Gig Archive Sticker -->
-      <button class="sticker-btn" onclick="openStickerModal('Past Gig Archive', 'A crowd-sourced timeline of past local shows. Log headliners, support acts, setlist highlight songs, and photo stubs.', 'grenade-sticker.png', 'past-gigs.html')">
-        <img src="grenade-sticker.png" class="sticker-img" alt="Past Gig Archive" onmouseenter="showMarquee('Past Gig Archive')" onmouseleave="hideMarquee()">
-      </button>
+      <div class="hotspot" style="top: 70%; left: 25%;" 
+           onclick="openStickerModal('Oral History Vault', 'Raw voice notes, gig memories, venue lore, and spoken stories submitted directly by members of our scene.', 'cassette-sticker.png', 'oral-history.html')"
+           onmouseenter="showMarquee('Oral History Vault')" onmouseleave="hideMarquee()"></div>
 
+      <div class="hotspot" style="top: 70%; left: 75%;" 
+           onclick="openStickerModal('Past Gig Archive', 'A crowd-sourced timeline of past local shows. Log headliners, support acts, setlist highlight songs, and photo stubs.', 'grenade-sticker.png', 'past-gigs.html')"
+           onmouseenter="showMarquee('Past Gig Archive')" onmouseleave="hideMarquee()"></div>
     </div>
   </main>
 
