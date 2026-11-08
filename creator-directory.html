@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Grapevine — Band & Creator Directory</title>
+  
+  <!-- Cropper.js CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -297,6 +301,23 @@
       outline: none;
     }
 
+    /* Cropper Container Styling */
+    .img-container {
+      width: 100%;
+      max-height: 250px;
+      display: none;
+      margin-bottom: 12px;
+      background: #000;
+      border: 1px dashed #ff007f;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .img-container img {
+      max-width: 100%;
+      display: block;
+    }
+
     .modal-actions {
       display: flex;
       gap: 12px;
@@ -373,10 +394,17 @@
           <label>Description *</label>
           <textarea id="creator-desc" class="form-control" rows="3" placeholder="Tell us about yourself..." required></textarea>
         </div>
+        
+        <!-- Photo Upload & Crop UI -->
         <div class="form-group">
           <label>Photo Upload (Optional)</label>
           <input type="file" id="creator-file" accept="image/*" class="form-control">
         </div>
+
+        <div class="img-container" id="crop-container">
+          <img id="image-to-crop" alt="Crop preview">
+        </div>
+
         <div class="form-group">
           <label>Link / Social / Portfolio URL (Optional)</label>
           <input type="text" id="creator-link" class="form-control" placeholder="https://...">
@@ -388,6 +416,9 @@
       </form>
     </div>
   </div>
+
+  <!-- Cropper.js JavaScript CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -411,6 +442,36 @@
     const creatorsRef = ref(db, 'creators');
 
     let activeCategory = 'all';
+    let cropper = null;
+
+    // Handle Image Selection and Initialize Cropper
+    const fileInput = document.getElementById('creator-file');
+    const imageToCrop = document.getElementById('image-to-crop');
+    const cropContainer = document.getElementById('crop-container');
+
+    fileInput.addEventListener('change', (e) => {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        const file = files[0];
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          imageToCrop.src = event.target.result;
+          cropContainer.style.display = 'block';
+
+          if (cropper) {
+            cropper.destroy();
+          }
+
+          // Initialize Cropper locked to the exact 16:9 / card aspect ratio
+          cropper = new Cropper(imageToCrop, {
+            aspectRatio: 16 / 9,
+            viewMode: 1,
+            autoCropArea: 1,
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    });
 
     onValue(creatorsRef, (snapshot) => {
       const data = snapshot.val();
@@ -451,17 +512,28 @@
       const title = document.getElementById('creator-title').value.trim();
       const category = document.getElementById('creator-category').value;
       const desc = document.getElementById('creator-desc').value.trim();
-      const fileInput = document.getElementById('creator-file');
       const linkUrl = document.getElementById('creator-link').value.trim();
 
       const categoryLabels = { 'band': 'Band', 'artist': 'Artist / Zine', 'venue': 'Promoter / Venue' };
 
       let imgSrc = '';
-      if (fileInput.files[0]) {
-        const file = fileInput.files[0];
-        const fileRef = storageRef(storage, 'creators/' + Date.now() + '_' + file.name);
-        await uploadBytes(fileRef, file);
-        imgSrc = await getDownloadURL(fileRef);
+
+      if (cropper) {
+        // Get the cropped canvas data as a Blob
+        const canvas = cropper.croppedCanvas || cropper.getCroppedCanvas({
+          width: 600,
+          height: 337
+        });
+
+        if (canvas) {
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.85));
+          if (blob) {
+            // Since you mentioned Firebase Storage buckets required billing, 
+            // we can directly encode the cropped canvas as a lightweight compressed base64 string 
+            // that saves straight to your free Realtime Database!
+            imgSrc = canvas.toDataURL('image/jpeg', 0.85);
+          }
+        }
       }
 
       await push(creatorsRef, {
@@ -500,6 +572,11 @@
     window.openCreatorModal = () => document.getElementById('creator-modal').style.display = 'flex';
     window.closeCreatorModal = () => {
       document.getElementById('creator-modal').style.display = 'none';
+      if (cropper) {
+        cropper.destroy();
+        cropper = null;
+      }
+      cropContainer.style.display = 'none';
       document.getElementById('creator-form').reset();
     };
   </script>
