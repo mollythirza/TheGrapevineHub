@@ -86,9 +86,14 @@
       border-radius: 6px;
       box-shadow: 0 0 25px rgba(255, 0, 127, 0.25);
       margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    .hero-section h1 {
+    .hero-text h1 {
       color: #ff007f;
       font-size: 24px;
       margin-bottom: 8px;
@@ -96,10 +101,31 @@
       letter-spacing: 1px;
     }
 
-    .hero-section p {
+    .hero-text p {
       color: #bbb;
       font-size: 13px;
       line-height: 1.5;
+    }
+
+    .btn-create-creator {
+      background: #ff007f;
+      color: #000;
+      border: none;
+      padding: 12px 20px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+      transition: background 0.2s, transform 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-create-creator:hover {
+      background: #ff3399;
+      transform: translateY(-2px);
     }
 
     /* Search & Filter Controls */
@@ -194,18 +220,22 @@
       text-transform: uppercase;
     }
 
+    .creator-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid #333;
+      margin-bottom: 14px;
+      background: #000;
+    }
+
     .creator-info h3 {
       color: #fff;
       font-size: 16px;
       text-transform: uppercase;
       margin-bottom: 4px;
-    }
-
-    .creator-info .location {
-      color: #888;
-      font-size: 11px;
-      display: block;
-      margin-bottom: 12px;
+      padding-right: 70px;
     }
 
     .creator-desc {
@@ -235,6 +265,99 @@
       background: #ff007f;
       color: #000;
     }
+
+    /* Modal Form Styling */
+    #creator-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 30000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: #141414;
+      border: 2px solid #ff007f;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-card h2 {
+      color: #ff007f;
+      font-size: 18px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 11px;
+      color: #aaa;
+      text-transform: uppercase;
+    }
+
+    .form-control {
+      background: #0d0d0d;
+      border: 1px solid #333;
+      color: #fff;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 12px;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: #ff007f;
+      box-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-align: center;
+      font-family: inherit;
+    }
+
+    .btn-submit { background: #ff007f; color: #000; border: none; }
+    .btn-submit:hover { background: #ff3399; }
+    .btn-cancel { background: transparent; color: #aaa; border: 1px solid #444; }
+    .btn-cancel:hover { color: #fff; border-color: #777; }
   </style>
 </head>
 <body>
@@ -253,13 +376,16 @@
   <main>
     <!-- Intro Banner -->
     <div class="hero-section">
-      <h1>Band & Creator Directory</h1>
-      <p>An algorithm-free roster of underground bands, DIY zine makers, visual artists, and independent venues across our local scene.</p>
+      <div class="hero-text">
+        <h1>Band & Creator Directory</h1>
+        <p>An algorithm-free roster of underground bands, DIY zine makers, visual artists, and independent venues across our local scene.</p>
+      </div>
+      <button class="btn-create-creator" onclick="openCreatorModal()">+ Join Directory</button>
     </div>
 
     <!-- Filters & Search -->
     <div class="filter-controls">
-      <input type="text" id="search-input" class="search-input" placeholder="Search creators, bands, locations..." oninput="filterDirectory()">
+      <input type="text" id="search-input" class="search-input" placeholder="Search creators, bands, genres..." oninput="filterDirectory()">
       
       <div class="category-buttons">
         <button class="filter-btn active" onclick="setCategory('all', this)">All</button>
@@ -277,7 +403,6 @@
         <span class="card-badge">Band</span>
         <div class="creator-info">
           <h3>Static Shred</h3>
-          <span class="location">London • Hardcore Punk</span>
         </div>
         <p class="creator-desc">Fast, aggressive 4-piece hardcore punk playing house shows and independent basements across the UK.</p>
         <a href="https://instagram.com" target="_blank" class="btn-link">Listen / Follow →</a>
@@ -288,7 +413,6 @@
         <span class="card-badge">Artist / Zine</span>
         <div class="creator-info">
           <h3>Mutant Press</h3>
-          <span class="location">Manchester • Printmaker</span>
         </div>
         <p class="creator-desc">Risograph printing studio specializing in DIY gig posters, cassette inserts, and quarterly zine runs.</p>
         <a href="https://instagram.com" target="_blank" class="btn-link">View Portfolio →</a>
@@ -299,7 +423,6 @@
         <span class="card-badge">Promoter</span>
         <div class="creator-info">
           <h3>Underground Noise Collective</h3>
-          <span class="location">Bristol • Show Promotions</span>
         </div>
         <p class="creator-desc">Non-profit DIY booking group organizing accessible, low-cost community shows and benefit gigs.</p>
         <a href="https://instagram.com" target="_blank" class="btn-link">Show Listings →</a>
@@ -307,6 +430,50 @@
 
     </div>
   </main>
+
+  <!-- Creator Submission Modal -->
+  <div id="creator-modal">
+    <div class="modal-card">
+      <h2>Add Yourself to Directory</h2>
+      <form id="creator-form" onsubmit="submitCreator(event)">
+        
+        <div class="form-group">
+          <label for="creator-title">Band / Creator Name *</label>
+          <input type="text" id="creator-title" class="form-control" placeholder="e.g. Acid Threads / Studio Z" required>
+        </div>
+
+        <div class="form-group">
+          <label for="creator-category">Category *</label>
+          <select id="creator-category" class="form-control" required>
+            <option value="band">Band / Musical Act</option>
+            <option value="artist">Artist / Zine Maker</option>
+            <option value="venue">Venue / Promoter / Collective</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="creator-desc">Description *</label>
+          <textarea id="creator-desc" class="form-control" placeholder="Tell us what you do, location, genre, etc..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="creator-img">Photo URL (Optional)</label>
+          <input type="url" id="creator-img" class="form-control" placeholder="https://example.com/photo.jpg">
+        </div>
+
+        <div class="form-group">
+          <label for="creator-link">Link / Social / Portfolio URL (Optional)</label>
+          <input type="text" id="creator-link" class="form-control" placeholder="https://instagram.com/yourhandle">
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="modal-btn btn-cancel" onclick="closeCreatorModal()">Cancel</button>
+          <button type="submit" class="modal-btn btn-submit">Submit Listing →</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
 
   <script>
     let activeCategory = 'all';
@@ -335,6 +502,69 @@
           card.style.display = 'none';
         }
       });
+    }
+
+    // Modal Control
+    const creatorModal = document.getElementById('creator-modal');
+
+    function openCreatorModal() {
+      creatorModal.style.display = 'flex';
+    }
+
+    function closeCreatorModal() {
+      creatorModal.style.display = 'none';
+      document.getElementById('creator-form').reset();
+    }
+
+    creatorModal.addEventListener('click', (e) => {
+      if (e.target === creatorModal) closeCreatorModal();
+    });
+
+    // Form Submission & Dynamic Card Injection
+    function submitCreator(event) {
+      event.preventDefault();
+
+      const title = document.getElementById('creator-title').value.trim();
+      const category = document.getElementById('creator-category').value;
+      const desc = document.getElementById('creator-desc').value.trim();
+      const imgUrl = document.getElementById('creator-img').value.trim();
+      const linkUrl = document.getElementById('creator-link').value.trim();
+
+      const categoryLabels = {
+        'band': 'Band',
+        'artist': 'Artist / Zine',
+        'venue': 'Promoter / Venue'
+      };
+
+      const card = document.createElement('div');
+      card.className = 'creator-card';
+      card.setAttribute('data-category', category);
+
+      let imageHTML = imgUrl ? `<img src="${imgUrl}" class="creator-img" alt="${title}" onerror="this.style.display='none'">` : '';
+      
+      let linkHTML = '';
+      if (linkUrl) {
+        let finalUrl = (linkUrl.startsWith('http')) ? linkUrl : `https://${linkUrl}`;
+        linkHTML = `<a href="${finalUrl}" target="_blank" class="btn-link">View Profile / Link →</a>`;
+      } else {
+        linkHTML = `<a href="#" class="btn-link" style="opacity: 0.5; pointer-events: none;">Independent Listing</a>`;
+      }
+
+      card.innerHTML = `
+        <span class="card-badge">${categoryLabels[category] || 'Creator'}</span>
+        ${imageHTML}
+        <div class="creator-info">
+          <h3>${title}</h3>
+        </div>
+        <p class="creator-desc">${desc}</p>
+        ${linkHTML}
+      `;
+
+      const grid = document.getElementById('creator-grid');
+      grid.prepend(card);
+
+      closeCreatorModal();
+      filterDirectory();
     }
   </script>
 </body>
