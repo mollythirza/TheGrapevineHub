@@ -16,7 +16,6 @@
       overflow-x: hidden;
     }
 
-    /* Fixed Header matching Hub Logo & Branding */
     header {
       position: fixed;
       top: 0;
@@ -53,18 +52,12 @@
       filter: invert(1);
     }
 
-    .nav-links {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      font-size: 12px;
-      text-transform: uppercase;
-    }
-
     .nav-links a {
       color: #aaa;
       text-decoration: none;
-      transition: color 0.2s, text-shadow 0.2s;
+      font-size: 12px;
+      text-transform: uppercase;
+      transition: color 0.2s;
     }
 
     .nav-links a:hover {
@@ -72,7 +65,6 @@
       text-shadow: 0 0 8px #ff007f;
     }
 
-    /* Main Container */
     main {
       max-width: 1200px;
       margin: 100px auto 60px;
@@ -98,7 +90,6 @@
       font-size: 24px;
       margin-bottom: 8px;
       text-transform: uppercase;
-      letter-spacing: 1px;
     }
 
     .hero-text p {
@@ -119,16 +110,8 @@
       border-radius: 4px;
       cursor: pointer;
       box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
-      transition: background 0.2s, transform 0.2s;
-      white-space: nowrap;
     }
 
-    .btn-create-audio:hover {
-      background: #ff3399;
-      transform: translateY(-2px);
-    }
-
-    /* Search & Filter Bar */
     .filter-controls {
       display: flex;
       flex-wrap: wrap;
@@ -149,11 +132,6 @@
       outline: none;
       min-width: 260px;
       flex: 1;
-      box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
-    }
-
-    .search-input:focus {
-      box-shadow: 0 0 12px rgba(255, 0, 127, 0.5);
     }
 
     .category-buttons {
@@ -172,18 +150,15 @@
       text-transform: uppercase;
       cursor: pointer;
       border-radius: 4px;
-      transition: all 0.2s;
     }
 
-    .filter-btn:hover, .filter-btn.active {
+    .filter-btn.active {
       background: #ff007f;
       color: #000;
       border-color: #ff007f;
       font-weight: bold;
-      box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
     }
 
-    /* Audio Cards Grid */
     .audio-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -198,12 +173,11 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
       position: relative;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .audio-card:hover {
-      transform: translateY(-4px);
       border-color: #ff007f;
       box-shadow: 0 0 20px rgba(255, 0, 127, 0.35);
     }
@@ -242,74 +216,19 @@
       margin-bottom: 16px;
     }
 
-    /* Player Interface */
     .player-box {
       background: #0d0d0d;
       border: 1px solid #333;
       border-radius: 4px;
       padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
     }
 
-    .player-controls {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .btn-play {
-      background: #ff007f;
-      color: #000;
-      border: none;
-      width: 36px;
+    audio {
+      width: 100%;
       height: 36px;
-      border-radius: 50%;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: background 0.2s, box-shadow 0.2s;
+      filter: invert(1) hue-rotate(270deg);
     }
 
-    .btn-play:hover {
-      background: #ff3399;
-      box-shadow: 0 0 10px #ff007f;
-    }
-
-    .waveform-bar {
-      flex: 1;
-      height: 6px;
-      background: #222;
-      border-radius: 3px;
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-    }
-
-    .waveform-progress {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 0%;
-      background: #ff007f;
-      box-shadow: 0 0 8px #ff007f;
-      transition: width 0.1s linear;
-    }
-
-    .time-readout {
-      display: flex;
-      justify-content: space-between;
-      font-size: 10px;
-      color: #777;
-    }
-
-    /* Modal Form Styling */
     #audio-modal {
       position: fixed;
       top: 0;
@@ -369,29 +288,6 @@
       outline: none;
     }
 
-    .form-control:focus {
-      border-color: #ff007f;
-      box-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
-    }
-
-    textarea.form-control {
-      resize: vertical;
-      min-height: 70px;
-    }
-
-    .file-input-wrapper {
-      background: #0d0d0d;
-      border: 1px dashed #444;
-      padding: 12px;
-      border-radius: 4px;
-      text-align: center;
-    }
-
-    .file-input-wrapper input[type="file"] {
-      color: #aaa;
-      font-size: 11px;
-    }
-
     .modal-actions {
       display: flex;
       gap: 12px;
@@ -406,19 +302,15 @@
       font-weight: bold;
       text-transform: uppercase;
       cursor: pointer;
-      text-align: center;
       font-family: inherit;
     }
 
     .btn-submit { background: #ff007f; color: #000; border: none; }
-    .btn-submit:hover { background: #ff3399; }
     .btn-cancel { background: transparent; color: #aaa; border: 1px solid #444; }
-    .btn-cancel:hover { color: #fff; border-color: #777; }
   </style>
 </head>
 <body>
 
-  <!-- Navigation Bar -->
   <header>
     <a href="index.html" class="brand-container" style="text-decoration: none;">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
@@ -430,7 +322,6 @@
   </header>
 
   <main>
-    <!-- Intro Banner -->
     <div class="hero-section">
       <div class="hero-text">
         <h1>Scene Oral History & Voice Note Vault</h1>
@@ -439,7 +330,6 @@
       <button class="btn-create-audio" onclick="openAudioModal()">+ Record / Share Story</button>
     </div>
 
-    <!-- Filters & Search -->
     <div class="filter-controls">
       <input type="text" id="search-input" class="search-input" placeholder="Search voice notes, speakers, venues..." oninput="filterAudio()">
       
@@ -451,270 +341,157 @@
       </div>
     </div>
 
-    <!-- Audio Cards Grid -->
-    <div class="audio-grid" id="audio-grid">
-      
-      <!-- Audio Card 1 -->
-      <div class="audio-card" data-category="gig">
-        <span class="card-badge">Gig Memory</span>
-        <div class="audio-info">
-          <h3>The Boiler Room Show (2018)</h3>
-          <span class="speaker">Recounted by Dave (Static Shred)</span>
-        </div>
-        <p class="audio-desc">Remembering when the power cut out halfway through the headline set and the crowd finished the vocals through a megaphone.</p>
-        
-        <div class="player-box">
-          <div class="player-controls">
-            <button class="btn-play" onclick="togglePlay(this)">▶</button>
-            <div class="waveform-bar" onclick="seekAudio(event, this)">
-              <div class="waveform-progress" style="width: 0%;"></div>
-            </div>
-          </div>
-          <div class="time-readout">
-            <span>0:00</span>
-            <span>0:54</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Audio Card 2 -->
-      <div class="audio-card" data-category="venue">
-        <span class="card-badge">Venue Lore</span>
-        <div class="audio-info">
-          <h3>The Old Crown Basement</h3>
-          <span class="speaker">Recounted by Elena (Mutant Press)</span>
-        </div>
-        <p class="audio-desc">How a damp storage cellar underneath a local pub turned into the central pillar of the underground hardcore scene.</p>
-        
-        <div class="player-box">
-          <div class="player-controls">
-            <button class="btn-play" onclick="togglePlay(this)">▶</button>
-            <div class="waveform-bar" onclick="seekAudio(event, this)">
-              <div class="waveform-progress" style="width: 0%;"></div>
-            </div>
-          </div>
-          <div class="time-readout">
-            <span>0:00</span>
-            <span>1:12</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Audio Card 3 -->
-      <div class="audio-card" data-category="history">
-        <span class="card-badge">Oral History</span>
-        <div class="audio-info">
-          <h3>Why We Make Zines</h3>
-          <span class="speaker">Recounted by Liam (Acid Threads)</span>
-        </div>
-        <p class="audio-desc">Reflections on why physical print culture matters in an era dominated by algorithmic social media feeds.</p>
-        
-        <div class="player-box">
-          <div class="player-controls">
-            <button class="btn-play" onclick="togglePlay(this)">▶</button>
-            <div class="waveform-bar" onclick="seekAudio(event, this)">
-              <div class="waveform-progress" style="width: 0%;"></div>
-            </div>
-          </div>
-          <div class="time-readout">
-            <span>0:00</span>
-            <span>0:45</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
+    <div class="audio-grid" id="audio-grid"></div>
   </main>
 
-  <!-- Audio Submission Modal -->
   <div id="audio-modal">
     <div class="modal-card">
       <h2>Share Your Story</h2>
-      <form id="audio-form" onsubmit="submitAudio(event)">
-        
+      <form id="audio-form">
         <div class="form-group">
-          <label for="audio-title">Story / Note Title *</label>
-          <input type="text" id="audio-title" class="form-control" placeholder="e.g. Basement Show Lore / First DIY Tape" required>
+          <label>Story / Note Title *</label>
+          <input type="text" id="audio-title" class="form-control" placeholder="Title..." required>
         </div>
-
         <div class="form-group">
-          <label for="audio-speaker">Your Name / Speaker *</label>
-          <input type="text" id="audio-speaker" class="form-control" placeholder="e.g. Alex (Noise Collective)" required>
+          <label>Your Name / Speaker *</label>
+          <input type="text" id="audio-speaker" class="form-control" placeholder="Name..." required>
         </div>
-
         <div class="form-group">
-          <label for="audio-category">Category *</label>
+          <label>Category *</label>
           <select id="audio-category" class="form-control" required>
             <option value="gig">Gig Memory</option>
             <option value="venue">Venue Lore</option>
             <option value="history">Oral History</option>
           </select>
         </div>
-
         <div class="form-group">
-          <label for="audio-desc">Brief Description *</label>
-          <textarea id="audio-desc" class="form-control" placeholder="What is this voice note about?" required></textarea>
+          <label>Brief Description *</label>
+          <textarea id="audio-desc" class="form-control" rows="3" placeholder="What is this note about?" required></textarea>
         </div>
-
         <div class="form-group">
-          <label>Audio File or URL *</label>
-          <div class="file-input-wrapper">
-            <input type="file" id="audio-file" accept="audio/*" class="form-control" style="border:none; margin-bottom: 8px;">
-            <p style="font-size: 10px; color: #777;">OR enter an audio link below:</p>
-            <input type="url" id="audio-url" class="form-control" placeholder="https://example.com/recording.mp3" style="margin-top:6px;">
-          </div>
+          <label>Audio File *</label>
+          <input type="file" id="audio-file" accept="audio/*" class="form-control" required>
         </div>
-
         <div class="modal-actions">
           <button type="button" class="modal-btn btn-cancel" onclick="closeAudioModal()">Cancel</button>
-          <button type="submit" class="modal-btn btn-submit">Submit Recording →</button>
+          <button type="submit" class="modal-btn btn-submit" id="submit-btn">Submit Recording →</button>
         </div>
-
       </form>
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBozbn-0iQNhjuAcmL-dYOUtbhIYTjccYk",
+      authDomain: "the-grapevine-5c046.firebaseapp.com",
+      databaseURL: "https://the-grapevine-5c046-default-rtdb.firebaseio.com",
+      projectId: "the-grapevine-5c046",
+      storageBucket: "the-grapevine-5c046.firebasestorage.app",
+      messagingSenderId: "606976230856",
+      appId: "1:606976230856:web:161a12734239f248ce2cfd",
+      measurementId: "G-V1KW1QSNWS"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const storage = getStorage(app);
+    const audioRef = ref(db, 'oral_histories');
+
     let activeCategory = 'all';
 
-    function setCategory(cat, btnElement) {
-      activeCategory = cat;
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
+    onValue(audioRef, (snapshot) => {
+      const data = snapshot.val();
+      const grid = document.getElementById('audio-grid');
+      grid.innerHTML = '';
+
+      if (data) {
+        const audioNotes = Object.values(data).reverse();
+        audioNotes.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'audio-card';
+          card.setAttribute('data-category', item.category);
+
+          card.innerHTML = `
+            <span class="card-badge">${item.badge}</span>
+            <div class="audio-info">
+              <h3>${item.title}</h3>
+              <span class="speaker">Recounted by ${item.speaker}</span>
+            </div>
+            <p class="audio-desc">${item.desc}</p>
+            <div class="player-box">
+              <audio controls src="${item.audioSrc}"></audio>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
       filterAudio();
-    }
-
-    function filterAudio() {
-      const searchTerm = document.getElementById('search-input').value.toLowerCase();
-      const cards = document.querySelectorAll('.audio-card');
-
-      cards.forEach(card => {
-        const category = card.getAttribute('data-category');
-        const textContent = card.innerText.toLowerCase();
-
-        const matchesCategory = (activeCategory === 'all' || category === activeCategory);
-        const matchesSearch = textContent.includes(searchTerm);
-
-        if (matchesCategory && matchesSearch) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-
-    // Modal Control
-    const audioModal = document.getElementById('audio-modal');
-
-    function openAudioModal() {
-      audioModal.style.display = 'flex';
-    }
-
-    function closeAudioModal() {
-      audioModal.style.display = 'none';
-      document.getElementById('audio-form').reset();
-    }
-
-    audioModal.addEventListener('click', (e) => {
-      if (e.target === audioModal) closeAudioModal();
     });
 
-    // Form Submission & Dynamic Audio Card Injection
-    function submitAudio(event) {
-      event.preventDefault();
+    document.getElementById('audio-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.innerText = "Uploading Audio...";
+      submitBtn.disabled = true;
 
       const title = document.getElementById('audio-title').value.trim();
       const speaker = document.getElementById('audio-speaker').value.trim();
       const category = document.getElementById('audio-category').value;
       const desc = document.getElementById('audio-desc').value.trim();
       const fileInput = document.getElementById('audio-file');
-      const urlInput = document.getElementById('audio-url').value.trim();
 
-      const categoryLabels = {
-        'gig': 'Gig Memory',
-        'venue': 'Venue Lore',
-        'history': 'Oral History'
-      };
+      const categoryLabels = { 'gig': 'Gig Memory', 'venue': 'Venue Lore', 'history': 'Oral History' };
 
-      const card = document.createElement('div');
-      card.className = 'audio-card';
-      card.setAttribute('data-category', category);
+      let audioSrc = '';
+      if (fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const fileRef = storageRef(storage, 'audio/' + Date.now() + '_' + file.name);
+        await uploadBytes(fileRef, file);
+        audioSrc = await getDownloadURL(fileRef);
+      }
 
-      card.innerHTML = `
-        <span class="card-badge">${categoryLabels[category] || 'Oral History'}</span>
-        <div class="audio-info">
-          <h3>${title}</h3>
-          <span class="speaker">Recounted by ${speaker}</span>
-        </div>
-        <p class="audio-desc">${desc}</p>
-        <div class="player-box">
-          <div class="player-controls">
-            <button class="btn-play" onclick="togglePlay(this)">▶</button>
-            <div class="waveform-bar" onclick="seekAudio(event, this)">
-              <div class="waveform-progress" style="width: 0%;"></div>
-            </div>
-          </div>
-          <div class="time-readout">
-            <span>0:00</span>
-            <span>AUDIO NOTE</span>
-          </div>
-        </div>
-      `;
-
-      const grid = document.getElementById('audio-grid');
-      grid.prepend(card);
-
-      closeAudioModal();
-      filterAudio();
-    }
-
-    // Audio Playback Simulator
-    let activeInterval = null;
-
-    function togglePlay(btn) {
-      const card = btn.closest('.audio-card');
-      const progress = card.querySelector('.waveform-progress');
-      
-      document.querySelectorAll('.btn-play').forEach(b => {
-        if (b !== btn) {
-          b.innerText = '▶';
-          const otherProg = b.closest('.audio-card').querySelector('.waveform-progress');
-          if (otherProg) otherProg.style.width = '0%';
-        }
+      await push(audioRef, {
+        title,
+        speaker,
+        category,
+        desc,
+        audioSrc,
+        badge: categoryLabels[category] || 'Oral History',
+        timestamp: Date.now()
       });
 
-      if (btn.innerText === '▶') {
-        btn.innerText = '❚❚';
-        simulatePlayback(progress, btn);
-      } else {
-        btn.innerText = '▶';
-        clearInterval(activeInterval);
-      }
-    }
+      submitBtn.innerText = "Submit Recording →";
+      submitBtn.disabled = false;
+      closeAudioModal();
+    });
 
-    function simulatePlayback(progressBar, playBtn) {
-      clearInterval(activeInterval);
-      let currentWidth = parseFloat(progressBar.style.width) || 0;
-      
-      activeInterval = setInterval(() => {
-        currentWidth += 1.5;
-        if (currentWidth >= 100) {
-          currentWidth = 0;
-          playBtn.innerText = '▶';
-          clearInterval(activeInterval);
-        }
-        progressBar.style.width = currentWidth + '%';
-      }, 300);
-    }
+    window.setCategory = function(cat, btnElement) {
+      activeCategory = cat;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+      filterAudio();
+    };
 
-    function seekAudio(event, bar) {
-      const card = bar.closest('.audio-card');
-      const progress = card.querySelector('.waveform-progress');
-      const rect = bar.getBoundingClientRect();
-      const clickX = event.clientX - rect.left;
-      const widthPercentage = (clickX / rect.width) * 100;
-      progress.style.width = Math.max(0, Math.min(100, widthPercentage)) + '%';
-    }
+    window.filterAudio = function() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      document.querySelectorAll('.audio-card').forEach(card => {
+        const category = card.getAttribute('data-category');
+        const textContent = card.innerText.toLowerCase();
+        const matchesCategory = (activeCategory === 'all' || category === activeCategory);
+        const matchesSearch = textContent.includes(searchTerm);
+        card.style.display = (matchesCategory && matchesSearch) ? 'flex' : 'none';
+      });
+    };
+
+    window.openAudioModal = () => document.getElementById('audio-modal').style.display = 'flex';
+    window.closeAudioModal = () => {
+      document.getElementById('audio-modal').style.display = 'none';
+      document.getElementById('audio-form').reset();
+    };
   </script>
 </body>
 </html>
