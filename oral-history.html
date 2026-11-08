@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Grapevine — Scene Oral History & Voice Note Vault</title>
   <style>
-    @import url('https://db.onlinewebfonts.com/c/33a778322e7d57ee578df9e00a59d75b?family=Monte+Stella+VF+Trial+Medium');
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body, html {
@@ -18,7 +16,7 @@
       overflow-x: hidden;
     }
 
-    /* Fixed Header matching Hub */
+    /* Fixed Header matching Hub Logo & Branding */
     header {
       position: fixed;
       top: 0;
@@ -45,15 +43,14 @@
       height: 32px;
       width: auto;
       filter: drop-shadow(0 0 6px #ff007f);
+      flex-shrink: 0;
     }
 
     .brand-title {
-      font-family: "Monte Stella VF Trial Medium", sans-serif;
-      color: #ff007f;
-      font-size: 20px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      text-decoration: none;
+      max-height: 20px;
+      width: auto;
+      object-fit: contain;
+      filter: invert(1);
     }
 
     .nav-links {
@@ -317,15 +314,12 @@
 
   <!-- Navigation Bar -->
   <header>
-    <div class="brand-container">
+    <a href="index.html" class="brand-container" style="text-decoration: none;">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
-      <a href="index.html" class="brand-title">The Grapevine Hub</a>
-    </div>
+      <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:14px;\'>THE GRAPEVINE</h1>'">
+    </a>
     <div class="nav-links">
       <a href="index.html">← Back to Hub</a>
-      <a href="creator-directory.html">Directory</a>
-      <a href="zine-library.html">Zine Library</a>
-      <a href="notice-board.html">Notice Board</a>
     </div>
   </header>
 
@@ -475,14 +469,12 @@
       }
     }
 
-    // Interactive Audio Simulation
     let activeInterval = null;
 
     function togglePlay(btn) {
       const card = btn.closest('.audio-card');
       const progress = card.querySelector('.waveform-progress');
       
-      // Stop any other playing card
       document.querySelectorAll('.btn-play').forEach(b => {
         if (b !== btn) {
           b.innerText = '▶';
