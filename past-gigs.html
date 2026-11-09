@@ -280,9 +280,9 @@
       background: rgba(0, 0, 0, 0.94);
       z-index: 40000;
       display: none;
-      overflow-y: scroll; /* Forces scroll container */
+      overflow-y: scroll;
       -webkit-overflow-scrolling: touch;
-      padding: 20px 12px 140px 12px; /* Generous bottom padding clearing virtual mobile keyboard */
+      padding: 16px 12px 140px 12px;
       backdrop-filter: blur(6px);
     }
 
@@ -292,9 +292,9 @@
       width: 100%;
       max-width: 440px;
       border-radius: 8px;
-      padding: 16px;
+      padding: 14px 16px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
-      margin: 0 auto; /* Top-aligned scrolling container */
+      margin: 0 auto;
     }
 
     .modal-card h2 {
@@ -306,7 +306,7 @@
     }
 
     .form-group {
-      margin-bottom: 8px;
+      margin-bottom: 7px;
       display: flex;
       flex-direction: column;
       gap: 2px;
@@ -322,7 +322,7 @@
       background: #0d0d0d;
       border: 1px solid #333;
       color: #fff;
-      padding: 6px 8px;
+      padding: 5px 7px;
       font-family: inherit;
       font-size: 16px; /* Prevents mobile browser auto-zoom */
       border-radius: 4px;
@@ -337,7 +337,7 @@
     .modal-actions {
       display: flex;
       gap: 8px;
-      margin-top: 12px;
+      margin-top: 10px;
     }
 
     .modal-btn {
@@ -357,11 +357,11 @@
     /* Image Cropper Preview Area */
     #crop-container {
       display: none;
-      margin-top: 6px;
+      margin-top: 5px;
       text-align: center;
       background: #0d0d0d;
       border: 1px dashed #ff007f;
-      padding: 6px;
+      padding: 5px;
       border-radius: 4px;
     }
   </style>
@@ -387,7 +387,7 @@
 
     <!-- Filter & Search Bar -->
     <div class="filter-toolbar">
-      <input type="text" id="search-input" class="search-input" placeholder="Search band, venue, genre..." oninput="window.filterGigs()">
+      <input type="text" id="search-input" class="search-input" placeholder="Search band, venue, song, genre..." oninput="window.filterGigs()">
       <button class="btn-log" onclick="window.openModal()">+ Log Past Gig</button>
     </div>
 
@@ -428,6 +428,10 @@
           <input type="date" id="gig-date" class="form-control" required>
         </div>
         <div class="form-group">
+          <label>Favorite Song / Track Highlight (Optional)</label>
+          <input type="text" id="gig-song" class="form-control" placeholder="e.g. Awake / Unravel">
+        </div>
+        <div class="form-group">
           <label>Memories / Setlist Notes *</label>
           <textarea id="gig-desc" class="form-control" rows="2" placeholder="Highlights, crowd energy..." required></textarea>
         </div>
@@ -438,14 +442,14 @@
         
         <!-- Image Crop Preview -->
         <div id="crop-container">
-          <span style="font-size:9px; color:#ff007f; display:block; margin-bottom:4px;">Crop Position / Focus:</span>
+          <span style="font-size:9px; color:#ff007f; display:block; margin-bottom:3px;">Crop Position / Focus:</span>
           <select id="crop-fit" class="form-control" style="font-size:11px; padding:3px;">
             <option value="center">Center Crop</option>
             <option value="top">Top Crop</option>
             <option value="bottom">Bottom Crop</option>
           </select>
-          <div style="margin-top:6px; max-height: 80px; overflow:hidden; border-radius:3px;">
-            <img id="preview-crop-img" style="width:100%; height:80px; object-fit:cover;" src="" alt="Crop Preview">
+          <div style="margin-top:5px; max-height: 70px; overflow:hidden; border-radius:3px;">
+            <img id="preview-crop-img" style="width:100%; height:70px; object-fit:cover;" src="" alt="Crop Preview">
           </div>
         </div>
 
@@ -505,6 +509,7 @@
                (item.bands || '').toLowerCase().includes(query) ||
                (item.venue || '').toLowerCase().includes(query) ||
                (item.genre || '').toLowerCase().includes(query) ||
+               (item.song || '').toLowerCase().includes(query) ||
                (item.desc || '').toLowerCase().includes(query);
       });
 
@@ -526,6 +531,8 @@
             <img src="${item.imageSrc}" class="gig-thumb" style="object-position: ${fitPosition};" alt="Gig Stub">
           </div>` : '';
 
+        let songHtml = item.song ? `<span>Highlight Track: <span>${item.song}</span></span>` : '';
+
         post.innerHTML = `
           <div class="gig-header">
             <h3 class="gig-title">${item.title}</h3>
@@ -535,6 +542,7 @@
             <span>Band(s): <span>${item.bands}</span></span>
             <span>Venue: <span>${item.venue}</span></span>
             <span>Genre: <span>${item.genre}</span></span>
+            ${songHtml}
           </div>
           <p class="gig-desc">${item.desc}</p>
           ${imgHtml}
@@ -622,6 +630,7 @@
       const venue = document.getElementById('gig-venue').value.trim();
       const genre = document.getElementById('gig-genre').value.trim();
       const date = document.getElementById('gig-date').value;
+      const song = document.getElementById('gig-song').value.trim();
       const desc = document.getElementById('gig-desc').value.trim();
       const cropFit = document.getElementById('crop-fit').value;
 
@@ -630,7 +639,7 @@
 
       try {
         await push(gigsRef, {
-          title, author, bands, venue, genre, date, desc,
+          title, author, bands, venue, genre, date, song, desc,
           imageSrc: selectedImageBase64 || null,
           cropFit,
           timestamp: Date.now()
@@ -646,7 +655,6 @@
     window.openModal = () => {
       const modal = document.getElementById('gig-modal');
       modal.style.display = 'block';
-      // Scroll modal overlay to top when opened
       modal.scrollTop = 0;
     };
 
