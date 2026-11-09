@@ -223,11 +223,24 @@
       color: #ff007f;
     }
 
+    .gig-author {
+      font-size: 10px;
+      color: #777;
+      margin-top: 10px;
+      border-top: 1px dashed #222;
+      padding-top: 8px;
+      text-transform: uppercase;
+    }
+
+    .gig-author span {
+      color: #ff007f;
+    }
+
     .gig-desc {
       font-size: 12px;
       color: #ccc;
       line-height: 1.5;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
 
     .gig-thumb-wrapper {
@@ -255,21 +268,21 @@
       }
     }
 
-    /* 📱 Fully Scrollable & Compact Mobile Modals 📱 */
+    /* 📱 Fully Scrollable Mobile Overlay Fix 📱 */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(0, 0, 0, 0.92);
       z-index: 40000;
       display: none;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      padding: 12px;
+      padding: 30px 14px 100px 14px; /* Generous bottom padding clearing virtual mobile keyboards */
       backdrop-filter: blur(6px);
-      overflow-y: auto;
+      overflow-y: auto;             /* Native scrolling on full overlay */
       -webkit-overflow-scrolling: touch;
     }
 
@@ -278,13 +291,11 @@
       border: 2px solid #ff007f;
       width: 100%;
       max-width: 440px;
-      max-height: 80vh;          /* Strictly contained to fit safely on phone screens */
-      overflow-y: auto;          /* Enables internal scrolling */
       border-radius: 8px;
       padding: 18px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
       position: relative;
-      margin: auto;
+      margin: auto 0;
     }
 
     .modal-card h2 {
@@ -398,6 +409,10 @@
           <input type="text" id="gig-title" class="form-control" placeholder="e.g. Summer Hardcore Fest" required>
         </div>
         <div class="form-group">
+          <label>Logged By (Your Name / Handle) *</label>
+          <input type="text" id="gig-author" class="form-control" placeholder="e.g. Alex DIY" required>
+        </div>
+        <div class="form-group">
           <label>Band(s) Playing (comma separated) *</label>
           <input type="text" id="gig-bands" class="form-control" placeholder="e.g. Trash Talk, Scalple" required>
         </div>
@@ -488,6 +503,7 @@
       const filtered = allGigs.filter(item => {
         if (!query) return true;
         return (item.title || '').toLowerCase().includes(query) ||
+               (item.author || '').toLowerCase().includes(query) ||
                (item.bands || '').toLowerCase().includes(query) ||
                (item.venue || '').toLowerCase().includes(query) ||
                (item.genre || '').toLowerCase().includes(query) ||
@@ -524,6 +540,7 @@
           </div>
           <p class="gig-desc">${item.desc}</p>
           ${imgHtml}
+          <div class="gig-author">Logged by: <span>${item.author || 'Anonymous'}</span></div>
         `;
         feed.appendChild(post);
       });
@@ -602,6 +619,7 @@
       const submitBtn = document.getElementById('submit-btn');
 
       const title = document.getElementById('gig-title').value.trim();
+      const author = document.getElementById('gig-author').value.trim();
       const bands = document.getElementById('gig-bands').value.trim();
       const venue = document.getElementById('gig-venue').value.trim();
       const genre = document.getElementById('gig-genre').value.trim();
@@ -614,7 +632,7 @@
 
       try {
         await push(gigsRef, {
-          title, bands, venue, genre, date, desc,
+          title, author, bands, venue, genre, date, desc,
           imageSrc: selectedImageBase64 || null,
           cropFit,
           timestamp: Date.now()
