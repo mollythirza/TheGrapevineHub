@@ -36,6 +36,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      text-decoration: none;
     }
 
     .brand-logo {
@@ -288,6 +289,69 @@
       outline: none;
     }
 
+    /* Tab controls for Record vs Upload */
+    .audio-mode-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .mode-tab {
+      flex: 1;
+      padding: 8px;
+      background: #0d0d0d;
+      border: 1px solid #333;
+      color: #aaa;
+      font-family: inherit;
+      font-size: 11px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .mode-tab.active {
+      border-color: #ff007f;
+      color: #ff007f;
+      font-weight: bold;
+      background: rgba(255, 0, 127, 0.1);
+    }
+
+    /* Live Recorder Box Styles */
+    .recorder-box {
+      background: #0d0d0d;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .rec-timer {
+      font-size: 20px;
+      color: #ff007f;
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .rec-btn {
+      background: #ff007f;
+      color: #000;
+      border: none;
+      padding: 8px 16px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .rec-btn.stop {
+      background: #ff3333;
+      color: #fff;
+    }
+
     .modal-actions {
       display: flex;
       gap: 12px;
@@ -312,12 +376,12 @@
 <body>
 
   <header>
-    <a href="index.html" class="brand-container" style="text-decoration: none;">
+    <a href="https://mollythirza.github.io/TheGrapevineHub/" class="brand-container">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
       <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:14px;\'>THE GRAPEVINE</h1>'">
     </a>
     <div class="nav-links">
-      <a href="index.html">← Back to Hub</a>
+      <a href="https://mollythirza.github.io/TheGrapevineHub/">← Back to Hub</a>
     </div>
   </header>
 
@@ -344,6 +408,7 @@
     <div class="audio-grid" id="audio-grid"></div>
   </main>
 
+  <!-- Submission & Recording Modal -->
   <div id="audio-modal">
     <div class="modal-card">
       <h2>Share Your Story</h2>
@@ -368,10 +433,32 @@
           <label>Brief Description *</label>
           <textarea id="audio-desc" class="form-control" rows="3" placeholder="What is this note about?" required></textarea>
         </div>
+
+        <!-- Mode Selection: Live Record vs File Upload -->
         <div class="form-group">
-          <label>Audio File *</label>
-          <input type="file" id="audio-file" accept="audio/*" class="form-control" required>
+          <label>Audio Input Method *</label>
+          <div class="audio-mode-tabs">
+            <button type="button" class="mode-tab active" id="tab-record" onclick="window.setAudioMode('record')">🎙 Live Record</button>
+            <button type="button" class="mode-tab" id="tab-upload" onclick="window.setAudioMode('upload')">📁 Upload File</button>
+          </div>
         </div>
+
+        <!-- Section 1: Browser Live Mic Recorder -->
+        <div id="section-record" class="recorder-box">
+          <span class="rec-timer" id="rec-timer">00:00</span>
+          <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 10px;">
+            <button type="button" class="rec-btn" id="btn-start-rec" onclick="window.startRecording()">● Record Voice Note</button>
+            <button type="button" class="rec-btn stop" id="btn-stop-rec" onclick="window.stopRecording()" style="display:none;">■ Stop Recording</button>
+          </div>
+          <audio id="rec-preview" controls style="display:none; margin-top: 10px;"></audio>
+        </div>
+
+        <!-- Section 2: Standard Audio File Upload -->
+        <div id="section-upload" class="form-group" style="display:none;">
+          <label>Select Audio File (MP3, WAV, M4A under 15MB)</label>
+          <input type="file" id="audio-file" accept="audio/*" class="form-control">
+        </div>
+
         <div class="modal-actions">
           <button type="button" class="modal-btn btn-cancel" onclick="window.closeAudioModal()">Cancel</button>
           <button type="submit" class="modal-btn btn-submit" id="submit-btn">Submit Recording →</button>
@@ -400,7 +487,16 @@
     const audioRef = ref(db, 'oral_histories');
 
     let activeCategory = 'all';
+    let currentInputMode = 'record'; // 'record' or 'upload'
 
+    // Live Voice Recording Variables
+    let mediaRecorder;
+    let audioChunks = [];
+    let recordedBase64 = null;
+    let timerInterval;
+    let secondsRecorded = 0;
+
+    // Load Database Records
     onValue(audioRef, (snapshot) => {
       const data = snapshot.val();
       const grid = document.getElementById('audio-grid');
@@ -430,82 +526,140 @@
       window.filterAudio();
     });
 
-    document.getElementById('audio-form').addEventListener('submit', (e) => {
+    // Form Submit Handler
+    document.getElementById('audio-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submit-btn');
-      const fileInput = document.getElementById('audio-file');
-
-      if (!fileInput.files || !fileInput.files[0]) return;
-
-      const file = fileInput.files[0];
-
-      if (file.size > 15 * 1024 * 1024) {
-        const proceed = confirm("Your audio file is large (" + Math.round(file.size / (1024*1024)) + "MB). Firebase Realtime Database can reject payloads over 15MB. Try anyway?");
-        if (!proceed) return;
-      }
-
-      submitBtn.innerText = "Processing Audio (0%)...";
-      submitBtn.disabled = true;
-
+      
       const title = document.getElementById('audio-title').value.trim();
       const speaker = document.getElementById('audio-speaker').value.trim();
       const category = document.getElementById('audio-category').value;
       const desc = document.getElementById('audio-desc').value.trim();
-
       const categoryLabels = { 'gig': 'Gig Memory', 'venue': 'Venue Lore', 'history': 'Oral History' };
 
-      const reader = new FileReader();
+      let finalAudioData = null;
 
-      reader.onprogress = function(event) {
-        if (event.lengthComputable) {
-          const percentLoaded = Math.round((event.loaded / event.total) * 100);
-          submitBtn.innerText = `Encoding Audio (${percentLoaded}%)...`;
+      if (currentInputMode === 'record') {
+        if (!recordedBase64) {
+          alert("Please record a voice note before submitting!");
+          return;
         }
-      };
-
-      reader.onload = async function(event) {
-        const audioSrc = event.target.result;
-        
-        if (audioSrc.length > 15 * 1024 * 1024) {
-          alert("Error: The encoded audio file is too large for the database connection. Please compress the file to an MP3 under 10MB–15MB.");
-          submitBtn.innerText = "Submit Recording →";
-          submitBtn.disabled = false;
+        finalAudioData = recordedBase64;
+        saveStoryToFirebase(finalAudioData, title, speaker, category, desc, categoryLabels);
+      } else {
+        const fileInput = document.getElementById('audio-file');
+        if (!fileInput.files || !fileInput.files[0]) {
+          alert("Please select an audio file to upload!");
           return;
         }
 
-        submitBtn.innerText = "Saving to Database...";
+        const file = fileInput.files[0];
+        submitBtn.innerText = "Encoding File...";
+        submitBtn.disabled = true;
 
-        try {
-          await push(audioRef, {
-            title,
-            speaker,
-            category,
-            desc,
-            audioSrc,
-            badge: categoryLabels[category] || 'Oral History',
-            timestamp: Date.now()
-          });
-
-          submitBtn.innerText = "Submit Recording →";
-          submitBtn.disabled = false;
-          window.closeAudioModal();
-        } catch (err) {
-          console.error("Database error:", err);
-          alert("Error saving story: Payload exceeded network size limit. Please compress the file to an MP3 under 10MB.");
-          submitBtn.innerText = "Submit Recording →";
-          submitBtn.disabled = false;
-        }
-      };
-
-      reader.onerror = function() {
-        alert("Error reading file.");
-        submitBtn.innerText = "Submit Recording →";
-        submitBtn.disabled = false;
-      };
-
-      reader.readAsDataURL(file);
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          finalAudioData = event.target.result;
+          saveStoryToFirebase(finalAudioData, title, speaker, category, desc, categoryLabels);
+        };
+        reader.readAsDataURL(file);
+      }
     });
 
+    async function saveStoryToFirebase(audioSrc, title, speaker, category, desc, categoryLabels) {
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.innerText = "Saving to Database...";
+      submitBtn.disabled = true;
+
+      try {
+        await push(audioRef, {
+          title,
+          speaker,
+          category,
+          desc,
+          audioSrc,
+          badge: categoryLabels[category] || 'Oral History',
+          timestamp: Date.now()
+        });
+
+        submitBtn.innerText = "Submit Recording →";
+        submitBtn.disabled = false;
+        window.closeAudioModal();
+      } catch (err) {
+        console.error("Database error:", err);
+        alert("Error saving story: Payload exceeded size limit. Try keeping live recordings under 5 minutes or compress uploaded audio.");
+        submitBtn.innerText = "Submit Recording →";
+        submitBtn.disabled = false;
+      }
+    }
+
+    // Toggle Input Method between Live Microphone vs File Upload
+    window.setAudioMode = function(mode) {
+      currentInputMode = mode;
+      document.getElementById('tab-record').classList.toggle('active', mode === 'record');
+      document.getElementById('tab-upload').classList.toggle('active', mode === 'upload');
+      document.getElementById('section-record').style.display = (mode === 'record') ? 'block' : 'none';
+      document.getElementById('section-upload').style.display = (mode === 'upload') ? 'block' : 'none';
+    };
+
+    // Live Recording Functions
+    window.startRecording = async function() {
+      audioChunks = [];
+      recordedBase64 = null;
+      secondsRecorded = 0;
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            audioChunks.push(event.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          const reader = new FileReader();
+          reader.readAsDataURL(audioBlob);
+          reader.onloadend = () => {
+            recordedBase64 = reader.result;
+            const preview = document.getElementById('rec-preview');
+            preview.src = recordedBase64;
+            preview.style.display = 'block';
+          };
+          stream.getTracks().forEach(track => track.stop());
+        };
+
+        mediaRecorder.start();
+
+        document.getElementById('btn-start-rec').style.display = 'none';
+        document.getElementById('btn-stop-rec').style.display = 'inline-block';
+        document.getElementById('rec-preview').style.display = 'none';
+
+        timerInterval = setInterval(() => {
+          secondsRecorded++;
+          const mins = String(Math.floor(secondsRecorded / 60)).padStart(2, '0');
+          const secs = String(secondsRecorded % 60).padStart(2, '0');
+          document.getElementById('rec-timer').innerText = `${mins}:${secs}`;
+        }, 1000);
+
+      } catch (err) {
+        alert("Could not access microphone: " + err.message);
+      }
+    };
+
+    window.stopRecording = function() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+      clearInterval(timerInterval);
+      document.getElementById('btn-start-rec').style.display = 'inline-block';
+      document.getElementById('btn-start-rec').innerText = "● Record Again";
+      document.getElementById('btn-stop-rec').style.display = 'none';
+    };
+
+    // Category Filter Buttons
     window.setCategory = function(cat, btnElement) {
       activeCategory = cat;
       document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -530,9 +684,19 @@
     };
 
     window.closeAudioModal = () => {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+      }
+      clearInterval(timerInterval);
       document.getElementById('audio-modal').style.display = 'none';
       document.getElementById('audio-form').reset();
-      document.getElementById('submit-btn').innerText = "Submit Recording →";
+      document.getElementById('rec-preview').style.display = 'none';
+      document.getElementById('rec-timer').innerText = "00:00";
+      document.getElementById('btn-start-rec').style.display = 'inline-block';
+      document.getElementById('btn-start-rec').innerText = "● Record Voice Note";
+      document.getElementById('btn-stop-rec').style.display = 'none';
+      recordedBase64 = null;
+      window.setAudioMode('record');
     };
   </script>
 </body>
