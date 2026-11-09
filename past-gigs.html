@@ -268,7 +268,7 @@
       }
     }
 
-    /* 📱 100% Mobile Scroll Guarantee Modal Structure 📱 */
+    /* 📱 Touch-Optimized Non-Glitchy Modal Overlay 📱 */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -280,9 +280,9 @@
       background: rgba(0, 0, 0, 0.94);
       z-index: 40000;
       display: none;
-      overflow-y: scroll;
+      overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 16px 12px 140px 12px;
+      padding: 20px 12px 160px 12px;
       backdrop-filter: blur(6px);
     }
 
@@ -292,63 +292,77 @@
       width: 100%;
       max-width: 440px;
       border-radius: 8px;
-      padding: 14px 16px;
+      padding: 18px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
       margin: 0 auto;
+      position: relative;
     }
 
     .modal-card h2 {
       color: #ff007f;
       font-size: 14px;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       text-align: center;
     }
 
     .form-group {
-      margin-bottom: 7px;
+      margin-bottom: 10px;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
+      position: relative;
     }
 
     .form-group label {
-      font-size: 9px;
+      font-size: 10px;
       color: #aaa;
       text-transform: uppercase;
+      cursor: pointer;
+      display: block;
     }
 
     .form-control {
       background: #0d0d0d;
       border: 1px solid #333;
       color: #fff;
-      padding: 5px 7px;
+      padding: 8px;
       font-family: inherit;
-      font-size: 16px; /* Prevents mobile browser auto-zoom */
+      font-size: 16px; /* Prevents iOS auto-zoom */
       border-radius: 4px;
       outline: none;
       width: 100%;
+      touch-action: manipulation;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 60px;
     }
 
     .form-control:focus {
       border-color: #ff007f;
+      box-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
     }
 
     .modal-actions {
       display: flex;
-      gap: 8px;
-      margin-top: 10px;
+      gap: 10px;
+      margin-top: 14px;
     }
 
     .modal-btn {
       flex: 1;
-      padding: 9px;
+      padding: 10px;
       border-radius: 4px;
       font-size: 11px;
       font-weight: bold;
       text-transform: uppercase;
       cursor: pointer;
       font-family: inherit;
+      touch-action: manipulation;
     }
 
     .btn-submit { background: #ff007f; color: #000; border: none; }
@@ -357,11 +371,11 @@
     /* Image Cropper Preview Area */
     #crop-container {
       display: none;
-      margin-top: 5px;
+      margin-top: 6px;
       text-align: center;
       background: #0d0d0d;
       border: 1px dashed #ff007f;
-      padding: 5px;
+      padding: 6px;
       border-radius: 4px;
     }
   </style>
@@ -404,39 +418,39 @@
       <h2>Log Past Gig Memory</h2>
       <form id="gig-form">
         <div class="form-group">
-          <label>Show / Event Title *</label>
+          <label for="gig-title">Show / Event Title *</label>
           <input type="text" id="gig-title" class="form-control" placeholder="e.g. Summer Hardcore Fest" required>
         </div>
         <div class="form-group">
-          <label>Logged By (Your Name / Handle) *</label>
+          <label for="gig-author">Logged By (Your Name / Handle) *</label>
           <input type="text" id="gig-author" class="form-control" placeholder="e.g. Alex DIY" required>
         </div>
         <div class="form-group">
-          <label>Band(s) Playing (comma separated) *</label>
+          <label for="gig-bands">Band(s) Playing (comma separated) *</label>
           <input type="text" id="gig-bands" class="form-control" placeholder="e.g. Trash Talk, Scalple" required>
         </div>
         <div class="form-group">
-          <label>Venue *</label>
+          <label for="gig-venue">Venue *</label>
           <input type="text" id="gig-venue" class="form-control" placeholder="e.g. The Underground Basement" required>
         </div>
         <div class="form-group">
-          <label>Genre / Tag *</label>
+          <label for="gig-genre">Genre / Tag *</label>
           <input type="text" id="gig-genre" class="form-control" placeholder="e.g. Hardcore, Punk, Noise" required>
         </div>
         <div class="form-group">
-          <label>Show Date *</label>
+          <label for="gig-date">Show Date *</label>
           <input type="date" id="gig-date" class="form-control" required>
         </div>
         <div class="form-group">
-          <label>Favorite Song / Track Highlight (Optional)</label>
+          <label for="gig-song">Favorite Song / Track Highlight (Optional)</label>
           <input type="text" id="gig-song" class="form-control" placeholder="e.g. Awake / Unravel">
         </div>
         <div class="form-group">
-          <label>Memories / Setlist Notes *</label>
+          <label for="gig-desc">Memories / Setlist Notes *</label>
           <textarea id="gig-desc" class="form-control" rows="2" placeholder="Highlights, crowd energy..." required></textarea>
         </div>
         <div class="form-group">
-          <label>Photo / Stub (Optional)</label>
+          <label for="gig-image">Photo / Stub (Optional)</label>
           <input type="file" id="gig-image" accept="image/*" class="form-control" onchange="window.handleImagePreview(this)">
         </div>
         
