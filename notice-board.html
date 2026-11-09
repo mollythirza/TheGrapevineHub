@@ -68,7 +68,7 @@
       text-shadow: 0 0 8px #ff007f;
     }
 
-    /* Page Title & Time Filter Control Bar */
+    /* Control Bar */
     .filter-bar {
       position: fixed;
       top: 72px;
@@ -118,7 +118,7 @@
       border-color: #ff007f;
     }
 
-    /* Flyer Wall Canvas */
+    /* Flyer Canvas */
     #wall-canvas {
       position: absolute;
       top: 60px;
@@ -129,10 +129,14 @@
       background-image: radial-gradient(rgba(255, 0, 127, 0.08) 1px, transparent 1px);
       background-size: 30px 30px;
       overflow: auto;
-      position: relative;
     }
 
-    /* Fixed Flyer Post */
+    #flyers-container {
+      position: relative;
+      width: 100%;
+      min-height: 100%;
+    }
+
     .flyer-post {
       position: absolute;
       width: 190px;
@@ -143,12 +147,13 @@
       cursor: pointer;
       box-shadow: 0 0 12px rgba(255, 0, 127, 0.3);
       transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+      z-index: 10;
     }
 
     .flyer-post:hover {
       border-color: #ff007f;
       box-shadow: 0 0 22px rgba(255, 0, 127, 0.7);
-      transform: scale(1.02);
+      transform: scale(1.03);
       z-index: 50;
     }
 
@@ -176,7 +181,7 @@
       margin-top: 4px;
     }
 
-    /* Action bar toolbar */
+    /* Pin Action Bar */
     .wall-toolbar {
       position: fixed;
       bottom: 24px;
@@ -203,7 +208,7 @@
       background: #ff3399;
     }
 
-    /* Responsive Modals */
+    /* Modals */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -305,7 +310,7 @@
     </div>
   </header>
 
-  <!-- Title & Filter Bar -->
+  <!-- Filter Controls -->
   <div class="filter-bar">
     <span class="page-tag">📌 Notice Board</span>
     <button class="filter-chip active" id="filter-all" onclick="window.setTimeFilter('all')">All Flyers</button>
@@ -318,12 +323,12 @@
     <div id="flyers-container"></div>
   </main>
 
-  <!-- Pin Flyer Button -->
+  <!-- Pin Button -->
   <div class="wall-toolbar">
     <button class="btn-pin" onclick="window.openCreateModal()">+ Pin Flyer / Gig</button>
   </div>
 
-  <!-- Create Flyer Modal -->
+  <!-- Create Modal -->
   <div id="create-modal" class="modal-overlay">
     <div class="modal-card">
       <h2>Pin a Flyer / Notice</h2>
@@ -352,7 +357,7 @@
     </div>
   </div>
 
-  <!-- View Flyer Detail Modal -->
+  <!-- Detail Modal -->
   <div id="detail-modal" class="modal-overlay" onclick="window.closeDetailModal()">
     <div class="modal-card" onclick="event.stopPropagation()">
       <h2 id="detail-title">Notice Title</h2>
@@ -364,6 +369,7 @@
     </div>
   </div>
 
+  <!-- Firebase Integration Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -386,13 +392,7 @@
     let allNotices = {};
     let activeFilter = 'all';
 
-    // Load and render flyers on wall
-    onValue(noticesRef, (snapshot) => {
-      const data = snapshot.val();
-      allNotices = data || {};
-      window.renderFlyers();
-    });
-
+    // Global Functions for HTML onClick bindings
     window.setTimeFilter = (filterType) => {
       activeFilter = filterType;
       document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -403,26 +403,34 @@
 
     window.renderFlyers = () => {
       const container = document.getElementById('flyers-container');
+      if (!container) return;
       container.innerHTML = '';
+      
       const now = Date.now();
       const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
 
-      if (!allNotices) return;
+      if (!allNotices || Object.keys(allNotices).length === 0) {
+        container.innerHTML = `<p style="text-align:center; padding-top:140px; color:#666; font-size:12px;">No flyers posted yet. Be the first to pin one!</p>`;
+        return;
+      }
 
-      Object.keys(allNotices).forEach(id => {
+      const screenWidth = Math.max(window.innerWidth - 220, 300);
+      const screenHeight = Math.max(window.innerHeight - 320, 400);
+
+      Object.keys(allNotices).forEach((id, index) => {
         const item = allNotices[id];
         const postTime = item.timestamp || 0;
         const isRecent = (now - postTime) <= thirtyDaysMs;
 
-        // Apply Time Filter
         if (activeFilter === 'recent' && !isRecent) return;
         if (activeFilter === 'older' && isRecent) return;
 
         const flyer = document.createElement('div');
         flyer.className = 'flyer-post';
         
-        const posX = item.x !== undefined ? item.x : (Math.random() * (window.innerWidth - 240) + 20);
-        const posY = item.y !== undefined ? item.y : (Math.random() * (window.innerHeight - 340) + 140);
+        // Safety fallback for coordinates
+        const posX = item.x !== undefined ? item.x : ((index * 60 + 30) % screenWidth);
+        const posY = item.y !== undefined ? item.y : (((index * 70) + 140) % screenHeight + 100);
         
         flyer.style.left = `${posX}px`;
         flyer.style.top = `${posY}px`;
@@ -432,16 +440,27 @@
 
         flyer.innerHTML = `
           ${imgHtml}
-          <div class="flyer-title">${item.title}</div>
+          <div class="flyer-title">${item.title || 'Untitled Notice'}</div>
           <div class="flyer-date-tag">${formattedDate}</div>
         `;
 
-        flyer.onclick = () => window.openDetailModal(id);
+        flyer.addEventListener('click', (e) => {
+          e.stopPropagation();
+          window.openDetailModal(id);
+        });
+
         container.appendChild(flyer);
       });
     };
 
-    // Form Submit Handler for New Notice
+    // Firebase Listener
+    onValue(noticesRef, (snapshot) => {
+      const data = snapshot.val();
+      allNotices = data || {};
+      window.renderFlyers();
+    });
+
+    // Form Submit
     document.getElementById('create-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submit-btn');
@@ -454,8 +473,10 @@
       submitBtn.innerText = "Pinning...";
       submitBtn.disabled = true;
 
-      const randomX = Math.floor(Math.random() * (window.innerWidth - 240) + 20);
-      const randomY = Math.floor(Math.random() * (window.innerHeight - 340) + 140);
+      const screenW = Math.max(window.innerWidth - 240, 200);
+      const screenH = Math.max(window.innerHeight - 340, 300);
+      const randomX = Math.floor(Math.random() * screenW + 20);
+      const randomY = Math.floor(Math.random() * screenH + 140);
 
       if (imageInput.files && imageInput.files[0]) {
         const reader = new FileReader();
@@ -466,3 +487,57 @@
       } else {
         await pushToFirebase(title, author, desc, null, randomX, randomY);
       }
+    });
+
+    async function pushToFirebase(title, author, desc, imageSrc, x, y) {
+      try {
+        await push(noticesRef, { title, author, desc, imageSrc, x, y, timestamp: Date.now() });
+        window.closeCreateModal();
+      } catch (err) {
+        alert("Error pinning flyer: Image payload limit reached. Try a smaller file.");
+      }
+      document.getElementById('submit-btn').innerText = "Pin to Wall →";
+      document.getElementById('submit-btn').disabled = false;
+    }
+
+    // Modal Control Attachments
+    window.openCreateModal = () => {
+      document.getElementById('create-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closeCreateModal = () => {
+      document.getElementById('create-modal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+      document.getElementById('create-form').reset();
+    };
+
+    window.openDetailModal = (id) => {
+      const item = allNotices[id];
+      if (!item) return;
+
+      document.getElementById('detail-title').innerText = item.title;
+      document.getElementById('detail-author').innerText = item.author || 'Anonymous';
+      document.getElementById('detail-date').innerText = item.timestamp ? `Posted: ${new Date(item.timestamp).toLocaleString()}` : '';
+      document.getElementById('detail-desc').innerText = item.desc;
+      
+      const imgContainer = document.getElementById('detail-image-container');
+      if (item.imageSrc) {
+        imgContainer.innerHTML = `<img src="${item.imageSrc}" style="max-height: 220px; max-width: 100%; border-radius: 4px; margin: 0 auto;" />`;
+        imgContainer.style.display = 'block';
+      } else {
+        imgContainer.innerHTML = '';
+        imgContainer.style.display = 'none';
+      }
+
+      document.getElementById('detail-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closeDetailModal = () => {
+      document.getElementById('detail-modal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    };
+  </script>
+</body>
+</html>
