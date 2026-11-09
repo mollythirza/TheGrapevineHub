@@ -346,6 +346,10 @@
           <textarea id="notice-desc" class="form-control" rows="3" placeholder="Date, venue, ticket info..." required></textarea>
         </div>
         <div class="form-group">
+          <label>External Link / Event URL (Optional)</label>
+          <input type="url" id="notice-link" class="form-control" placeholder="https://tickets.com or instagram.com/...">
+        </div>
+        <div class="form-group">
           <label>Flyer Image (Optional)</label>
           <input type="file" id="notice-image" accept="image/*" class="form-control">
         </div>
@@ -364,7 +368,13 @@
       <div id="detail-image-container" style="margin-bottom: 12px; text-align: center;"></div>
       <p style="font-size: 11px; color: #888; margin-bottom: 4px;">Pinned by <span id="detail-author" style="color: #ff007f;"></span></p>
       <p style="font-size: 10px; color: #666; margin-bottom: 12px;" id="detail-date"></p>
-      <p id="detail-desc" style="font-size: 13px; color: #ccc; line-height: 1.5; margin-bottom: 20px; white-space: pre-wrap;"></p>
+      <p id="detail-desc" style="font-size: 13px; color: #ccc; line-height: 1.5; margin-bottom: 16px; white-space: pre-wrap;"></p>
+      
+      <!-- Optional Link Button Container -->
+      <div id="detail-link-container" style="margin-bottom: 16px; display: none;">
+        <a id="detail-link" href="#" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; background: rgba(255, 0, 127, 0.15); border: 1px solid #ff007f; color: #ff007f; text-align: center; padding: 10px; font-size: 12px; font-weight: bold; text-transform: uppercase; border-radius: 4px; text-decoration: none;">External Link ↗</a>
+      </div>
+
       <button class="modal-btn btn-cancel" style="width: 100%;" onclick="window.closeDetailModal()">Close Flyer</button>
     </div>
   </div>
@@ -428,7 +438,6 @@
         const flyer = document.createElement('div');
         flyer.className = 'flyer-post';
         
-        // Safety fallback for coordinates
         const posX = item.x !== undefined ? item.x : ((index * 60 + 30) % screenWidth);
         const posY = item.y !== undefined ? item.y : (((index * 70) + 140) % screenHeight + 100);
         
@@ -468,6 +477,7 @@
       const title = document.getElementById('notice-title').value.trim();
       const author = document.getElementById('notice-author').value.trim();
       const desc = document.getElementById('notice-desc').value.trim();
+      const link = document.getElementById('notice-link').value.trim();
       const imageInput = document.getElementById('notice-image');
 
       submitBtn.innerText = "Pinning...";
@@ -481,20 +491,20 @@
       if (imageInput.files && imageInput.files[0]) {
         const reader = new FileReader();
         reader.onload = async function(event) {
-          await pushToFirebase(title, author, desc, event.target.result, randomX, randomY);
+          await pushToFirebase(title, author, desc, link, event.target.result, randomX, randomY);
         };
         reader.readAsDataURL(imageInput.files[0]);
       } else {
-        await pushToFirebase(title, author, desc, null, randomX, randomY);
+        await pushToFirebase(title, author, desc, link, null, randomX, randomY);
       }
     });
 
-    async function pushToFirebase(title, author, desc, imageSrc, x, y) {
+    async function pushToFirebase(title, author, desc, link, imageSrc, x, y) {
       try {
-        await push(noticesRef, { title, author, desc, imageSrc, x, y, timestamp: Date.now() });
+        await push(noticesRef, { title, author, desc, link, imageSrc, x, y, timestamp: Date.now() });
         window.closeCreateModal();
       } catch (err) {
-        alert("Error pinning flyer: Image payload limit reached. Try a smaller file.");
+        alert("Error pinning flyer: Image payload limit exceeded. Try a smaller file.");
       }
       document.getElementById('submit-btn').innerText = "Pin to Wall →";
       document.getElementById('submit-btn').disabled = false;
@@ -521,6 +531,18 @@
       document.getElementById('detail-date').innerText = item.timestamp ? `Posted: ${new Date(item.timestamp).toLocaleString()}` : '';
       document.getElementById('detail-desc').innerText = item.desc;
       
+      // Handle Link visibility
+      const linkContainer = document.getElementById('detail-link-container');
+      const linkElement = document.getElementById('detail-link');
+      if (item.link && item.link.trim() !== '') {
+        linkElement.href = item.link;
+        linkContainer.style.display = 'block';
+      } else {
+        linkElement.href = '#';
+        linkContainer.style.display = 'none';
+      }
+
+      // Handle Image visibility
       const imgContainer = document.getElementById('detail-image-container');
       if (item.imageSrc) {
         imgContainer.innerHTML = `<img src="${item.imageSrc}" style="max-height: 220px; max-width: 100%; border-radius: 4px; margin: 0 auto;" />`;
