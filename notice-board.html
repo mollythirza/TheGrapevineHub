@@ -68,6 +68,56 @@
       text-shadow: 0 0 8px #ff007f;
     }
 
+    /* Top Layer Filter Control Bar */
+    .filter-bar {
+      position: fixed;
+      top: 72px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: rgba(20, 20, 20, 0.95);
+      border: 1px solid #ff007f;
+      border-radius: 6px;
+      padding: 6px 14px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+      backdrop-filter: blur(6px);
+      max-width: 90vw;
+      overflow-x: auto;
+    }
+
+    .filter-chip {
+      background: #0d0d0d;
+      color: #aaa;
+      border: 1px solid #333;
+      padding: 4px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .filter-chip.active {
+      background: #ff007f;
+      color: #000;
+      font-weight: bold;
+      border-color: #ff007f;
+    }
+
+    .filter-select {
+      background: #0d0d0d;
+      color: #ff007f;
+      border: 1px solid #ff007f;
+      font-family: inherit;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      outline: none;
+    }
+
     /* Flyer Wall Canvas */
     #wall-canvas {
       position: absolute;
@@ -82,7 +132,7 @@
       position: relative;
     }
 
-    /* Fixed Flyer Post (Non-movable) */
+    /* Fixed Flyer Post */
     .flyer-post {
       position: absolute;
       width: 190px;
@@ -119,6 +169,13 @@
       word-break: break-word;
     }
 
+    .flyer-date-tag {
+      font-size: 9px;
+      color: #777;
+      text-align: center;
+      margin-top: 4px;
+    }
+
     /* Action bar toolbar */
     .wall-toolbar {
       position: fixed;
@@ -146,7 +203,7 @@
       background: #ff3399;
     }
 
-    /* 📱 Fully Scrollable & Responsive Modals 📱 */
+    /* Responsive Modals */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -168,8 +225,8 @@
       border: 2px solid #ff007f;
       width: 100%;
       max-width: 480px;
-      max-height: 85vh;          /* Ensures it never gets clipped on mobile screens */
-      overflow-y: auto;          /* Internal scrolling enabled for all content */
+      max-height: 85vh;
+      overflow-y: auto;
       border-radius: 8px;
       padding: 20px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
@@ -204,7 +261,7 @@
       color: #fff;
       padding: 8px;
       font-family: inherit;
-      font-size: 16px; /* Prevents mobile browser auto-zoom */
+      font-size: 16px;
       border-radius: 4px;
       outline: none;
       width: 100%;
@@ -246,6 +303,14 @@
       <a href="https://mollythirza.github.io/TheGrapevineHub/">← Back to Hub</a>
     </div>
   </header>
+
+  <!-- Filter Bar by Date & Layer -->
+  <div class="filter-bar">
+    <span style="font-size: 10px; color: #888; text-transform: uppercase;">Time Filter:</span>
+    <button class="filter-chip active" id="filter-all" onclick="window.setTimeFilter('all')">All Flyers</button>
+    <button class="filter-chip" id="filter-recent" onclick="window.setTimeFilter('recent')">Recent (30 Days)</button>
+    <button class="filter-chip" id="filter-older" onclick="window.setTimeFilter('older')">Archive</button>
+  </div>
 
   <!-- Interactive Wall Canvas -->
   <main id="wall-canvas">
@@ -291,7 +356,8 @@
     <div class="modal-card" onclick="event.stopPropagation()">
       <h2 id="detail-title">Notice Title</h2>
       <div id="detail-image-container" style="margin-bottom: 12px; text-align: center;"></div>
-      <p style="font-size: 11px; color: #888; margin-bottom: 12px;">Pinned by <span id="detail-author" style="color: #ff007f;"></span></p>
+      <p style="font-size: 11px; color: #888; margin-bottom: 4px;">Pinned by <span id="detail-author" style="color: #ff007f;"></span></p>
+      <p style="font-size: 10px; color: #666; margin-bottom: 12px;" id="detail-date"></p>
       <p id="detail-desc" style="font-size: 13px; color: #ccc; line-height: 1.5; margin-bottom: 20px; white-space: pre-wrap;"></p>
       <button class="modal-btn btn-cancel" style="width: 100%;" onclick="window.closeDetailModal()">Close Flyer</button>
     </div>
@@ -317,41 +383,62 @@
     const noticesRef = ref(db, 'notices');
 
     let allNotices = {};
+    let activeFilter = 'all';
 
     // Load and render flyers on wall
     onValue(noticesRef, (snapshot) => {
       const data = snapshot.val();
+      allNotices = data || {};
+      window.renderFlyers();
+    });
+
+    window.setTimeFilter = (filterType) => {
+      activeFilter = filterType;
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      const activeBtn = document.getElementById(`filter-${filterType}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      window.renderFlyers();
+    };
+
+    window.renderFlyers = () => {
       const container = document.getElementById('flyers-container');
       container.innerHTML = '';
-      allNotices = data || {};
+      const now = Date.now();
+      const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
 
-      if (data) {
-        Object.keys(data).forEach(id => {
-          const item = data[id];
-          const flyer = document.createElement('div');
-          flyer.className = 'flyer-post';
-          
-          // Fixed wall coordinates once pinned
-          const posX = item.x !== undefined ? item.x : (Math.random() * (window.innerWidth - 240) + 20);
-          const posY = item.y !== undefined ? item.y : (Math.random() * (window.innerHeight - 300) + 80);
-          
-          flyer.style.left = `${posX}px`;
-          flyer.style.top = `${posY}px`;
+      if (!allNotices) return;
 
-          let imgHtml = item.imageSrc ? `<img src="${item.imageSrc}" class="flyer-img" alt="Flyer">` : '';
-          
-          flyer.innerHTML = `
-            ${imgHtml}
-            <div class="flyer-title">${item.title}</div>
-          `;
+      Object.keys(allNotices).forEach(id => {
+        const item = allNotices[id];
+        const postTime = item.timestamp || 0;
+        const isRecent = (now - postTime) <= thirtyDaysMs;
 
-          // Reliable click handler to open details
-          flyer.onclick = () => window.openDetailModal(id);
+        // Apply Time Filter
+        if (activeFilter === 'recent' && !isRecent) return;
+        if (activeFilter === 'older' && isRecent) return;
 
-          container.appendChild(flyer);
-        });
-      }
-    });
+        const flyer = document.createElement('div');
+        flyer.className = 'flyer-post';
+        
+        const posX = item.x !== undefined ? item.x : (Math.random() * (window.innerWidth - 240) + 20);
+        const posY = item.y !== undefined ? item.y : (Math.random() * (window.innerHeight - 340) + 120);
+        
+        flyer.style.left = `${posX}px`;
+        flyer.style.top = `${posY}px`;
+
+        let imgHtml = item.imageSrc ? `<img src="${item.imageSrc}" class="flyer-img" alt="Flyer">` : '';
+        const formattedDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString() : '';
+
+        flyer.innerHTML = `
+          ${imgHtml}
+          <div class="flyer-title">${item.title}</div>
+          <div class="flyer-date-tag">${formattedDate}</div>
+        `;
+
+        flyer.onclick = () => window.openDetailModal(id);
+        container.appendChild(flyer);
+      });
+    };
 
     // Form Submit Handler for New Notice
     document.getElementById('create-form').addEventListener('submit', async (e) => {
@@ -367,7 +454,7 @@
       submitBtn.disabled = true;
 
       const randomX = Math.floor(Math.random() * (window.innerWidth - 240) + 20);
-      const randomY = Math.floor(Math.random() * (window.innerHeight - 320) + 70);
+      const randomY = Math.floor(Math.random() * (window.innerHeight - 340) + 120);
 
       if (imageInput.files && imageInput.files[0]) {
         const reader = new FileReader();
@@ -385,7 +472,7 @@
         await push(noticesRef, { title, author, desc, imageSrc, x, y, timestamp: Date.now() });
         window.closeCreateModal();
       } catch (err) {
-        alert("Error pinning flyer: Image size might be too large. Try a smaller file.");
+        alert("Error pinning flyer: File payload limit exceeded. Try a smaller image.");
       }
       document.getElementById('submit-btn').innerText = "Pin to Wall →";
       document.getElementById('submit-btn').disabled = false;
@@ -409,6 +496,7 @@
 
       document.getElementById('detail-title').innerText = item.title;
       document.getElementById('detail-author').innerText = item.author || 'Anonymous';
+      document.getElementById('detail-date').innerText = item.timestamp ? `Posted: ${new Date(item.timestamp).toLocaleString()}` : '';
       document.getElementById('detail-desc').innerText = item.desc;
       
       const imgContainer = document.getElementById('detail-image-container');
