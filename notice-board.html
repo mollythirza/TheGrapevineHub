@@ -26,7 +26,7 @@
       z-index: 10000;
       background: rgba(13, 13, 13, 0.95);
       border-bottom: 2px solid #ff007f;
-      padding: 12px 24px;
+      padding: 10px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -42,14 +42,14 @@
     }
 
     .brand-logo {
-      height: 32px;
+      height: 28px;
       width: auto;
       filter: drop-shadow(0 0 6px #ff007f);
       flex-shrink: 0;
     }
 
     .brand-title {
-      max-height: 20px;
+      max-height: 18px;
       width: auto;
       object-fit: contain;
       filter: invert(1);
@@ -58,7 +58,7 @@
     .nav-links a {
       color: #aaa;
       text-decoration: none;
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
       transition: color 0.2s;
     }
@@ -71,31 +71,31 @@
     /* Control Bar */
     .filter-bar {
       position: fixed;
-      top: 72px;
+      top: 60px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 1000;
       background: rgba(20, 20, 20, 0.95);
       border: 1px solid #ff007f;
       border-radius: 6px;
-      padding: 8px 16px;
+      padding: 6px 12px;
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
-      box-shadow: 0 0 18px rgba(255, 0, 127, 0.4);
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
       backdrop-filter: blur(6px);
       max-width: 92vw;
       overflow-x: auto;
     }
 
     .page-tag {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       color: #ff007f;
       text-transform: uppercase;
       letter-spacing: 1px;
       border-right: 1px solid rgba(255, 0, 127, 0.4);
-      padding-right: 12px;
+      padding-right: 10px;
       white-space: nowrap;
     }
 
@@ -103,8 +103,8 @@
       background: #0d0d0d;
       color: #aaa;
       border: 1px solid #333;
-      padding: 4px 10px;
-      font-size: 11px;
+      padding: 3px 8px;
+      font-size: 10px;
       text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
@@ -121,10 +121,10 @@
     /* Flyer Canvas */
     #wall-canvas {
       position: absolute;
-      top: 60px;
+      top: 50px;
       left: 0;
       width: 100vw;
-      height: calc(100vh - 60px);
+      height: calc(100vh - 50px);
       background: #0d0d0d;
       background-image: radial-gradient(rgba(255, 0, 127, 0.08) 1px, transparent 1px);
       background-size: 30px 30px;
@@ -139,11 +139,11 @@
 
     .flyer-post {
       position: absolute;
-      width: 190px;
+      width: 180px;
       background: #141414;
       border: 1px solid rgba(255, 0, 127, 0.6);
       border-radius: 4px;
-      padding: 10px;
+      padding: 8px;
       cursor: pointer;
       box-shadow: 0 0 12px rgba(255, 0, 127, 0.3);
       transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
@@ -159,14 +159,14 @@
 
     .flyer-img {
       width: 100%;
-      height: 130px;
+      height: 120px;
       object-fit: cover;
       border-radius: 2px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .flyer-title {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       color: #ff007f;
       text-transform: uppercase;
@@ -178,14 +178,14 @@
       font-size: 9px;
       color: #777;
       text-align: center;
-      margin-top: 4px;
+      margin-top: 3px;
     }
 
     /* Pin Action Bar */
     .wall-toolbar {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
+      bottom: 20px;
+      right: 20px;
       z-index: 1000;
     }
 
@@ -193,9 +193,9 @@
       background: #ff007f;
       color: #000;
       border: none;
-      padding: 12px 20px;
+      padding: 10px 18px;
       font-family: inherit;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       text-transform: uppercase;
       border-radius: 4px;
@@ -208,7 +208,7 @@
       background: #ff3399;
     }
 
-    /* Modals */
+    /* 📱 Fully Scrollable & Compact Mobile Modals 📱 */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -220,20 +220,21 @@
       display: none;
       justify-content: center;
       align-items: center;
-      padding: 16px;
+      padding: 12px;
       backdrop-filter: blur(5px);
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .modal-card {
       background: #141414;
       border: 2px solid #ff007f;
       width: 100%;
-      max-width: 480px;
-      max-height: 85vh;
-      overflow-y: auto;
+      max-width: 440px;
+      max-height: 82vh;          /* Strictly contained so it never exceeds phone height */
+      overflow-y: auto;          /* Internal vertical scroll enabled */
       border-radius: 8px;
-      padding: 20px;
+      padding: 16px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
       position: relative;
       margin: auto;
@@ -241,17 +242,17 @@
 
     .modal-card h2 {
       color: #ff007f;
-      font-size: 16px;
+      font-size: 15px;
       text-transform: uppercase;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       text-align: center;
     }
 
     .form-group {
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
     }
 
     .form-group label {
@@ -264,9 +265,9 @@
       background: #0d0d0d;
       border: 1px solid #333;
       color: #fff;
-      padding: 8px;
+      padding: 7px;
       font-family: inherit;
-      font-size: 16px;
+      font-size: 16px; /* Prevents mobile browser auto-zoom */
       border-radius: 4px;
       outline: none;
       width: 100%;
@@ -278,13 +279,13 @@
 
     .modal-actions {
       display: flex;
-      gap: 10px;
-      margin-top: 16px;
+      gap: 8px;
+      margin-top: 14px;
     }
 
     .modal-btn {
       flex: 1;
-      padding: 10px;
+      padding: 9px;
       border-radius: 4px;
       font-size: 11px;
       font-weight: bold;
@@ -303,7 +304,7 @@
   <header>
     <a href="https://mollythirza.github.io/TheGrapevineHub/" class="brand-container">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
-      <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:14px;\'>THE GRAPEVINE</h1>'">
+      <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:13px;\'>THE GRAPEVINE</h1>'">
     </a>
     <div class="nav-links">
       <a href="https://mollythirza.github.io/TheGrapevineHub/">← Back to Hub</a>
@@ -313,8 +314,8 @@
   <!-- Filter Controls -->
   <div class="filter-bar">
     <span class="page-tag">📌 Notice Board</span>
-    <button class="filter-chip active" id="filter-all" onclick="window.setTimeFilter('all')">All Flyers</button>
-    <button class="filter-chip" id="filter-recent" onclick="window.setTimeFilter('recent')">Recent (30 Days)</button>
+    <button class="filter-chip active" id="filter-all" onclick="window.setTimeFilter('all')">All</button>
+    <button class="filter-chip" id="filter-recent" onclick="window.setTimeFilter('recent')">Recent</button>
     <button class="filter-chip" id="filter-older" onclick="window.setTimeFilter('older')">Archive</button>
   </div>
 
@@ -325,12 +326,12 @@
 
   <!-- Pin Button -->
   <div class="wall-toolbar">
-    <button class="btn-pin" onclick="window.openCreateModal()">+ Pin Flyer / Gig</button>
+    <button class="btn-pin" onclick="window.openCreateModal()">+ Pin Flyer</button>
   </div>
 
   <!-- Create Modal -->
-  <div id="create-modal" class="modal-overlay">
-    <div class="modal-card">
+  <div id="create-modal" class="modal-overlay" onclick="window.closeCreateModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
       <h2>Pin a Flyer / Notice</h2>
       <form id="create-form">
         <div class="form-group">
@@ -343,11 +344,11 @@
         </div>
         <div class="form-group">
           <label>Full Description / Details *</label>
-          <textarea id="notice-desc" class="form-control" rows="3" placeholder="Date, venue, ticket info..." required></textarea>
+          <textarea id="notice-desc" class="form-control" rows="2" placeholder="Date, venue, ticket info..." required></textarea>
         </div>
         <div class="form-group">
-          <label>External Link / Event URL (Optional)</label>
-          <input type="url" id="notice-link" class="form-control" placeholder="https://tickets.com or instagram.com/...">
+          <label>External Link / URL (Optional)</label>
+          <input type="url" id="notice-link" class="form-control" placeholder="https://...">
         </div>
         <div class="form-group">
           <label>Flyer Image (Optional)</label>
@@ -365,14 +366,13 @@
   <div id="detail-modal" class="modal-overlay" onclick="window.closeDetailModal()">
     <div class="modal-card" onclick="event.stopPropagation()">
       <h2 id="detail-title">Notice Title</h2>
-      <div id="detail-image-container" style="margin-bottom: 12px; text-align: center;"></div>
-      <p style="font-size: 11px; color: #888; margin-bottom: 4px;">Pinned by <span id="detail-author" style="color: #ff007f;"></span></p>
-      <p style="font-size: 10px; color: #666; margin-bottom: 12px;" id="detail-date"></p>
-      <p id="detail-desc" style="font-size: 13px; color: #ccc; line-height: 1.5; margin-bottom: 16px; white-space: pre-wrap;"></p>
+      <div id="detail-image-container" style="margin-bottom: 10px; text-align: center;"></div>
+      <p style="font-size: 11px; color: #888; margin-bottom: 2px;">Pinned by <span id="detail-author" style="color: #ff007f;"></span></p>
+      <p style="font-size: 10px; color: #666; margin-bottom: 10px;" id="detail-date"></p>
+      <p id="detail-desc" style="font-size: 12px; color: #ccc; line-height: 1.4; margin-bottom: 14px; white-space: pre-wrap;"></p>
       
-      <!-- Optional Link Button Container -->
-      <div id="detail-link-container" style="margin-bottom: 16px; display: none;">
-        <a id="detail-link" href="#" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; background: rgba(255, 0, 127, 0.15); border: 1px solid #ff007f; color: #ff007f; text-align: center; padding: 10px; font-size: 12px; font-weight: bold; text-transform: uppercase; border-radius: 4px; text-decoration: none;">External Link ↗</a>
+      <div id="detail-link-container" style="margin-bottom: 14px; display: none;">
+        <a id="detail-link" href="#" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; background: rgba(255, 0, 127, 0.15); border: 1px solid #ff007f; color: #ff007f; text-align: center; padding: 9px; font-size: 11px; font-weight: bold; text-transform: uppercase; border-radius: 4px; text-decoration: none;">External Link ↗</a>
       </div>
 
       <button class="modal-btn btn-cancel" style="width: 100%;" onclick="window.closeDetailModal()">Close Flyer</button>
@@ -402,7 +402,6 @@
     let allNotices = {};
     let activeFilter = 'all';
 
-    // Global Functions for HTML onClick bindings
     window.setTimeFilter = (filterType) => {
       activeFilter = filterType;
       document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -424,8 +423,8 @@
         return;
       }
 
-      const screenWidth = Math.max(window.innerWidth - 220, 300);
-      const screenHeight = Math.max(window.innerHeight - 320, 400);
+      const screenWidth = Math.max(window.innerWidth - 200, 280);
+      const screenHeight = Math.max(window.innerHeight - 280, 350);
 
       Object.keys(allNotices).forEach((id, index) => {
         const item = allNotices[id];
@@ -438,8 +437,8 @@
         const flyer = document.createElement('div');
         flyer.className = 'flyer-post';
         
-        const posX = item.x !== undefined ? item.x : ((index * 60 + 30) % screenWidth);
-        const posY = item.y !== undefined ? item.y : (((index * 70) + 140) % screenHeight + 100);
+        const posX = item.x !== undefined ? item.x : ((index * 50 + 20) % screenWidth);
+        const posY = item.y !== undefined ? item.y : (((index * 60) + 120) % screenHeight + 80);
         
         flyer.style.left = `${posX}px`;
         flyer.style.top = `${posY}px`;
@@ -462,14 +461,12 @@
       });
     };
 
-    // Firebase Listener
     onValue(noticesRef, (snapshot) => {
       const data = snapshot.val();
       allNotices = data || {};
       window.renderFlyers();
     });
 
-    // Form Submit
     document.getElementById('create-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submit-btn');
@@ -483,10 +480,10 @@
       submitBtn.innerText = "Pinning...";
       submitBtn.disabled = true;
 
-      const screenW = Math.max(window.innerWidth - 240, 200);
-      const screenH = Math.max(window.innerHeight - 340, 300);
-      const randomX = Math.floor(Math.random() * screenW + 20);
-      const randomY = Math.floor(Math.random() * screenH + 140);
+      const screenW = Math.max(window.innerWidth - 220, 180);
+      const screenH = Math.max(window.innerHeight - 300, 250);
+      const randomX = Math.floor(Math.random() * screenW + 15);
+      const randomY = Math.floor(Math.random() * screenH + 100);
 
       if (imageInput.files && imageInput.files[0]) {
         const reader = new FileReader();
@@ -510,7 +507,6 @@
       document.getElementById('submit-btn').disabled = false;
     }
 
-    // Modal Control Attachments
     window.openCreateModal = () => {
       document.getElementById('create-modal').style.display = 'flex';
       document.body.style.overflow = 'hidden';
@@ -531,7 +527,6 @@
       document.getElementById('detail-date').innerText = item.timestamp ? `Posted: ${new Date(item.timestamp).toLocaleString()}` : '';
       document.getElementById('detail-desc').innerText = item.desc;
       
-      // Handle Link visibility
       const linkContainer = document.getElementById('detail-link-container');
       const linkElement = document.getElementById('detail-link');
       if (item.link && item.link.trim() !== '') {
@@ -542,10 +537,9 @@
         linkContainer.style.display = 'none';
       }
 
-      // Handle Image visibility
       const imgContainer = document.getElementById('detail-image-container');
       if (item.imageSrc) {
-        imgContainer.innerHTML = `<img src="${item.imageSrc}" style="max-height: 220px; max-width: 100%; border-radius: 4px; margin: 0 auto;" />`;
+        imgContainer.innerHTML = `<img src="${item.imageSrc}" style="max-height: 180px; max-width: 100%; border-radius: 4px; margin: 0 auto;" />`;
         imgContainer.style.display = 'block';
       } else {
         imgContainer.innerHTML = '';
