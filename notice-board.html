@@ -68,7 +68,7 @@
       text-shadow: 0 0 8px #ff007f;
     }
 
-    /* Top Layer Filter Control Bar */
+    /* Page Title & Time Filter Control Bar */
     .filter-bar {
       position: fixed;
       top: 72px;
@@ -78,14 +78,25 @@
       background: rgba(20, 20, 20, 0.95);
       border: 1px solid #ff007f;
       border-radius: 6px;
-      padding: 6px 14px;
+      padding: 8px 16px;
       display: flex;
-      gap: 10px;
+      gap: 12px;
       align-items: center;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+      box-shadow: 0 0 18px rgba(255, 0, 127, 0.4);
       backdrop-filter: blur(6px);
-      max-width: 90vw;
+      max-width: 92vw;
       overflow-x: auto;
+    }
+
+    .page-tag {
+      font-size: 12px;
+      font-weight: bold;
+      color: #ff007f;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-right: 1px solid rgba(255, 0, 127, 0.4);
+      padding-right: 12px;
+      white-space: nowrap;
     }
 
     .filter-chip {
@@ -105,17 +116,6 @@
       color: #000;
       font-weight: bold;
       border-color: #ff007f;
-    }
-
-    .filter-select {
-      background: #0d0d0d;
-      color: #ff007f;
-      border: 1px solid #ff007f;
-      font-family: inherit;
-      font-size: 11px;
-      padding: 4px 8px;
-      border-radius: 4px;
-      outline: none;
     }
 
     /* Flyer Wall Canvas */
@@ -294,6 +294,7 @@
 </head>
 <body>
 
+  <!-- Header -->
   <header>
     <a href="https://mollythirza.github.io/TheGrapevineHub/" class="brand-container">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
@@ -304,9 +305,9 @@
     </div>
   </header>
 
-  <!-- Filter Bar by Date & Layer -->
+  <!-- Title & Filter Bar -->
   <div class="filter-bar">
-    <span style="font-size: 10px; color: #888; text-transform: uppercase;">Time Filter:</span>
+    <span class="page-tag">📌 Notice Board</span>
     <button class="filter-chip active" id="filter-all" onclick="window.setTimeFilter('all')">All Flyers</button>
     <button class="filter-chip" id="filter-recent" onclick="window.setTimeFilter('recent')">Recent (30 Days)</button>
     <button class="filter-chip" id="filter-older" onclick="window.setTimeFilter('older')">Archive</button>
@@ -421,7 +422,7 @@
         flyer.className = 'flyer-post';
         
         const posX = item.x !== undefined ? item.x : (Math.random() * (window.innerWidth - 240) + 20);
-        const posY = item.y !== undefined ? item.y : (Math.random() * (window.innerHeight - 340) + 120);
+        const posY = item.y !== undefined ? item.y : (Math.random() * (window.innerHeight - 340) + 140);
         
         flyer.style.left = `${posX}px`;
         flyer.style.top = `${posY}px`;
@@ -454,7 +455,7 @@
       submitBtn.disabled = true;
 
       const randomX = Math.floor(Math.random() * (window.innerWidth - 240) + 20);
-      const randomY = Math.floor(Math.random() * (window.innerHeight - 340) + 120);
+      const randomY = Math.floor(Math.random() * (window.innerHeight - 340) + 140);
 
       if (imageInput.files && imageInput.files[0]) {
         const reader = new FileReader();
@@ -465,57 +466,3 @@
       } else {
         await pushToFirebase(title, author, desc, null, randomX, randomY);
       }
-    });
-
-    async function pushToFirebase(title, author, desc, imageSrc, x, y) {
-      try {
-        await push(noticesRef, { title, author, desc, imageSrc, x, y, timestamp: Date.now() });
-        window.closeCreateModal();
-      } catch (err) {
-        alert("Error pinning flyer: File payload limit exceeded. Try a smaller image.");
-      }
-      document.getElementById('submit-btn').innerText = "Pin to Wall →";
-      document.getElementById('submit-btn').disabled = false;
-    }
-
-    // Modal Controls
-    window.openCreateModal = () => {
-      document.getElementById('create-modal').style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    };
-
-    window.closeCreateModal = () => {
-      document.getElementById('create-modal').style.display = 'none';
-      document.body.style.overflow = 'auto';
-      document.getElementById('create-form').reset();
-    };
-
-    window.openDetailModal = (id) => {
-      const item = allNotices[id];
-      if (!item) return;
-
-      document.getElementById('detail-title').innerText = item.title;
-      document.getElementById('detail-author').innerText = item.author || 'Anonymous';
-      document.getElementById('detail-date').innerText = item.timestamp ? `Posted: ${new Date(item.timestamp).toLocaleString()}` : '';
-      document.getElementById('detail-desc').innerText = item.desc;
-      
-      const imgContainer = document.getElementById('detail-image-container');
-      if (item.imageSrc) {
-        imgContainer.innerHTML = `<img src="${item.imageSrc}" style="max-height: 220px; max-width: 100%; border-radius: 4px; margin: 0 auto;" />`;
-        imgContainer.style.display = 'block';
-      } else {
-        imgContainer.innerHTML = '';
-        imgContainer.style.display = 'none';
-      }
-
-      document.getElementById('detail-modal').style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    };
-
-    window.closeDetailModal = () => {
-      document.getElementById('detail-modal').style.display = 'none';
-      document.body.style.overflow = 'auto';
-    };
-  </script>
-</body>
-</html>
