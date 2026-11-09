@@ -230,6 +230,7 @@
       filter: invert(1) hue-rotate(270deg);
     }
 
+    /* Modal Overlay with proper mobile padding & scrolling */
     #audio-modal {
       position: fixed;
       top: 0;
@@ -242,38 +243,40 @@
       justify-content: center;
       align-items: center;
       backdrop-filter: blur(5px);
-      padding: 20px;
+      padding: 12px;
+      overflow-y: auto;
     }
 
     .modal-card {
       background: #141414;
       border: 2px solid #ff007f;
       width: 100%;
-      max-width: 500px;
+      max-width: 480px;
       border-radius: 8px;
-      padding: 24px;
+      padding: 20px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
-      max-height: 90vh;
+      max-height: 85vh;
       overflow-y: auto;
+      margin: auto;
     }
 
     .modal-card h2 {
       color: #ff007f;
-      font-size: 18px;
+      font-size: 16px;
       text-transform: uppercase;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       text-align: center;
     }
 
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
 
     .form-group label {
-      font-size: 11px;
+      font-size: 10px;
       color: #aaa;
       text-transform: uppercase;
     }
@@ -282,28 +285,27 @@
       background: #0d0d0d;
       border: 1px solid #333;
       color: #fff;
-      padding: 10px;
+      padding: 8px;
       font-family: inherit;
       font-size: 12px;
       border-radius: 4px;
       outline: none;
     }
 
-    /* Tab controls for Record vs Upload */
     .audio-mode-tabs {
       display: flex;
-      gap: 10px;
-      margin-bottom: 14px;
+      gap: 8px;
+      margin-bottom: 10px;
     }
 
     .mode-tab {
       flex: 1;
-      padding: 8px;
+      padding: 6px;
       background: #0d0d0d;
       border: 1px solid #333;
       color: #aaa;
       font-family: inherit;
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
       cursor: pointer;
       border-radius: 4px;
@@ -317,20 +319,19 @@
       background: rgba(255, 0, 127, 0.1);
     }
 
-    /* Live Recorder Box Styles */
     .recorder-box {
       background: #0d0d0d;
       border: 1px solid #333;
       border-radius: 4px;
-      padding: 14px;
+      padding: 12px;
       text-align: center;
     }
 
     .rec-timer {
-      font-size: 20px;
+      font-size: 18px;
       color: #ff007f;
       font-weight: bold;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       display: block;
     }
 
@@ -338,7 +339,7 @@
       background: #ff007f;
       color: #000;
       border: none;
-      padding: 8px 16px;
+      padding: 8px 14px;
       font-family: inherit;
       font-size: 11px;
       font-weight: bold;
@@ -354,15 +355,15 @@
 
     .modal-actions {
       display: flex;
-      gap: 12px;
-      margin-top: 20px;
+      gap: 10px;
+      margin-top: 16px;
     }
 
     .modal-btn {
       flex: 1;
-      padding: 10px;
+      padding: 8px;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       text-transform: uppercase;
       cursor: pointer;
@@ -408,7 +409,7 @@
     <div class="audio-grid" id="audio-grid"></div>
   </main>
 
-  <!-- Submission & Recording Modal -->
+  <!-- Submission Modal -->
   <div id="audio-modal">
     <div class="modal-card">
       <h2>Share Your Story</h2>
@@ -431,10 +432,9 @@
         </div>
         <div class="form-group">
           <label>Brief Description *</label>
-          <textarea id="audio-desc" class="form-control" rows="3" placeholder="What is this note about?" required></textarea>
+          <textarea id="audio-desc" class="form-control" rows="2" placeholder="What is this note about?" required></textarea>
         </div>
 
-        <!-- Mode Selection: Live Record vs File Upload -->
         <div class="form-group">
           <label>Audio Input Method *</label>
           <div class="audio-mode-tabs">
@@ -443,19 +443,19 @@
           </div>
         </div>
 
-        <!-- Section 1: Browser Live Mic Recorder -->
+        <!-- Live Mic Recorder Box -->
         <div id="section-record" class="recorder-box">
           <span class="rec-timer" id="rec-timer">00:00</span>
-          <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 10px;">
+          <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 8px;">
             <button type="button" class="rec-btn" id="btn-start-rec" onclick="window.startRecording()">● Record Voice Note</button>
             <button type="button" class="rec-btn stop" id="btn-stop-rec" onclick="window.stopRecording()" style="display:none;">■ Stop Recording</button>
           </div>
-          <audio id="rec-preview" controls style="display:none; margin-top: 10px;"></audio>
+          <audio id="rec-preview" controls style="display:none; width: 100%; height: 32px; margin-top: 8px;"></audio>
         </div>
 
-        <!-- Section 2: Standard Audio File Upload -->
+        <!-- File Upload Box -->
         <div id="section-upload" class="form-group" style="display:none;">
-          <label>Select Audio File (MP3, WAV, M4A under 15MB)</label>
+          <label>Select Audio File (MP3, WAV under 15MB)</label>
           <input type="file" id="audio-file" accept="audio/*" class="form-control">
         </div>
 
@@ -487,16 +487,15 @@
     const audioRef = ref(db, 'oral_histories');
 
     let activeCategory = 'all';
-    let currentInputMode = 'record'; // 'record' or 'upload'
+    let currentInputMode = 'record';
 
-    // Live Voice Recording Variables
     let mediaRecorder;
     let audioChunks = [];
     let recordedBase64 = null;
     let timerInterval;
     let secondsRecorded = 0;
+    let recordedMimeType = 'audio/webm';
 
-    // Load Database Records
     onValue(audioRef, (snapshot) => {
       const data = snapshot.val();
       const grid = document.getElementById('audio-grid');
@@ -526,7 +525,6 @@
       window.filterAudio();
     });
 
-    // Form Submit Handler
     document.getElementById('audio-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submit-btn');
@@ -537,15 +535,12 @@
       const desc = document.getElementById('audio-desc').value.trim();
       const categoryLabels = { 'gig': 'Gig Memory', 'venue': 'Venue Lore', 'history': 'Oral History' };
 
-      let finalAudioData = null;
-
       if (currentInputMode === 'record') {
         if (!recordedBase64) {
           alert("Please record a voice note before submitting!");
           return;
         }
-        finalAudioData = recordedBase64;
-        saveStoryToFirebase(finalAudioData, title, speaker, category, desc, categoryLabels);
+        saveStoryToFirebase(recordedBase64, title, speaker, category, desc, categoryLabels);
       } else {
         const fileInput = document.getElementById('audio-file');
         if (!fileInput.files || !fileInput.files[0]) {
@@ -559,8 +554,7 @@
 
         const reader = new FileReader();
         reader.onload = function(event) {
-          finalAudioData = event.target.result;
-          saveStoryToFirebase(finalAudioData, title, speaker, category, desc, categoryLabels);
+          saveStoryToFirebase(event.target.result, title, speaker, category, desc, categoryLabels);
         };
         reader.readAsDataURL(file);
       }
@@ -568,7 +562,7 @@
 
     async function saveStoryToFirebase(audioSrc, title, speaker, category, desc, categoryLabels) {
       const submitBtn = document.getElementById('submit-btn');
-      submitBtn.innerText = "Saving to Database...";
+      submitBtn.innerText = "Saving...";
       submitBtn.disabled = true;
 
       try {
@@ -587,13 +581,12 @@
         window.closeAudioModal();
       } catch (err) {
         console.error("Database error:", err);
-        alert("Error saving story: Payload exceeded size limit. Try keeping live recordings under 5 minutes or compress uploaded audio.");
+        alert("Error saving story: Size limit reached. Try keeping recordings concise.");
         submitBtn.innerText = "Submit Recording →";
         submitBtn.disabled = false;
       }
     }
 
-    // Toggle Input Method between Live Microphone vs File Upload
     window.setAudioMode = function(mode) {
       currentInputMode = mode;
       document.getElementById('tab-record').classList.toggle('active', mode === 'record');
@@ -602,7 +595,6 @@
       document.getElementById('section-upload').style.display = (mode === 'upload') ? 'block' : 'none';
     };
 
-    // Live Recording Functions
     window.startRecording = async function() {
       audioChunks = [];
       recordedBase64 = null;
@@ -610,16 +602,24 @@
 
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
+        
+        // Pick supported browser MIME codec
+        const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
+        for (const t of types) {
+          if (MediaRecorder.isTypeSupported(t)) {
+            recordedMimeType = t;
+            break;
+          }
+        }
+
+        mediaRecorder = new MediaRecorder(stream, { mimeType: recordedMimeType });
 
         mediaRecorder.ondataavailable = (event) => {
-          if (event.data.size > 0) {
-            audioChunks.push(event.data);
-          }
+          if (event.data.size > 0) audioChunks.push(event.data);
         };
 
         mediaRecorder.onstop = () => {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          const audioBlob = new Blob(audioChunks, { type: recordedMimeType });
           const reader = new FileReader();
           reader.readAsDataURL(audioBlob);
           reader.onloadend = () => {
@@ -645,7 +645,7 @@
         }, 1000);
 
       } catch (err) {
-        alert("Could not access microphone: " + err.message);
+        alert("Microphone permission denied or unsupported: " + err.message);
       }
     };
 
@@ -659,7 +659,6 @@
       document.getElementById('btn-stop-rec').style.display = 'none';
     };
 
-    // Category Filter Buttons
     window.setCategory = function(cat, btnElement) {
       activeCategory = cat;
       document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
