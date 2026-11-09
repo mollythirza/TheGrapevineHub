@@ -82,37 +82,32 @@
       position: relative;
     }
 
-    /* Drag-and-Drop Flyer Post */
+    /* Fixed Flyer Post (Non-movable) */
     .flyer-post {
       position: absolute;
-      width: 200px;
+      width: 190px;
       background: #141414;
       border: 1px solid rgba(255, 0, 127, 0.6);
       border-radius: 4px;
       padding: 10px;
-      cursor: grab;
+      cursor: pointer;
       box-shadow: 0 0 12px rgba(255, 0, 127, 0.3);
-      transition: box-shadow 0.2s, border-color 0.2s;
-      user-select: none;
-    }
-
-    .flyer-post:active {
-      cursor: grabbing;
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
     }
 
     .flyer-post:hover {
       border-color: #ff007f;
-      box-shadow: 0 0 20px rgba(255, 0, 127, 0.6);
+      box-shadow: 0 0 22px rgba(255, 0, 127, 0.7);
+      transform: scale(1.02);
       z-index: 50;
     }
 
     .flyer-img {
       width: 100%;
-      height: 140px;
+      height: 130px;
       object-fit: cover;
       border-radius: 2px;
       margin-bottom: 8px;
-      pointer-events: none;
     }
 
     .flyer-title {
@@ -151,7 +146,7 @@
       background: #ff3399;
     }
 
-    /* Scrollable Modals */
+    /* 📱 Fully Scrollable & Responsive Modals 📱 */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -161,10 +156,11 @@
       background: rgba(0, 0, 0, 0.88);
       z-index: 40000;
       display: none;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding: 40px 16px;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
       backdrop-filter: blur(5px);
+      overflow-y: auto;
     }
 
     .modal-card {
@@ -172,30 +168,32 @@
       border: 2px solid #ff007f;
       width: 100%;
       max-width: 480px;
+      max-height: 85vh;          /* Ensures it never gets clipped on mobile screens */
+      overflow-y: auto;          /* Internal scrolling enabled for all content */
       border-radius: 8px;
-      padding: 24px;
+      padding: 20px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
-      margin: auto;
       position: relative;
+      margin: auto;
     }
 
     .modal-card h2 {
       color: #ff007f;
-      font-size: 18px;
+      font-size: 16px;
       text-transform: uppercase;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       text-align: center;
     }
 
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
     }
 
     .form-group label {
-      font-size: 11px;
+      font-size: 10px;
       color: #aaa;
       text-transform: uppercase;
     }
@@ -204,9 +202,9 @@
       background: #0d0d0d;
       border: 1px solid #333;
       color: #fff;
-      padding: 10px;
+      padding: 8px;
       font-family: inherit;
-      font-size: 16px; /* Prevents iOS auto-zoom */
+      font-size: 16px; /* Prevents mobile browser auto-zoom */
       border-radius: 4px;
       outline: none;
       width: 100%;
@@ -218,15 +216,15 @@
 
     .modal-actions {
       display: flex;
-      gap: 12px;
-      margin-top: 20px;
+      gap: 10px;
+      margin-top: 16px;
     }
 
     .modal-btn {
       flex: 1;
-      padding: 12px;
+      padding: 10px;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       text-transform: uppercase;
       cursor: pointer;
@@ -289,7 +287,7 @@
   </div>
 
   <!-- View Flyer Detail Modal -->
-  <div id="detail-modal" class="modal-overlay" onclick="window.closeDetailModal(event)">
+  <div id="detail-modal" class="modal-overlay" onclick="window.closeDetailModal()">
     <div class="modal-card" onclick="event.stopPropagation()">
       <h2 id="detail-title">Notice Title</h2>
       <div id="detail-image-container" style="margin-bottom: 12px; text-align: center;"></div>
@@ -301,7 +299,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBozbn-0iQNhjuAcmL-dYOUtbhIYTjccYk",
@@ -333,8 +331,8 @@
           const flyer = document.createElement('div');
           flyer.className = 'flyer-post';
           
-          // Default wall coordinates if not yet dragged
-          const posX = item.x !== undefined ? item.x : (Math.random() * (window.innerWidth - 260) + 20);
+          // Fixed wall coordinates once pinned
+          const posX = item.x !== undefined ? item.x : (Math.random() * (window.innerWidth - 240) + 20);
           const posY = item.y !== undefined ? item.y : (Math.random() * (window.innerHeight - 300) + 80);
           
           flyer.style.left = `${posX}px`;
@@ -347,80 +345,13 @@
             <div class="flyer-title">${item.title}</div>
           `;
 
-          // Click to view full details (unless dragging)
-          let isDragging = false;
-          flyer.onmousedown = () => { isDragging = false; };
-          flyer.onmousemove = () => { isDragging = true; };
-          flyer.onclick = () => {
-            if (!isDragging) window.openDetailModal(id);
-          };
-
-          // Drag and Drop Logic
-          makeDraggable(flyer, id, posX, posY);
+          // Reliable click handler to open details
+          flyer.onclick = () => window.openDetailModal(id);
 
           container.appendChild(flyer);
         });
       }
     });
-
-    // Simple Drag & Drop implementation for wall
-    function makeDraggable(element, id, initialX, initialY) {
-      let shiftX, shiftY;
-
-      function moveAt(pageX, pageY) {
-        const canvas = document.getElementById('wall-canvas');
-        let newX = pageX - shiftX;
-        let newY = pageY - shiftY;
-        
-        element.style.left = newX + 'px';
-        element.style.top = newY + 'px';
-      }
-
-      function onMouseMove(event) {
-        moveAt(event.pageX, event.pageY);
-      }
-
-      element.onmousedown = function(event) {
-        if (event.target.tagName === 'IMG') return; // let image render naturally
-        shiftX = event.clientX - element.getBoundingClientRect().left;
-        shiftY = event.clientY - element.getBoundingClientRect().top;
-
-        document.addEventListener('mousemove', onMouseMove);
-        
-        document.onmouseup = function() {
-          document.removeEventListener('mousemove', onMouseMove);
-          document.onmouseup = null;
-          
-          // Save new position to Firebase
-          const finalX = parseInt(element.style.left);
-          const finalY = parseInt(element.style.top);
-          update(ref(db, `notices/${id}`), { x: finalX, y: finalY });
-        };
-      };
-
-      // Touch support for mobile dragging
-      element.ontouchstart = function(event) {
-        const touch = event.touches[0];
-        shiftX = touch.clientX - element.getBoundingClientRect().left;
-        shiftY = touch.clientY - element.getBoundingClientRect().top;
-
-        function onTouchMove(e) {
-          const t = e.touches[0];
-          moveAt(t.clientX, t.clientY);
-        }
-
-        document.addEventListener('touchmove', onTouchMove);
-
-        document.ontouchend = function() {
-          document.removeEventListener('touchmove', onTouchMove);
-          document.ontouchend = null;
-
-          const finalX = parseInt(element.style.left);
-          const finalY = parseInt(element.style.top);
-          update(ref(db, `notices/${id}`), { x: finalX, y: finalY });
-        };
-      };
-    }
 
     // Form Submit Handler for New Notice
     document.getElementById('create-form').addEventListener('submit', async (e) => {
@@ -435,8 +366,8 @@
       submitBtn.innerText = "Pinning...";
       submitBtn.disabled = true;
 
-      const randomX = Math.floor(Math.random() * (window.innerWidth - 260) + 40);
-      const randomY = Math.floor(Math.random() * (window.innerHeight - 340) + 80);
+      const randomX = Math.floor(Math.random() * (window.innerWidth - 240) + 20);
+      const randomY = Math.floor(Math.random() * (window.innerHeight - 320) + 70);
 
       if (imageInput.files && imageInput.files[0]) {
         const reader = new FileReader();
@@ -482,7 +413,7 @@
       
       const imgContainer = document.getElementById('detail-image-container');
       if (item.imageSrc) {
-        imgContainer.innerHTML = `<img src="${item.imageSrc}" style="max-height: 240px; max-width: 100%; border-radius: 4px; margin: 0 auto;" />`;
+        imgContainer.innerHTML = `<img src="${item.imageSrc}" style="max-height: 220px; max-width: 100%; border-radius: 4px; margin: 0 auto;" />`;
         imgContainer.style.display = 'block';
       } else {
         imgContainer.innerHTML = '';
@@ -493,7 +424,7 @@
       document.body.style.overflow = 'hidden';
     };
 
-    window.closeDetailModal = (e) => {
+    window.closeDetailModal = () => {
       document.getElementById('detail-modal').style.display = 'none';
       document.body.style.overflow = 'auto';
     };
