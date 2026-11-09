@@ -3,17 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Grapevine — Community Notice Board</title>
+  <title>The Grapevine — Notice Board & Flyer Wall</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body, html {
       width: 100%;
-      min-height: 100%;
+      height: 100%;
       background-color: #0d0d0d;
       color: #fff;
       font-family: 'Courier New', Courier, monospace;
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
     header {
@@ -36,6 +38,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      text-decoration: none;
     }
 
     .brand-logo {
@@ -65,39 +68,71 @@
       text-shadow: 0 0 8px #ff007f;
     }
 
-    main {
-      max-width: 1200px;
-      margin: 100px auto 60px;
-      padding: 0 24px;
+    /* Flyer Wall Canvas */
+    #wall-canvas {
+      position: absolute;
+      top: 60px;
+      left: 0;
+      width: 100vw;
+      height: calc(100vh - 60px);
+      background: #0d0d0d;
+      background-image: radial-gradient(rgba(255, 0, 127, 0.08) 1px, transparent 1px);
+      background-size: 30px 30px;
+      overflow: auto;
+      position: relative;
     }
 
-    .hero-section {
-      border: 1px solid #ff007f;
-      background: rgba(20, 20, 20, 0.8);
-      padding: 24px;
-      border-radius: 6px;
-      box-shadow: 0 0 25px rgba(255, 0, 127, 0.25);
-      margin-bottom: 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
+    /* Drag-and-Drop Flyer Post */
+    .flyer-post {
+      position: absolute;
+      width: 200px;
+      background: #141414;
+      border: 1px solid rgba(255, 0, 127, 0.6);
+      border-radius: 4px;
+      padding: 10px;
+      cursor: grab;
+      box-shadow: 0 0 12px rgba(255, 0, 127, 0.3);
+      transition: box-shadow 0.2s, border-color 0.2s;
+      user-select: none;
     }
 
-    .hero-text h1 {
-      color: #ff007f;
-      font-size: 24px;
+    .flyer-post:active {
+      cursor: grabbing;
+    }
+
+    .flyer-post:hover {
+      border-color: #ff007f;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.6);
+      z-index: 50;
+    }
+
+    .flyer-img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 2px;
       margin-bottom: 8px;
+      pointer-events: none;
+    }
+
+    .flyer-title {
+      font-size: 12px;
+      font-weight: bold;
+      color: #ff007f;
       text-transform: uppercase;
+      text-align: center;
+      word-break: break-word;
     }
 
-    .hero-text p {
-      color: #bbb;
-      font-size: 13px;
+    /* Action bar toolbar */
+    .wall-toolbar {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
     }
 
-    .btn-create-post {
+    .btn-pin {
       background: #ff007f;
       color: #000;
       border: none;
@@ -108,175 +143,47 @@
       text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
+      transition: background 0.2s;
     }
 
-    .filter-controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 30px;
-      justify-content: space-between;
-      align-items: center;
+    .btn-pin:hover {
+      background: #ff3399;
     }
 
-    .search-input {
-      background: #111;
-      border: 1px solid #ff007f;
-      color: #fff;
-      padding: 10px 14px;
-      font-family: inherit;
-      font-size: 13px;
-      border-radius: 4px;
-      outline: none;
-      min-width: 260px;
-      flex: 1;
-    }
-
-    .category-buttons {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      background: #141414;
-      color: #aaa;
-      border: 1px solid #333;
-      padding: 8px 14px;
-      font-family: inherit;
-      font-size: 11px;
-      text-transform: uppercase;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .filter-btn.active {
-      background: #ff007f;
-      color: #000;
-      border-color: #ff007f;
-      font-weight: bold;
-    }
-
-    .pinboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-    }
-
-    .notice-card {
-      background: #141414;
-      border: 1px solid #222;
-      border-radius: 6px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .notice-card:hover {
-      border-color: #ff007f;
-      box-shadow: 0 0 20px rgba(255, 0, 127, 0.35);
-    }
-
-    .card-badge {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      font-size: 10px;
-      color: #ff007f;
-      border: 1px solid #ff007f;
-      padding: 2px 6px;
-      border-radius: 3px;
-      text-transform: uppercase;
-    }
-
-    .notice-img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      border-radius: 4px;
-      border: 1px solid #333;
-      margin-bottom: 14px;
-      background: #000;
-    }
-
-    .notice-info h3 {
-      color: #fff;
-      font-size: 16px;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-      padding-right: 70px;
-    }
-
-    .notice-info .meta-tag {
-      color: #888;
-      font-size: 11px;
-      display: block;
-      margin-bottom: 12px;
-    }
-
-    .notice-desc {
-      color: #bbb;
-      font-size: 12px;
-      line-height: 1.4;
-      margin-bottom: 18px;
-    }
-
-    .btn-action {
-      width: 100%;
-      padding: 9px;
-      background: transparent;
-      border: 1px solid #ff007f;
-      color: #ff007f;
-      text-align: center;
-      text-decoration: none;
-      font-size: 11px;
-      text-transform: uppercase;
-      font-weight: bold;
-      border-radius: 3px;
-      display: block;
-    }
-
-    .btn-action:hover {
-      background: #ff007f;
-      color: #000;
-    }
-
-    #post-modal {
+    /* Scrollable Modals */
+    .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 30000;
+      background: rgba(0, 0, 0, 0.88);
+      z-index: 40000;
       display: none;
-      justify-content: center;
-      align-items: center;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 40px 16px;
       backdrop-filter: blur(5px);
-      padding: 20px;
     }
 
     .modal-card {
       background: #141414;
       border: 2px solid #ff007f;
       width: 100%;
-      max-width: 500px;
+      max-width: 480px;
       border-radius: 8px;
       padding: 24px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
-      max-height: 90vh;
-      overflow-y: auto;
+      margin: auto;
+      position: relative;
     }
 
     .modal-card h2 {
       color: #ff007f;
       font-size: 18px;
       text-transform: uppercase;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       text-align: center;
     }
 
@@ -284,7 +191,7 @@
       margin-bottom: 14px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
 
     .form-group label {
@@ -299,9 +206,14 @@
       color: #fff;
       padding: 10px;
       font-family: inherit;
-      font-size: 12px;
+      font-size: 16px; /* Prevents iOS auto-zoom */
       border-radius: 4px;
       outline: none;
+      width: 100%;
+    }
+
+    .form-control:focus {
+      border-color: #ff007f;
     }
 
     .modal-actions {
@@ -312,7 +224,7 @@
 
     .modal-btn {
       flex: 1;
-      padding: 10px;
+      padding: 12px;
       border-radius: 4px;
       font-size: 12px;
       font-weight: bold;
@@ -328,81 +240,68 @@
 <body>
 
   <header>
-    <a href="index.html" class="brand-container" style="text-decoration: none;">
+    <a href="https://mollythirza.github.io/TheGrapevineHub/" class="brand-container">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
       <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:14px;\'>THE GRAPEVINE</h1>'">
     </a>
     <div class="nav-links">
-      <a href="index.html">← Back to Hub</a>
+      <a href="https://mollythirza.github.io/TheGrapevineHub/">← Back to Hub</a>
     </div>
   </header>
 
-  <main>
-    <div class="hero-section">
-      <div class="hero-text">
-        <h1>Community Notice Board</h1>
-        <p>Explore pinned gig announcements, member wanted posts, DIY workshops, and local classifieds posted live across all devices.</p>
-      </div>
-      <button class="btn-create-post" onclick="openPostModal()">+ Pin a Notice</button>
-    </div>
-
-    <div class="filter-controls">
-      <input type="text" id="search-input" class="search-input" placeholder="Search notices, gigs, musicians wanted..." oninput="filterNotices()">
-      <div class="category-buttons">
-        <button class="filter-btn active" onclick="setCategory('all', this)">All</button>
-        <button class="filter-btn" onclick="setCategory('gig', this)">Gigs & Shows</button>
-        <button class="filter-btn" onclick="setCategory('wanted', this)">Musicians Wanted</button>
-        <button class="filter-btn" onclick="setCategory('workshop', this)">Workshops & DIY</button>
-      </div>
-    </div>
-
-    <div class="pinboard-grid" id="pinboard-grid"></div>
+  <!-- Interactive Wall Canvas -->
+  <main id="wall-canvas">
+    <div id="flyers-container"></div>
   </main>
 
-  <div id="post-modal">
+  <!-- Pin Flyer Button -->
+  <div class="wall-toolbar">
+    <button class="btn-pin" onclick="window.openCreateModal()">+ Pin Flyer / Gig</button>
+  </div>
+
+  <!-- Create Flyer Modal -->
+  <div id="create-modal" class="modal-overlay">
     <div class="modal-card">
-      <h2>Pin a New Notice</h2>
-      <form id="notice-form">
+      <h2>Pin a Flyer / Notice</h2>
+      <form id="create-form">
         <div class="form-group">
-          <label>Notice Title *</label>
-          <input type="text" id="post-title" class="form-control" placeholder="Title..." required>
+          <label>Notice / Gig Title *</label>
+          <input type="text" id="notice-title" class="form-control" placeholder="e.g. Hardcore Fest 2026" required>
         </div>
         <div class="form-group">
-          <label>Category *</label>
-          <select id="post-category" class="form-control" required>
-            <option value="gig">Gig / Show Announcement</option>
-            <option value="wanted">Musicians / Members Wanted</option>
-            <option value="workshop">Workshop / DIY</option>
-          </select>
+          <label>Author / Band *</label>
+          <input type="text" id="notice-author" class="form-control" placeholder="Your name..." required>
         </div>
         <div class="form-group">
-          <label>Description *</label>
-          <textarea id="post-desc" class="form-control" rows="3" placeholder="Details..." required></textarea>
+          <label>Full Description / Details *</label>
+          <textarea id="notice-desc" class="form-control" rows="3" placeholder="Date, venue, ticket info..." required></textarea>
         </div>
         <div class="form-group">
-          <label>Image File (Optional)</label>
-          <input type="file" id="post-file" accept="image/*" class="form-control">
-        </div>
-        <div class="form-group">
-          <label>Link / Email URL (Optional)</label>
-          <input type="text" id="post-link" class="form-control" placeholder="https://...">
-        </div>
-        <div class="form-group">
-          <label>Social Handle (Optional)</label>
-          <input type="text" id="post-social" class="form-control" placeholder="@handle">
+          <label>Flyer Image (Optional)</label>
+          <input type="file" id="notice-image" accept="image/*" class="form-control">
         </div>
         <div class="modal-actions">
-          <button type="button" class="modal-btn btn-cancel" onclick="closePostModal()">Cancel</button>
-          <button type="submit" class="modal-btn btn-submit" id="submit-btn">Pin Post →</button>
+          <button type="button" class="modal-btn btn-cancel" onclick="window.closeCreateModal()">Cancel</button>
+          <button type="submit" class="modal-btn btn-submit" id="submit-btn">Pin to Wall →</button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- View Flyer Detail Modal -->
+  <div id="detail-modal" class="modal-overlay" onclick="window.closeDetailModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <h2 id="detail-title">Notice Title</h2>
+      <div id="detail-image-container" style="margin-bottom: 12px; text-align: center;"></div>
+      <p style="font-size: 11px; color: #888; margin-bottom: 12px;">Pinned by <span id="detail-author" style="color: #ff007f;"></span></p>
+      <p id="detail-desc" style="font-size: 13px; color: #ccc; line-height: 1.5; margin-bottom: 20px; white-space: pre-wrap;"></p>
+      <button class="modal-btn btn-cancel" style="width: 100%;" onclick="window.closeDetailModal()">Close Flyer</button>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBozbn-0iQNhjuAcmL-dYOUtbhIYTjccYk",
@@ -417,104 +316,186 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const storage = getStorage(app);
     const noticesRef = ref(db, 'notices');
 
-    let activeCategory = 'all';
+    let allNotices = {};
 
+    // Load and render flyers on wall
     onValue(noticesRef, (snapshot) => {
       const data = snapshot.val();
-      const grid = document.getElementById('pinboard-grid');
-      grid.innerHTML = '';
+      const container = document.getElementById('flyers-container');
+      container.innerHTML = '';
+      allNotices = data || {};
 
       if (data) {
-        const notices = Object.values(data).reverse();
-        notices.forEach(notice => {
-          const card = document.createElement('div');
-          card.className = 'notice-card';
-          card.setAttribute('data-category', notice.category);
+        Object.keys(data).forEach(id => {
+          const item = data[id];
+          const flyer = document.createElement('div');
+          flyer.className = 'flyer-post';
+          
+          // Default wall coordinates if not yet dragged
+          const posX = item.x !== undefined ? item.x : (Math.random() * (window.innerWidth - 260) + 20);
+          const posY = item.y !== undefined ? item.y : (Math.random() * (window.innerHeight - 300) + 80);
+          
+          flyer.style.left = `${posX}px`;
+          flyer.style.top = `${posY}px`;
 
-          let imageHTML = notice.imgSrc ? `<img src="${notice.imgSrc}" class="notice-img" alt="${notice.title}">` : '';
-          let metaText = notice.social ? `Posted by ${notice.social}` : 'Posted by Scene Member';
-          let linkHTML = notice.linkUrl ? `<a href="${notice.linkUrl}" target="_blank" class="btn-action">View Link / Contact →</a>` : '';
-
-          card.innerHTML = `
-            <span class="card-badge">${notice.badge}</span>
-            ${imageHTML}
-            <div class="notice-info">
-              <h3>${notice.title}</h3>
-              <span class="meta-tag">${metaText}</span>
-            </div>
-            <p class="notice-desc">${notice.desc}</p>
-            ${linkHTML}
+          let imgHtml = item.imageSrc ? `<img src="${item.imageSrc}" class="flyer-img" alt="Flyer">` : '';
+          
+          flyer.innerHTML = `
+            ${imgHtml}
+            <div class="flyer-title">${item.title}</div>
           `;
-          grid.appendChild(card);
+
+          // Click to view full details (unless dragging)
+          let isDragging = false;
+          flyer.onmousedown = () => { isDragging = false; };
+          flyer.onmousemove = () => { isDragging = true; };
+          flyer.onclick = () => {
+            if (!isDragging) window.openDetailModal(id);
+          };
+
+          // Drag and Drop Logic
+          makeDraggable(flyer, id, posX, posY);
+
+          container.appendChild(flyer);
         });
       }
-      filterNotices();
     });
 
-    document.getElementById('notice-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const submitBtn = document.getElementById('submit-btn');
-      submitBtn.innerText = "Posting...";
-      submitBtn.disabled = true;
+    // Simple Drag & Drop implementation for wall
+    function makeDraggable(element, id, initialX, initialY) {
+      let shiftX, shiftY;
 
-      const title = document.getElementById('post-title').value.trim();
-      const category = document.getElementById('post-category').value;
-      const desc = document.getElementById('post-desc').value.trim();
-      const fileInput = document.getElementById('post-file');
-      const linkUrl = document.getElementById('post-link').value.trim();
-      const social = document.getElementById('post-social').value.trim();
-
-      const categoryLabels = { 'gig': 'Gig Flyer', 'wanted': 'Member Wanted', 'workshop': 'Workshop' };
-
-      let imgSrc = '';
-      if (fileInput.files[0]) {
-        const file = fileInput.files[0];
-        const fileRef = storageRef(storage, 'notices/' + Date.now() + '_' + file.name);
-        await uploadBytes(fileRef, file);
-        imgSrc = await getDownloadURL(fileRef);
+      function moveAt(pageX, pageY) {
+        const canvas = document.getElementById('wall-canvas');
+        let newX = pageX - shiftX;
+        let newY = pageY - shiftY;
+        
+        element.style.left = newX + 'px';
+        element.style.top = newY + 'px';
       }
 
-      await push(noticesRef, {
-        title,
-        category,
-        desc,
-        imgSrc,
-        linkUrl,
-        social,
-        badge: categoryLabels[category] || 'Notice',
-        timestamp: Date.now()
-      });
+      function onMouseMove(event) {
+        moveAt(event.pageX, event.pageY);
+      }
 
-      submitBtn.innerText = "Pin Post →";
-      submitBtn.disabled = false;
-      closePostModal();
+      element.onmousedown = function(event) {
+        if (event.target.tagName === 'IMG') return; // let image render naturally
+        shiftX = event.clientX - element.getBoundingClientRect().left;
+        shiftY = event.clientY - element.getBoundingClientRect().top;
+
+        document.addEventListener('mousemove', onMouseMove);
+        
+        document.onmouseup = function() {
+          document.removeEventListener('mousemove', onMouseMove);
+          document.onmouseup = null;
+          
+          // Save new position to Firebase
+          const finalX = parseInt(element.style.left);
+          const finalY = parseInt(element.style.top);
+          update(ref(db, `notices/${id}`), { x: finalX, y: finalY });
+        };
+      };
+
+      // Touch support for mobile dragging
+      element.ontouchstart = function(event) {
+        const touch = event.touches[0];
+        shiftX = touch.clientX - element.getBoundingClientRect().left;
+        shiftY = touch.clientY - element.getBoundingClientRect().top;
+
+        function onTouchMove(e) {
+          const t = e.touches[0];
+          moveAt(t.clientX, t.clientY);
+        }
+
+        document.addEventListener('touchmove', onTouchMove);
+
+        document.ontouchend = function() {
+          document.removeEventListener('touchmove', onTouchMove);
+          document.ontouchend = null;
+
+          const finalX = parseInt(element.style.left);
+          const finalY = parseInt(element.style.top);
+          update(ref(db, `notices/${id}`), { x: finalX, y: finalY });
+        };
+      };
+    }
+
+    // Form Submit Handler for New Notice
+    document.getElementById('create-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submit-btn');
+      
+      const title = document.getElementById('notice-title').value.trim();
+      const author = document.getElementById('notice-author').value.trim();
+      const desc = document.getElementById('notice-desc').value.trim();
+      const imageInput = document.getElementById('notice-image');
+
+      submitBtn.innerText = "Pinning...";
+      submitBtn.disabled = true;
+
+      const randomX = Math.floor(Math.random() * (window.innerWidth - 260) + 40);
+      const randomY = Math.floor(Math.random() * (window.innerHeight - 340) + 80);
+
+      if (imageInput.files && imageInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = async function(event) {
+          await pushToFirebase(title, author, desc, event.target.result, randomX, randomY);
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+      } else {
+        await pushToFirebase(title, author, desc, null, randomX, randomY);
+      }
     });
 
-    window.setCategory = function(cat, btnElement) {
-      activeCategory = cat;
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
-      filterNotices();
+    async function pushToFirebase(title, author, desc, imageSrc, x, y) {
+      try {
+        await push(noticesRef, { title, author, desc, imageSrc, x, y, timestamp: Date.now() });
+        window.closeCreateModal();
+      } catch (err) {
+        alert("Error pinning flyer: Image size might be too large. Try a smaller file.");
+      }
+      document.getElementById('submit-btn').innerText = "Pin to Wall →";
+      document.getElementById('submit-btn').disabled = false;
+    }
+
+    // Modal Controls
+    window.openCreateModal = () => {
+      document.getElementById('create-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
     };
 
-    window.filterNotices = function() {
-      const searchTerm = document.getElementById('search-input').value.toLowerCase();
-      document.querySelectorAll('.notice-card').forEach(card => {
-        const category = card.getAttribute('data-category');
-        const textContent = card.innerText.toLowerCase();
-        const matchesCategory = (activeCategory === 'all' || category === activeCategory);
-        const matchesSearch = textContent.includes(searchTerm);
-        card.style.display = (matchesCategory && matchesSearch) ? 'flex' : 'none';
-      });
+    window.closeCreateModal = () => {
+      document.getElementById('create-modal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+      document.getElementById('create-form').reset();
     };
 
-    window.openPostModal = () => document.getElementById('post-modal').style.display = 'flex';
-    window.closePostModal = () => {
-      document.getElementById('post-modal').style.display = 'none';
-      document.getElementById('notice-form').reset();
+    window.openDetailModal = (id) => {
+      const item = allNotices[id];
+      if (!item) return;
+
+      document.getElementById('detail-title').innerText = item.title;
+      document.getElementById('detail-author').innerText = item.author || 'Anonymous';
+      document.getElementById('detail-desc').innerText = item.desc;
+      
+      const imgContainer = document.getElementById('detail-image-container');
+      if (item.imageSrc) {
+        imgContainer.innerHTML = `<img src="${item.imageSrc}" style="max-height: 240px; max-width: 100%; border-radius: 4px; margin: 0 auto;" />`;
+        imgContainer.style.display = 'block';
+      } else {
+        imgContainer.innerHTML = '';
+        imgContainer.style.display = 'none';
+      }
+
+      document.getElementById('detail-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closeDetailModal = (e) => {
+      document.getElementById('detail-modal').style.display = 'none';
+      document.body.style.overflow = 'auto';
     };
   </script>
 </body>
