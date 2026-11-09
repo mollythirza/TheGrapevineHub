@@ -230,21 +230,21 @@
       filter: invert(1) hue-rotate(270deg);
     }
 
-    /* Modal Overlay with proper mobile padding & scrolling */
+    /* 📱 FIXED MOBILE MODAL SCROLLING & SIZING 📱 */
     #audio-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.88);
       z-index: 30000;
       display: none;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start; /* Allows scrolling from top on mobile */
+      overflow-y: auto;        /* Enables full page scroll on the overlay container */
+      padding: 30px 16px;
       backdrop-filter: blur(5px);
-      padding: 12px;
-      overflow-y: auto;
     }
 
     .modal-card {
@@ -255,9 +255,8 @@
       border-radius: 8px;
       padding: 20px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
-      max-height: 85vh;
-      overflow-y: auto;
-      margin: auto;
+      margin: auto;            /* Centers vertically when it fits, scrolls cleanly when tall */
+      position: relative;
     }
 
     .modal-card h2 {
@@ -361,7 +360,7 @@
 
     .modal-btn {
       flex: 1;
-      padding: 8px;
+      padding: 10px;
       border-radius: 4px;
       font-size: 11px;
       font-weight: bold;
@@ -603,7 +602,6 @@
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         
-        // Pick supported browser MIME codec
         const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
         for (const t of types) {
           if (MediaRecorder.isTypeSupported(t)) {
@@ -680,6 +678,7 @@
 
     window.openAudioModal = () => {
       document.getElementById('audio-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden'; // Lock background scrolling
     };
 
     window.closeAudioModal = () => {
@@ -688,6 +687,7 @@
       }
       clearInterval(timerInterval);
       document.getElementById('audio-modal').style.display = 'none';
+      document.body.style.overflow = 'auto'; // Restore background scrolling
       document.getElementById('audio-form').reset();
       document.getElementById('rec-preview').style.display = 'none';
       document.getElementById('rec-timer').innerText = "00:00";
