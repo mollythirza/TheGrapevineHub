@@ -128,7 +128,7 @@
       color: #fff;
       padding: 10px 14px;
       font-family: inherit;
-      font-size: 13px;
+      font-size: 16px; /* 16px prevents mobile auto-zoom */
       border-radius: 4px;
       outline: none;
       min-width: 260px;
@@ -230,20 +230,19 @@
       filter: invert(1) hue-rotate(270deg);
     }
 
-    /* 📱 FIXED MOBILE MODAL SCROLLING & SIZING 📱 */
+    /* 📱 SCROLLABLE MOBILE-FRIENDLY MODAL FIX 📱 */
     #audio-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.88);
+      background: rgba(0, 0, 0, 0.9);
       z-index: 30000;
       display: none;
-      justify-content: center;
-      align-items: flex-start; /* Allows scrolling from top on mobile */
-      overflow-y: auto;        /* Enables full page scroll on the overlay container */
-      padding: 30px 16px;
+      overflow-y: auto;          /* Entire screen scrolls */
+      -webkit-overflow-scrolling: touch;
+      padding: 40px 16px 80px 16px; /* Extra bottom padding so keyboards never cut off actions */
       backdrop-filter: blur(5px);
     }
 
@@ -255,7 +254,7 @@
       border-radius: 8px;
       padding: 20px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
-      margin: auto;            /* Centers vertically when it fits, scrolls cleanly when tall */
+      margin: 0 auto;            /* Centers nicely with freedom to scroll vertically */
       position: relative;
     }
 
@@ -263,19 +262,19 @@
       color: #ff007f;
       font-size: 16px;
       text-transform: uppercase;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       text-align: center;
     }
 
     .form-group {
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 5px;
     }
 
     .form-group label {
-      font-size: 10px;
+      font-size: 11px;
       color: #aaa;
       text-transform: uppercase;
     }
@@ -284,27 +283,32 @@
       background: #0d0d0d;
       border: 1px solid #333;
       color: #fff;
-      padding: 8px;
+      padding: 10px;
       font-family: inherit;
-      font-size: 12px;
+      font-size: 16px; /* 16px prevents mobile auto-zoom on input focus */
       border-radius: 4px;
       outline: none;
+      width: 100%;
+    }
+
+    .form-control:focus {
+      border-color: #ff007f;
     }
 
     .audio-mode-tabs {
       display: flex;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .mode-tab {
       flex: 1;
-      padding: 6px;
+      padding: 8px;
       background: #0d0d0d;
       border: 1px solid #333;
       color: #aaa;
       font-family: inherit;
-      font-size: 10px;
+      font-size: 11px;
       text-transform: uppercase;
       cursor: pointer;
       border-radius: 4px;
@@ -322,15 +326,15 @@
       background: #0d0d0d;
       border: 1px solid #333;
       border-radius: 4px;
-      padding: 12px;
+      padding: 14px;
       text-align: center;
     }
 
     .rec-timer {
-      font-size: 18px;
+      font-size: 20px;
       color: #ff007f;
       font-weight: bold;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       display: block;
     }
 
@@ -338,9 +342,9 @@
       background: #ff007f;
       color: #000;
       border: none;
-      padding: 8px 14px;
+      padding: 10px 16px;
       font-family: inherit;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: bold;
       text-transform: uppercase;
       border-radius: 4px;
@@ -354,15 +358,15 @@
 
     .modal-actions {
       display: flex;
-      gap: 10px;
-      margin-top: 16px;
+      gap: 12px;
+      margin-top: 20px;
     }
 
     .modal-btn {
       flex: 1;
-      padding: 10px;
+      padding: 12px;
       border-radius: 4px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: bold;
       text-transform: uppercase;
       cursor: pointer;
@@ -431,7 +435,7 @@
         </div>
         <div class="form-group">
           <label>Brief Description *</label>
-          <textarea id="audio-desc" class="form-control" rows="2" placeholder="What is this note about?" required></textarea>
+          <textarea id="audio-desc" class="form-control" rows="3" placeholder="What is this note about?" required></textarea>
         </div>
 
         <div class="form-group">
@@ -445,11 +449,11 @@
         <!-- Live Mic Recorder Box -->
         <div id="section-record" class="recorder-box">
           <span class="rec-timer" id="rec-timer">00:00</span>
-          <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 8px;">
+          <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 10px;">
             <button type="button" class="rec-btn" id="btn-start-rec" onclick="window.startRecording()">● Record Voice Note</button>
             <button type="button" class="rec-btn stop" id="btn-stop-rec" onclick="window.stopRecording()" style="display:none;">■ Stop Recording</button>
           </div>
-          <audio id="rec-preview" controls style="display:none; width: 100%; height: 32px; margin-top: 8px;"></audio>
+          <audio id="rec-preview" controls style="display:none; width: 100%; height: 36px; margin-top: 10px;"></audio>
         </div>
 
         <!-- File Upload Box -->
@@ -677,8 +681,8 @@
     };
 
     window.openAudioModal = () => {
-      document.getElementById('audio-modal').style.display = 'flex';
-      document.body.style.overflow = 'hidden'; // Lock background scrolling
+      document.getElementById('audio-modal').style.display = 'block';
+      document.body.style.overflow = 'hidden';
     };
 
     window.closeAudioModal = () => {
@@ -687,7 +691,7 @@
       }
       clearInterval(timerInterval);
       document.getElementById('audio-modal').style.display = 'none';
-      document.body.style.overflow = 'auto'; // Restore background scrolling
+      document.body.style.overflow = 'auto';
       document.getElementById('audio-form').reset();
       document.getElementById('rec-preview').style.display = 'none';
       document.getElementById('rec-timer').innerText = "00:00";
