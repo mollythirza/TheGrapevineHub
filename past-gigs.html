@@ -3,11 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Grapevine — Scene Gig Archive & Timeline</title>
-  
-  <!-- Cropper.js CSS for image cropping -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
-
+  <title>The Grapevine — Past Gig Archive & Timeline</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -40,6 +38,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      text-decoration: none;
     }
 
     .brand-logo {
@@ -70,43 +69,70 @@
     }
 
     main {
-      max-width: 1000px;
-      margin: 100px auto 60px;
-      padding: 0 24px;
+      max-width: 900px;
+      margin: 100px auto 80px;
+      padding: 0 20px;
+      position: relative;
     }
 
-    .hero-section {
+    /* Background Connection Lines SVG Layer */
+    #connection-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .connection-line {
+      stroke: #ff007f;
+      stroke-width: 2;
+      stroke-dasharray: 4 4;
+      opacity: 0.6;
+      animation: linePulse 3s infinite alternate;
+    }
+
+    @keyframes linePulse {
+      0% { opacity: 0.3; filter: drop-shadow(0 0 2px rgba(255,0,127,0.3)); }
+      100% { opacity: 0.8; filter: drop-shadow(0 0 8px #ff007f); }
+    }
+
+    /* Filter / Search Toolbar */
+    .filter-toolbar {
+      background: rgba(20, 20, 20, 0.95);
       border: 1px solid #ff007f;
-      background: rgba(20, 20, 20, 0.8);
-      padding: 24px;
       border-radius: 6px;
-      box-shadow: 0 0 25px rgba(255, 0, 127, 0.25);
-      margin-bottom: 30px;
+      padding: 14px;
+      margin-bottom: 40px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 12px;
+      align-items: center;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.25);
+      position: relative;
+      z-index: 10;
     }
 
-    .hero-text h1 {
-      color: #ff007f;
-      font-size: 24px;
-      margin-bottom: 8px;
-      text-transform: uppercase;
+    .search-input {
+      background: #0d0d0d;
+      border: 1px solid #ff007f;
+      color: #fff;
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 16px;
+      border-radius: 4px;
+      outline: none;
+      flex: 1;
+      min-width: 240px;
     }
 
-    .hero-text p {
-      color: #bbb;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .btn-add-memory {
+    .btn-log {
       background: #ff007f;
       color: #000;
       border: none;
-      padding: 12px 20px;
+      padding: 11px 18px;
       font-family: inherit;
       font-size: 12px;
       font-weight: bold;
@@ -114,173 +140,162 @@
       border-radius: 4px;
       cursor: pointer;
       box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+      white-space: nowrap;
     }
 
-    .filter-controls {
+    .btn-log:hover {
+      background: #ff3399;
+    }
+
+    /* Feed Container */
+    .archive-feed {
+      position: relative;
       display: flex;
-      gap: 12px;
-      margin-bottom: 40px;
+      flex-direction: column;
+      gap: 35px;
+      z-index: 5;
     }
 
-    .search-input {
-      background: #111;
-      border: 1px solid #ff007f;
-      color: #fff;
-      padding: 10px 14px;
-      font-family: inherit;
-      font-size: 13px;
-      border-radius: 4px;
-      outline: none;
-      width: 100%;
-    }
-
-    /* Timeline Vertical Spine */
-    .timeline {
-      position: relative;
-      margin: 0 auto;
-      padding-left: 30px;
-      border-left: 2px dashed #ff007f;
-    }
-
-    .timeline-item {
-      position: relative;
-      margin-bottom: 35px;
-    }
-
-    /* Dot on timeline spine */
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -37px;
-      top: 20px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #ff007f;
-      box-shadow: 0 0 10px #ff007f;
-    }
-
-    .gig-card {
+    /* Staggered Left / Right Posts */
+    .gig-post {
       background: #141414;
-      border: 1px solid #222;
+      border: 1px solid rgba(255, 0, 127, 0.5);
       border-radius: 6px;
       padding: 20px;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 75%;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.2);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
+      position: relative;
     }
 
-    .gig-card:hover {
+    .gig-post.align-left {
+      align-self: flex-start;
+      margin-right: auto;
+    }
+
+    .gig-post.align-right {
+      align-self: flex-end;
+      margin-left: auto;
+    }
+
+    .gig-post:hover {
       border-color: #ff007f;
-      box-shadow: 0 0 20px rgba(255, 0, 127, 0.35);
+      box-shadow: 0 0 25px rgba(255, 0, 127, 0.6);
+      transform: scale(1.01);
+      z-index: 20;
     }
 
     .gig-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       flex-wrap: wrap;
       gap: 8px;
     }
 
-    .gig-header h3 {
-      color: #fff;
-      font-size: 18px;
+    .gig-title {
+      color: #ff007f;
+      font-size: 16px;
+      font-weight: bold;
       text-transform: uppercase;
     }
 
     .gig-date {
       font-size: 11px;
-      color: #ff007f;
-      border: 1px solid #ff007f;
-      padding: 2px 8px;
+      color: #888;
+      border: 1px solid #333;
+      padding: 2px 6px;
       border-radius: 3px;
-      text-transform: uppercase;
     }
 
     .gig-meta {
-      font-size: 12px;
-      color: #888;
-      margin-bottom: 12px;
-    }
-
-    .gig-meta span {
+      font-size: 11px;
       color: #aaa;
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
-    .gig-img {
+    .gig-meta span span {
+      color: #ff007f;
+    }
+
+    .gig-desc {
+      font-size: 12px;
+      color: #ccc;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .gig-thumb {
       width: 100%;
-      max-height: 280px;
+      height: 150px;
       object-fit: cover;
       border-radius: 4px;
-      border: 1px solid #333;
-      margin-bottom: 14px;
-      background: #000;
-    }
-
-    .gig-details {
-      background: #0d0d0d;
-      border-left: 3px solid #ff007f;
-      padding: 10px 14px;
       margin-top: 10px;
-      font-size: 12px;
-      border-radius: 0 4px 4px 0;
     }
 
-    .gig-details p {
-      margin-bottom: 4px;
-      color: #ccc;
+    /* Mobile & Tablet override for staggered layout */
+    @media(max-width: 768px) {
+      .gig-post {
+        width: 100% !important;
+        align-self: center !important;
+        margin: 0 !important;
+      }
     }
 
-    .gig-details p strong {
-      color: #ff007f;
-      text-transform: uppercase;
-    }
-
-    /* Modal Form */
-    #gig-modal {
+    /* 📱 Fully Scrollable Mobile Modals 📱 */
+    .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 30000;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 40000;
       display: none;
       justify-content: center;
       align-items: center;
-      backdrop-filter: blur(5px);
-      padding: 20px;
+      padding: 16px;
+      backdrop-filter: blur(6px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .modal-card {
       background: #141414;
       border: 2px solid #ff007f;
       width: 100%;
-      max-width: 500px;
+      max-width: 480px;
+      max-height: 85vh;          /* Prevents bottom cutoff on mobile */
+      overflow-y: auto;          /* Internal vertical scrolling */
       border-radius: 8px;
-      padding: 24px;
+      padding: 20px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
-      max-height: 90vh;
-      overflow-y: auto;
+      position: relative;
+      margin: auto;
     }
 
     .modal-card h2 {
       color: #ff007f;
-      font-size: 18px;
+      font-size: 16px;
       text-transform: uppercase;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       text-align: center;
     }
 
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
 
     .form-group label {
-      font-size: 11px;
+      font-size: 10px;
       color: #aaa;
       text-transform: uppercase;
     }
@@ -289,40 +304,29 @@
       background: #0d0d0d;
       border: 1px solid #333;
       color: #fff;
-      padding: 10px;
+      padding: 9px;
       font-family: inherit;
-      font-size: 12px;
+      font-size: 16px; /* Prevents mobile browser auto-zoom */
       border-radius: 4px;
       outline: none;
-    }
-
-    .img-container {
       width: 100%;
-      max-height: 250px;
-      display: none;
-      margin-bottom: 12px;
-      background: #000;
-      border: 1px dashed #ff007f;
-      border-radius: 4px;
-      overflow: hidden;
     }
 
-    .img-container img {
-      max-width: 100%;
-      display: block;
+    .form-control:focus {
+      border-color: #ff007f;
     }
 
     .modal-actions {
       display: flex;
-      gap: 12px;
-      margin-top: 20px;
+      gap: 10px;
+      margin-top: 16px;
     }
 
     .modal-btn {
       flex: 1;
       padding: 10px;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       text-transform: uppercase;
       cursor: pointer;
@@ -335,90 +339,78 @@
 </head>
 <body>
 
+  <!-- Header -->
   <header>
-    <a href="index.html" class="brand-container" style="text-decoration: none;">
+    <a href="https://mollythirza.github.io/TheGrapevineHub/" class="brand-container">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
       <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:14px;\'>THE GRAPEVINE</h1>'">
     </a>
     <div class="nav-links">
-      <a href="index.html">← Back to Hub</a>
+      <a href="https://mollythirza.github.io/TheGrapevineHub/">← Back to Hub</a>
     </div>
   </header>
 
   <main>
-    <div class="hero-section">
-      <div class="hero-text">
-        <h1>Past Gig Archive & Timeline</h1>
-        <p>A crowd-sourced history of local shows, setlists, photo stubs, and unforgettable scene memories.</p>
-      </div>
-      <button class="btn-add-memory" onclick="openGigModal()">+ Add Gig Memory</button>
+    <div style="text-align: center; margin-bottom: 25px;">
+      <h1 style="color: #ff007f; font-size: 22px; text-transform: uppercase; margin-bottom: 6px;">Past Gig Archive & Timeline</h1>
+      <p style="color: #aaa; font-size: 12px;">Connected scene history. Glowing lines link shows sharing bands, venues, or genres.</p>
     </div>
 
-    <div class="filter-controls">
-      <input type="text" id="search-input" class="search-input" placeholder="Search headliners, venues, dates, or songs..." oninput="filterGigs()">
+    <!-- Filter & Search Bar -->
+    <div class="filter-toolbar">
+      <input type="text" id="search-input" class="search-input" placeholder="Search band, venue, genre..." oninput="window.filterGigs()">
+      <button class="btn-log" onclick="window.openModal()">+ Log Past Gig</button>
     </div>
 
-    <div class="timeline" id="gig-timeline"></div>
+    <!-- Timeline Feed with SVG Connection Lines -->
+    <div style="position: relative;">
+      <svg id="connection-layer"></svg>
+      <div class="archive-feed" id="archive-feed"></div>
+    </div>
   </main>
 
-  <!-- Submission Modal -->
-  <div id="gig-modal">
-    <div class="modal-card">
-      <h2>Log a Past Gig</h2>
+  <!-- Log Gig Modal -->
+  <div id="gig-modal" class="modal-overlay" onclick="window.closeModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <h2>Log Past Gig Memory</h2>
       <form id="gig-form">
-
         <div class="form-group">
-          <label>Headlining Act *</label>
-          <input type="text" id="gig-headliner" class="form-control" placeholder="e.g. Idles / Turnstile" required>
+          <label>Show / Event Title *</label>
+          <input type="text" id="gig-title" class="form-control" placeholder="e.g. Summer Hardcore Fest" required>
         </div>
-
         <div class="form-group">
-          <label>Support Acts (Optional)</label>
-          <input type="text" id="gig-support" class="form-control" placeholder="e.g. High Vis, Local Support">
+          <label>Band(s) Playing (comma separated) *</label>
+          <input type="text" id="gig-bands" class="form-control" placeholder="e.g. Trash Talk, Scalple" required>
         </div>
-
         <div class="form-group">
-          <label>Venue Location *</label>
-          <input type="text" id="gig-venue" class="form-control" placeholder="e.g. The Windmill, Brixton" required>
+          <label>Venue *</label>
+          <input type="text" id="gig-venue" class="form-control" placeholder="e.g. The Underground Basement" required>
         </div>
-
         <div class="form-group">
-          <label>Date of Show *</label>
+          <label>Genre / Tag *</label>
+          <input type="text" id="gig-genre" class="form-control" placeholder="e.g. Hardcore, Punk, Noise" required>
+        </div>
+        <div class="form-group">
+          <label>Show Date *</label>
           <input type="date" id="gig-date" class="form-control" required>
         </div>
-
         <div class="form-group">
-          <label>Favorite Song from Setlist (Optional)</label>
-          <input type="text" id="gig-song" class="form-control" placeholder="e.g. Colossus">
+          <label>Memories / Setlist Notes *</label>
+          <textarea id="gig-desc" class="form-control" rows="2" placeholder="Highlights, crowd energy..." required></textarea>
         </div>
-
         <div class="form-group">
-          <label>Gig Memory / Notes (Optional)</label>
-          <textarea id="gig-notes" class="form-control" rows="3" placeholder="What stood out about this show?"></textarea>
+          <label>Photo / Stub (Optional)</label>
+          <input type="file" id="gig-image" accept="image/*" class="form-control">
         </div>
-
-        <div class="form-group">
-          <label>Photo / Ticket Stub (Optional)</label>
-          <input type="file" id="gig-file" accept="image/*" class="form-control">
-        </div>
-
-        <div class="img-container" id="crop-container">
-          <img id="image-to-crop" alt="Crop preview">
-        </div>
-
         <div class="modal-actions">
-          <button type="button" class="modal-btn btn-cancel" onclick="closeGigModal()">Cancel</button>
-          <button type="submit" class="modal-btn btn-submit" id="submit-btn">Save to Timeline →</button>
+          <button type="button" class="modal-btn btn-cancel" onclick="window.closeModal()">Cancel</button>
+          <button type="submit" class="modal-btn btn-submit" id="submit-btn">Save to Archive →</button>
         </div>
-
       </form>
     </div>
   </div>
 
-  <!-- Cropper JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-
-  <!-- Firebase Integration -->
+  <!-- Firebase Script Integration -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -436,131 +428,171 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const timelineRef = ref(db, 'gig_timeline');
+    const gigsRef = ref(db, 'past_gigs');
 
-    let cropper = null;
+    let allGigs = [];
 
-    // Cropper Setup
-    const fileInput = document.getElementById('gig-file');
-    const imageToCrop = document.getElementById('image-to-crop');
-    const cropContainer = document.getElementById('crop-container');
-
-    fileInput.addEventListener('change', (e) => {
-      const files = e.target.files;
-      if (files && files.length > 0) {
-        const file = files[0];
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          imageToCrop.src = event.target.result;
-          cropContainer.style.display = 'block';
-
-          if (cropper) cropper.destroy();
-
-          cropper = new Cropper(imageToCrop, {
-            aspectRatio: 16 / 9,
-            viewMode: 1,
-            autoCropArea: 1,
-          });
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    // Realtime Listener — sorts entries chronologically by show date
-    onValue(timelineRef, (snapshot) => {
+    // Load data from Firebase
+    onValue(gigsRef, (snapshot) => {
       const data = snapshot.val();
-      const container = document.getElementById('gig-timeline');
-      container.innerHTML = '';
-
+      allGigs = [];
       if (data) {
-        const gigs = Object.values(data);
-        
-        // Sort timeline by gig date (newest show date at top)
-        gigs.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        gigs.forEach(gig => {
-          const item = document.createElement('div');
-          item.className = 'timeline-item';
-
-          let imageHTML = gig.imgSrc ? `<img src="${gig.imgSrc}" class="gig-img" alt="${gig.headliner}">` : '';
-          let supportHTML = gig.support ? `<span>w/ ${gig.support}</span>` : '';
-          let songHTML = gig.song ? `<p><strong>Highlight Song:</strong> "${gig.song}"</p>` : '';
-          let notesHTML = gig.notes ? `<p><strong>Notes:</strong> ${gig.notes}</p>` : '';
-
-          item.innerHTML = `
-            <div class="gig-card">
-              <div class="gig-header">
-                <h3>${gig.headliner}</h3>
-                <span class="gig-date">${gig.date}</span>
-              </div>
-              <div class="gig-meta">
-                📍 <span>${gig.venue}</span> ${supportHTML ? '• ' + supportHTML : ''}
-              </div>
-              ${imageHTML}
-              ${(songHTML || notesHTML) ? `<div class="gig-details">${songHTML}${notesHTML}</div>` : ''}
-            </div>
-          `;
-          container.appendChild(item);
-        });
+        // Sort descending by timestamp (recent time posted first)
+        allGigs = Object.keys(data).map(id => ({ id, ...data.id, ...data[id] })).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
       }
-      filterGigs();
+      window.filterGigs();
     });
 
-    // Handle Form Submit
+    window.filterGigs = () => {
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      const feed = document.getElementById('archive-feed');
+      feed.innerHTML = '';
+
+      const filtered = allGigs.filter(item => {
+        if (!query) return true;
+        const matchTitle = (item.title || '').toLowerCase().includes(query);
+        const matchBands = (item.bands || '').toLowerCase().includes(query);
+        const matchVenue = (item.venue || '').toLowerCase().includes(query);
+        const matchGenre = (item.genre || '').toLowerCase().includes(query);
+        const matchDesc = (item.desc || '').toLowerCase().includes(query);
+        return matchTitle || matchBands || matchVenue || matchGenre || matchDesc;
+      });
+
+      if (filtered.length === 0) {
+        feed.innerHTML = `<p style="text-align:center; color:#666; padding: 40px; font-size: 12px;">No gig memories found matching your search.</p>`;
+        document.getElementById('connection-layer').innerHTML = '';
+        return;
+      }
+
+      filtered.forEach((item, index) => {
+        const post = document.createElement('div');
+        // Alternating Left / Right centering layout
+        const alignmentClass = index % 2 === 0 ? 'align-left' : 'align-right';
+        post.className = `gig-post ${alignmentClass}`;
+        post.setAttribute('data-id', item.id);
+
+        let imgHtml = item.imageSrc ? `<img src="${item.imageSrc}" class="gig-thumb" alt="Gig Stub">` : '';
+
+        post.innerHTML = `
+          <div class="gig-header">
+            <h3 class="gig-title">${item.title}</h3>
+            <span class="gig-date">${item.date || 'Unknown Date'}</span>
+          </div>
+          <div class="gig-meta">
+            <span>Band(s): <span>${item.bands}</span></span>
+            <span>Venue: <span>${item.venue}</span></span>
+            <span>Genre: <span>${item.genre}</span></span>
+          </div>
+          <p class="gig-desc">${item.desc}</p>
+          ${imgHtml}
+        `;
+        feed.appendChild(post);
+      });
+
+      // Draw glowing connection lines between shared bands/venues/genres after DOM paints
+      setTimeout(drawConnections, 100);
+    };
+
+    // Draw glowing pink SVG lines linking posts with shared metadata
+    function drawConnections() {
+      const svgLayer = document.getElementById('connection-layer');
+      svgLayer.innerHTML = '';
+      const posts = document.querySelectorAll('.gig-post');
+      const feedRect = document.getElementById('archive-feed').getBoundingClientRect();
+
+      svgLayer.setAttribute('width', feedRect.width);
+      svgLayer.setAttribute('height', document.getElementById('archive-feed').scrollHeight);
+
+      for (let i = 0; i < allGigs.length; i++) {
+        for (let j = i + 1; j < allGigs.length; j++) {
+          const g1 = allGigs[i];
+          const g2 = allGigs[j];
+
+          const shareVenue = g1.venue && g2.venue && g1.venue.toLowerCase() === g2.venue.toLowerCase();
+          const shareGenre = g1.genre && g2.genre && g1.genre.toLowerCase() === g2.genre.toLowerCase();
+          
+          // Check shared bands
+          const bands1 = (g1.bands || '').toLowerCase().split(',').map(b => b.trim());
+          const bands2 = (g2.bands || '').toLowerCase().split(',').map(b => b.trim());
+          const shareBand = bands1.some(b => bands2.includes(b));
+
+          if (shareVenue || shareGenre || shareBand) {
+            const el1 = document.querySelector(`[data-id="${g1.id}"]`);
+            const el2 = document.querySelector(`[data-id="${g2.id}"]`);
+
+            if (el1 && el2) {
+              const r1 = el1.getBoundingClientRect();
+              const r2 = el2.getBoundingClientRect();
+
+              const x1 = r1.left + (r1.width / 2) - feedRect.left;
+              const y1 = r1.top + (r1.height / 2) - feedRect.top;
+              const x2 = r2.left + (r2.width / 2) - feedRect.left;
+              const y2 = r2.top + (r2.height / 2) - feedRect.top;
+
+              const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+              line.setAttribute('x1', x1);
+              line.setAttribute('y1', y1);
+              line.setAttribute('x2', x2);
+              line.setAttribute('y2', y2);
+              line.setAttribute('class', 'connection-line');
+              svgLayer.appendChild(line);
+            }
+          }
+        }
+      }
+    }
+
+    window.addEventListener('resize', () => { setTimeout(drawConnections, 200); });
+
+    // Form Submission Handler
     document.getElementById('gig-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submit-btn');
+
+      const title = document.getElementById('gig-title').value.trim();
+      const bands = document.getElementById('gig-bands').value.trim();
+      const venue = document.getElementById('gig-venue').value.trim();
+      const genre = document.getElementById('gig-genre').value.trim();
+      const date = document.getElementById('gig-date').value;
+      const desc = document.getElementById('gig-desc').value.trim();
+      const imageInput = document.getElementById('gig-image');
+
       submitBtn.innerText = "Saving...";
       submitBtn.disabled = true;
 
-      const headliner = document.getElementById('gig-headliner').value.trim();
-      const support = document.getElementById('gig-support').value.trim();
-      const venue = document.getElementById('gig-venue').value.trim();
-      const date = document.getElementById('gig-date').value;
-      const song = document.getElementById('gig-song').value.trim();
-      const notes = document.getElementById('gig-notes').value.trim();
-
-      let imgSrc = '';
-
-      if (cropper) {
-        const canvas = cropper.getCroppedCanvas({ width: 800, height: 450 });
-        if (canvas) {
-          imgSrc = canvas.toDataURL('image/jpeg', 0.8);
-        }
+      if (imageInput.files && imageInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = async function(event) {
+          await pushToFirebase(title, bands, venue, genre, date, desc, event.target.result);
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+      } else {
+        await pushToFirebase(title, bands, venue, genre, date, desc, null);
       }
-
-      await push(timelineRef, {
-        headliner,
-        support,
-        venue,
-        date,
-        song,
-        notes,
-        imgSrc,
-        timestamp: Date.now()
-      });
-
-      submitBtn.innerText = "Save to Timeline →";
-      submitBtn.disabled = false;
-      closeGigModal();
     });
 
-    window.filterGigs = function() {
-      const searchTerm = document.getElementById('search-input').value.toLowerCase();
-      document.querySelectorAll('.timeline-item').forEach(item => {
-        const text = item.innerText.toLowerCase();
-        item.style.display = text.includes(searchTerm) ? 'block' : 'none';
-      });
+    async function pushToFirebase(title, bands, venue, genre, date, desc, imageSrc) {
+      try {
+        await push(gigsRef, {
+          title, bands, venue, genre, date, desc, imageSrc,
+          timestamp: Date.now()
+        });
+        window.closeModal();
+      } catch (err) {
+        alert("Error saving gig memory: Payload limit reached. Try a smaller image.");
+      }
+      document.getElementById('submit-btn').innerText = "Save to Archive →";
+      document.getElementById('submit-btn').disabled = false;
+    }
+
+    window.openModal = () => {
+      document.getElementById('gig-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
     };
 
-    window.openGigModal = () => document.getElementById('gig-modal').style.display = 'flex';
-    window.closeGigModal = () => {
+    window.closeModal = () => {
       document.getElementById('gig-modal').style.display = 'none';
-      if (cropper) {
-        cropper.destroy();
-        cropper = null;
-      }
-      cropContainer.style.display = 'none';
+      document.body.style.overflow = 'auto';
       document.getElementById('gig-form').reset();
     };
   </script>
