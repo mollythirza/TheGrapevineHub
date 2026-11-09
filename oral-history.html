@@ -128,7 +128,7 @@
       color: #fff;
       padding: 10px 14px;
       font-family: inherit;
-      font-size: 16px; /* 16px prevents mobile auto-zoom */
+      font-size: 16px;
       border-radius: 4px;
       outline: none;
       min-width: 260px;
@@ -230,20 +230,20 @@
       filter: invert(1) hue-rotate(270deg);
     }
 
-    /* 📱 SCROLLABLE MOBILE-FRIENDLY MODAL FIX 📱 */
+    /* 📱 FULLY SCROLLABLE MOBILE MODAL FIX 📱 */
     #audio-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(0, 0, 0, 0.92);
       z-index: 30000;
       display: none;
-      overflow-y: auto;          /* Entire screen scrolls */
+      overflow-y: auto;          /* Enables smooth scrolling on the entire backdrop */
       -webkit-overflow-scrolling: touch;
-      padding: 40px 16px 80px 16px; /* Extra bottom padding so keyboards never cut off actions */
-      backdrop-filter: blur(5px);
+      padding: 30px 16px 100px 16px; /* Huge bottom padding to clear mobile keyboards */
+      backdrop-filter: blur(6px);
     }
 
     .modal-card {
@@ -254,7 +254,7 @@
       border-radius: 8px;
       padding: 20px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
-      margin: 0 auto;            /* Centers nicely with freedom to scroll vertically */
+      margin: 30px auto;         /* Centers with top/bottom breathing room */
       position: relative;
     }
 
@@ -285,7 +285,7 @@
       color: #fff;
       padding: 10px;
       font-family: inherit;
-      font-size: 16px; /* 16px prevents mobile auto-zoom on input focus */
+      font-size: 16px; /* Prevents mobile auto-zoom */
       border-radius: 4px;
       outline: none;
       width: 100%;
