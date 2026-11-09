@@ -322,4 +322,72 @@
   </header>
 
   <main>
+    <!-- Page Header & Share Story Trigger -->
     <div class="hero-section">
+      <div class="hero-text">
+        <h1>Scene Oral History & Voice Note Vault</h1>
+        <p>Listen to raw voice notes, gig memories, venue lore, and underground oral histories recorded directly by members of our local DIY community.</p>
+      </div>
+      <button class="btn-create-audio" onclick="openAudioModal()">+ Record / Share Story</button>
+    </div>
+
+    <!-- Search & Filters -->
+    <div class="filter-controls">
+      <input type="text" id="search-input" class="search-input" placeholder="Search voice notes, speakers, venues..." oninput="filterAudio()">
+      
+      <div class="category-buttons">
+        <button class="filter-btn active" onclick="setCategory('all', this)">All</button>
+        <button class="filter-btn" onclick="setCategory('gig', this)">Gig Memories</button>
+        <button class="filter-btn" onclick="setCategory('venue', this)">Venue Lore</button>
+        <button class="filter-btn" onclick="setCategory('history', this)">Oral History</button>
+      </div>
+    </div>
+
+    <!-- Audio Cards Grid -->
+    <div class="audio-grid" id="audio-grid"></div>
+  </main>
+
+  <!-- Submit Story Modal Form -->
+  <div id="audio-modal">
+    <div class="modal-card">
+      <h2>Share Your Story</h2>
+      <form id="audio-form">
+        <div class="form-group">
+          <label>Story / Note Title *</label>
+          <input type="text" id="audio-title" class="form-control" placeholder="Title..." required>
+        </div>
+        <div class="form-group">
+          <label>Your Name / Speaker *</label>
+          <input type="text" id="audio-speaker" class="form-control" placeholder="Name..." required>
+        </div>
+        <div class="form-group">
+          <label>Category *</label>
+          <select id="audio-category" class="form-control" required>
+            <option value="gig">Gig Memory</option>
+            <option value="venue">Venue Lore</option>
+            <option value="history">Oral History</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Brief Description *</label>
+          <textarea id="audio-desc" class="form-control" rows="3" placeholder="What is this note about?" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Audio File *</label>
+          <input type="file" id="audio-file" accept="audio/*" class="form-control" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn btn-cancel" onclick="closeAudioModal()">Cancel</button>
+          <button type="submit" class="modal-btn btn-submit" id="submit-btn">Submit Recording →</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBozbn-0iQNhjuAcmL-dYOUtbhIYTjccYk",
+      authDomain: "the-grapevine
