@@ -26,7 +26,7 @@
       z-index: 10000;
       background: rgba(13, 13, 13, 0.95);
       border-bottom: 2px solid #ff007f;
-      padding: 12px 24px;
+      padding: 12px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -42,14 +42,14 @@
     }
 
     .brand-logo {
-      height: 32px;
+      height: 28px;
       width: auto;
       filter: drop-shadow(0 0 6px #ff007f);
       flex-shrink: 0;
     }
 
     .brand-title {
-      max-height: 20px;
+      max-height: 18px;
       width: auto;
       object-fit: contain;
       filter: invert(1);
@@ -58,7 +58,7 @@
     .nav-links a {
       color: #aaa;
       text-decoration: none;
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
       transition: color 0.2s;
     }
@@ -70,8 +70,8 @@
 
     main {
       max-width: 950px;
-      margin: 100px auto 80px;
-      padding: 0 20px;
+      margin: 90px auto 80px;
+      padding: 0 14px;
       position: relative;
     }
 
@@ -104,11 +104,11 @@
       background: rgba(20, 20, 20, 0.95);
       border: 1px solid #ff007f;
       border-radius: 6px;
-      padding: 14px;
-      margin-bottom: 40px;
+      padding: 12px;
+      margin-bottom: 30px;
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
       box-shadow: 0 0 20px rgba(255, 0, 127, 0.25);
       position: relative;
@@ -119,22 +119,22 @@
       background: #0d0d0d;
       border: 1px solid #ff007f;
       color: #fff;
-      padding: 10px 14px;
+      padding: 8px 12px;
       font-family: inherit;
       font-size: 16px;
       border-radius: 4px;
       outline: none;
       flex: 1;
-      min-width: 240px;
+      min-width: 200px;
     }
 
     .btn-log {
       background: #ff007f;
       color: #000;
       border: none;
-      padding: 11px 18px;
+      padding: 10px 16px;
       font-family: inherit;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       text-transform: uppercase;
       border-radius: 4px;
@@ -150,20 +150,21 @@
       position: relative;
       display: flex;
       flex-direction: column;
-      gap: 35px;
+      gap: 25px;
       z-index: 5;
     }
 
-    /* Dynamic Alternating Staggered Feed Posts */
+    /* Enforced Alternating Staggered Feed Posts Across ALL Screen Sizes */
     .gig-post {
       background: #141414;
       border: 1px solid rgba(255, 0, 127, 0.5);
       border-radius: 6px;
-      padding: 20px;
-      width: 72%;
+      padding: 14px;
+      width: 68%; /* Compact width to allow clear alternating spacing on phones too */
       box-shadow: 0 0 15px rgba(255, 0, 127, 0.2);
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
       position: relative;
+      word-break: break-word;
     }
 
     .gig-post.align-left {
@@ -178,8 +179,7 @@
 
     .gig-post:hover {
       border-color: #ff007f;
-      box-shadow: 0 0 25px rgba(255, 0, 127, 0.6);
-      transform: scale(1.01);
+      box-shadow: 0 0 22px rgba(255, 0, 127, 0.6);
       z-index: 20;
     }
 
@@ -187,50 +187,50 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
     }
 
     .gig-title {
       color: #ff007f;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: bold;
       text-transform: uppercase;
     }
 
     .gig-date {
-      font-size: 11px;
+      font-size: 10px;
       color: #888;
       border: 1px solid #333;
-      padding: 2px 6px;
+      padding: 2px 5px;
       border-radius: 3px;
     }
 
     .gig-meta {
-      font-size: 11px;
+      font-size: 10px;
       color: #aaa;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 8px;
     }
 
     .gig-meta span span { color: #ff007f; }
 
     .gig-desc {
-      font-size: 12px;
+      font-size: 11px;
       color: #ccc;
-      line-height: 1.5;
-      margin-bottom: 10px;
+      line-height: 1.4;
+      margin-bottom: 8px;
     }
 
     .gig-thumb-wrapper {
       width: 100%;
-      height: 160px;
+      height: 130px;
       overflow: hidden;
       border-radius: 4px;
-      margin-top: 10px;
+      margin-top: 8px;
       background: #000;
       border: 1px solid #333;
     }
@@ -242,21 +242,21 @@
     }
 
     .gig-author {
-      font-size: 10px;
+      font-size: 9px;
       color: #777;
-      margin-top: 10px;
+      margin-top: 8px;
       border-top: 1px dashed #222;
-      padding-top: 8px;
+      padding-top: 6px;
       text-transform: uppercase;
     }
 
     .gig-author span { color: #ff007f; }
 
-    /* Interactive Comment Section */
+    /* Fully Screen-Fitting Interactive Comment Section */
     .comments-section {
-      margin-top: 14px;
+      margin-top: 10px;
       border-top: 1px solid rgba(255, 0, 127, 0.2);
-      padding-top: 10px;
+      padding-top: 8px;
     }
 
     .comments-toggle {
@@ -264,7 +264,7 @@
       border: none;
       color: #ff007f;
       font-family: inherit;
-      font-size: 11px;
+      font-size: 10px;
       cursor: pointer;
       text-transform: uppercase;
       font-weight: bold;
@@ -272,71 +272,77 @@
     }
 
     .comments-box {
-      margin-top: 10px;
+      margin-top: 8px;
       display: none;
     }
 
     .comment-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      margin-bottom: 10px;
-      max-height: 140px;
+      gap: 5px;
+      margin-bottom: 8px;
+      max-height: 120px;
       overflow-y: auto;
     }
 
     .comment-item {
       background: #0d0d0d;
       border-left: 2px solid #ff007f;
-      padding: 6px 10px;
-      font-size: 11px;
+      padding: 5px 8px;
+      font-size: 10px;
       border-radius: 0 4px 4px 0;
+      word-break: break-word;
     }
 
     .comment-author {
       color: #ff007f;
       font-weight: bold;
-      font-size: 10px;
     }
 
     .comment-form {
       display: flex;
-      gap: 6px;
+      flex-wrap: wrap;
+      gap: 5px;
     }
 
-    .comment-input {
+    .comment-input-name {
       background: #0d0d0d;
       border: 1px solid #333;
       color: #fff;
-      padding: 6px 8px;
+      padding: 5px 6px;
       font-family: inherit;
-      font-size: 16px; /* Prevent Mobile Auto Zoom */
+      font-size: 14px;
       border-radius: 4px;
-      flex: 1;
+      width: 90px;
       outline: none;
     }
 
-    .comment-input:focus { border-color: #ff007f; }
+    .comment-input-text {
+      background: #0d0d0d;
+      border: 1px solid #333;
+      color: #fff;
+      padding: 5px 6px;
+      font-family: inherit;
+      font-size: 14px;
+      border-radius: 4px;
+      flex: 1;
+      min-width: 120px;
+      outline: none;
+    }
+
+    .comment-input-name:focus, .comment-input-text:focus { border-color: #ff007f; }
 
     .btn-comment {
       background: #ff007f;
       color: #000;
       border: none;
-      padding: 6px 12px;
+      padding: 5px 10px;
       font-family: inherit;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: bold;
       text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
-    }
-
-    @media(max-width: 768px) {
-      .gig-post {
-        width: 100% !important;
-        align-self: center !important;
-        margin: 0 !important;
-      }
     }
 
     /* Modal Overlay Structure */
@@ -353,7 +359,7 @@
       display: none;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 20px 12px 160px 12px;
+      padding: 15px 10px 140px 10px;
       backdrop-filter: blur(6px);
     }
 
@@ -361,9 +367,9 @@
       background: #141414;
       border: 2px solid #ff007f;
       width: 100%;
-      max-width: 440px;
+      max-width: 420px;
       border-radius: 8px;
-      padding: 18px;
+      padding: 14px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
       margin: 0 auto;
       position: relative;
@@ -371,21 +377,21 @@
 
     .modal-card h2 {
       color: #ff007f;
-      font-size: 14px;
+      font-size: 13px;
       text-transform: uppercase;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       text-align: center;
     }
 
     .form-group {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
     }
 
     .form-group label {
-      font-size: 10px;
+      font-size: 9px;
       color: #aaa;
       text-transform: uppercase;
       cursor: pointer;
@@ -395,7 +401,7 @@
       background: #0d0d0d;
       border: 1px solid #333;
       color: #fff;
-      padding: 8px;
+      padding: 6px;
       font-family: inherit;
       font-size: 16px;
       border-radius: 4px;
@@ -406,20 +412,20 @@
 
     .form-control:focus {
       border-color: #ff007f;
-      box-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
+      box-shadow: 0 0 6px rgba(255, 0, 127, 0.4);
     }
 
     .modal-actions {
       display: flex;
-      gap: 10px;
-      margin-top: 14px;
+      gap: 8px;
+      margin-top: 12px;
     }
 
     .modal-btn {
       flex: 1;
-      padding: 10px;
+      padding: 8px;
       border-radius: 4px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: bold;
       text-transform: uppercase;
       cursor: pointer;
@@ -429,19 +435,19 @@
     .btn-submit { background: #ff007f; color: #000; border: none; }
     .btn-cancel { background: transparent; color: #aaa; border: 1px solid #444; }
 
-    /* Interactive Manual Crop Control */
+    /* Fully Functional Manual Image Cropper */
     #manual-crop-container {
       display: none;
       margin-top: 6px;
       background: #0d0d0d;
       border: 1px dashed #ff007f;
-      padding: 8px;
+      padding: 6px;
       border-radius: 4px;
     }
 
     .crop-preview-box {
       width: 100%;
-      height: 110px;
+      height: 90px;
       overflow: hidden;
       position: relative;
       border-radius: 3px;
@@ -451,9 +457,9 @@
 
     .crop-preview-img {
       width: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
   </style>
 </head>
@@ -463,7 +469,7 @@
   <header>
     <a href="https://mollythirza.github.io/TheGrapevineHub/" class="brand-container">
       <img src="grape-logo.png" alt="Grapevine Logo" class="brand-logo" onerror="this.style.display='none'">
-      <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:13px;\'>THE GRAPEVINE</h1>'">
+      <img src="grapevine-title.png" alt="The Grapevine" class="brand-title" onerror="this.onerror=null; this.src=''; this.outerHTML='<h1 style=\'color:#ff007f;font-size:12px;\'>THE GRAPEVINE</h1>'">
     </a>
     <div class="nav-links">
       <a href="https://mollythirza.github.io/TheGrapevineHub/">← Back to Hub</a>
@@ -471,9 +477,9 @@
   </header>
 
   <main>
-    <div style="text-align: center; margin-bottom: 25px;">
-      <h1 style="color: #ff007f; font-size: 22px; text-transform: uppercase; margin-bottom: 6px;">Past Gig Archive & Timeline</h1>
-      <p style="color: #aaa; font-size: 12px;">Chronological timeline. Glowing lines connect shows sharing bands, venues, or genres.</p>
+    <div style="text-align: center; margin-bottom: 20px;">
+      <h1 style="color: #ff007f; font-size: 20px; text-transform: uppercase; margin-bottom: 4px;">Past Gig Archive & Timeline</h1>
+      <p style="color: #aaa; font-size: 11px;">Chronological timeline. Glowing lines connect shows sharing bands, venues, or genres.</p>
     </div>
 
     <!-- Filter & Search Bar -->
@@ -531,10 +537,10 @@
           <input type="file" id="gig-image" accept="image/*" class="form-control" onchange="window.handleImagePreview(this)">
         </div>
         
-        <!-- Interactive Manual Crop Slider -->
+        <!-- Functional Manual Crop Slider -->
         <div id="manual-crop-container">
-          <label style="font-size:9px; color:#ff007f; display:block; margin-bottom:4px;">Drag Slider to Manually Crop Vertical Focus:</label>
-          <input type="range" id="crop-slider" min="0" max="100" value="50" style="width:100%; margin-bottom:6px;" oninput="window.updateCropOffset(this.value)">
+          <label style="font-size:9px; color:#ff007f; display:block; margin-bottom:3px;">Drag Slider to Manually Crop Vertical Focus:</label>
+          <input type="range" id="crop-slider" min="0" max="100" value="50" style="width:100%; margin-bottom:4px;" oninput="window.updateCropOffset(this.value)">
           <div class="crop-preview-box">
             <img id="manual-crop-img" class="crop-preview-img" src="" alt="Crop Preview">
           </div>
@@ -602,7 +608,7 @@
       });
 
       if (filtered.length === 0) {
-        feed.innerHTML = `<p style="text-align:center; color:#666; padding: 40px; font-size: 12px;">No gig memories found matching your search.</p>`;
+        feed.innerHTML = `<p style="text-align:center; color:#666; padding: 30px; font-size: 11px;">No gig memories found matching your search.</p>`;
         document.getElementById('connection-layer').innerHTML = '';
         return;
       }
@@ -621,7 +627,6 @@
 
         let songHtml = item.song ? `<span>Highlight Track: <span>${item.song}</span></span>` : '';
 
-        // Comments HTML render
         const comments = item.comments ? Object.values(item.comments) : [];
         let commentsListHtml = comments.map(c => `
           <div class="comment-item">
@@ -649,11 +654,11 @@
             <button class="comments-toggle" onclick="window.toggleComments('${item.id}')">💬 Comments (${comments.length})</button>
             <div class="comments-box" id="comments-box-${item.id}">
               <div class="comment-list" id="comment-list-${item.id}">
-                ${commentsListHtml || '<p style="font-size:10px; color:#555;">No comments yet. Start the conversation!</p>'}
+                ${commentsListHtml || '<p style="font-size:9px; color:#555;">No comments yet. Start the conversation!</p>'}
               </div>
               <div class="comment-form">
-                <input type="text" id="comment-author-${item.id}" class="comment-input" style="width:80px; flex:none;" placeholder="Your Name" />
-                <input type="text" id="comment-text-${item.id}" class="comment-input" placeholder="Add a comment or artist suggestion..." />
+                <input type="text" id="comment-author-${item.id}" class="comment-input-name" placeholder="Your Name" />
+                <input type="text" id="comment-text-${item.id}" class="comment-input-text" placeholder="Add comment / suggest artist..." />
                 <button class="btn-comment" onclick="window.addComment('${item.id}')">Post</button>
               </div>
             </div>
@@ -665,7 +670,6 @@
       setTimeout(drawConnections, 100);
     };
 
-    // Toggle comments dropdown
     window.toggleComments = (id) => {
       const box = document.getElementById(`comments-box-${id}`);
       if (box) {
@@ -673,7 +677,6 @@
       }
     };
 
-    // Add comment to Firebase
     window.addComment = async (gigId) => {
       const authorInput = document.getElementById(`comment-author-${gigId}`);
       const textInput = document.getElementById(`comment-text-${gigId}`);
@@ -693,7 +696,6 @@
       textInput.value = '';
     };
 
-    // Draw glowing pink SVG connection lines
     function drawConnections() {
       const svgLayer = document.getElementById('connection-layer');
       svgLayer.innerHTML = '';
@@ -744,7 +746,7 @@
 
     window.addEventListener('resize', () => { setTimeout(drawConnections, 200); });
 
-    // Image Upload & Crop Slider Controls
+    // Working Manual Image Cropper Functionality
     window.handleImagePreview = function(input) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -753,6 +755,7 @@
           const img = document.getElementById('manual-crop-img');
           img.src = selectedImageBase64;
           document.getElementById('manual-crop-container').style.display = 'block';
+          document.getElementById('crop-slider').value = 50;
           window.updateCropOffset(50);
         };
         reader.readAsDataURL(input.files[0]);
