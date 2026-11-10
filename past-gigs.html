@@ -69,13 +69,13 @@
     }
 
     main {
-      max-width: 900px;
+      max-width: 950px;
       margin: 100px auto 80px;
       padding: 0 20px;
       position: relative;
     }
 
-    /* Background Connection Lines SVG Layer */
+    /* SVG Connection Lines Layer */
     #connection-layer {
       position: absolute;
       top: 0;
@@ -99,7 +99,7 @@
       100% { opacity: 0.8; filter: drop-shadow(0 0 8px #ff007f); }
     }
 
-    /* Filter / Search Toolbar */
+    /* Filter Toolbar */
     .filter-toolbar {
       background: rgba(20, 20, 20, 0.95);
       border: 1px solid #ff007f;
@@ -143,11 +143,9 @@
       white-space: nowrap;
     }
 
-    .btn-log:hover {
-      background: #ff3399;
-    }
+    .btn-log:hover { background: #ff3399; }
 
-    /* Feed Container */
+    /* Timeline Feed */
     .archive-feed {
       position: relative;
       display: flex;
@@ -156,16 +154,15 @@
       z-index: 5;
     }
 
-    /* Staggered Left / Right Posts */
+    /* Dynamic Alternating Staggered Feed Posts */
     .gig-post {
       background: #141414;
       border: 1px solid rgba(255, 0, 127, 0.5);
       border-radius: 6px;
       padding: 20px;
-      width: 75%;
+      width: 72%;
       box-shadow: 0 0 15px rgba(255, 0, 127, 0.2);
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
-      cursor: pointer;
       position: relative;
     }
 
@@ -219,22 +216,7 @@
       gap: 12px;
     }
 
-    .gig-meta span span {
-      color: #ff007f;
-    }
-
-    .gig-author {
-      font-size: 10px;
-      color: #777;
-      margin-top: 10px;
-      border-top: 1px dashed #222;
-      padding-top: 8px;
-      text-transform: uppercase;
-    }
-
-    .gig-author span {
-      color: #ff007f;
-    }
+    .gig-meta span span { color: #ff007f; }
 
     .gig-desc {
       font-size: 12px;
@@ -257,7 +239,96 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center;
+    }
+
+    .gig-author {
+      font-size: 10px;
+      color: #777;
+      margin-top: 10px;
+      border-top: 1px dashed #222;
+      padding-top: 8px;
+      text-transform: uppercase;
+    }
+
+    .gig-author span { color: #ff007f; }
+
+    /* Interactive Comment Section */
+    .comments-section {
+      margin-top: 14px;
+      border-top: 1px solid rgba(255, 0, 127, 0.2);
+      padding-top: 10px;
+    }
+
+    .comments-toggle {
+      background: none;
+      border: none;
+      color: #ff007f;
+      font-family: inherit;
+      font-size: 11px;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-weight: bold;
+      padding: 0;
+    }
+
+    .comments-box {
+      margin-top: 10px;
+      display: none;
+    }
+
+    .comment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+
+    .comment-item {
+      background: #0d0d0d;
+      border-left: 2px solid #ff007f;
+      padding: 6px 10px;
+      font-size: 11px;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .comment-author {
+      color: #ff007f;
+      font-weight: bold;
+      font-size: 10px;
+    }
+
+    .comment-form {
+      display: flex;
+      gap: 6px;
+    }
+
+    .comment-input {
+      background: #0d0d0d;
+      border: 1px solid #333;
+      color: #fff;
+      padding: 6px 8px;
+      font-family: inherit;
+      font-size: 16px; /* Prevent Mobile Auto Zoom */
+      border-radius: 4px;
+      flex: 1;
+      outline: none;
+    }
+
+    .comment-input:focus { border-color: #ff007f; }
+
+    .btn-comment {
+      background: #ff007f;
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
     }
 
     @media(max-width: 768px) {
@@ -268,7 +339,7 @@
       }
     }
 
-    /* 📱 Touch-Optimized Non-Glitchy Modal Overlay 📱 */
+    /* Modal Overlay Structure */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -311,7 +382,6 @@
       display: flex;
       flex-direction: column;
       gap: 3px;
-      position: relative;
     }
 
     .form-group label {
@@ -319,7 +389,6 @@
       color: #aaa;
       text-transform: uppercase;
       cursor: pointer;
-      display: block;
     }
 
     .form-control {
@@ -328,18 +397,11 @@
       color: #fff;
       padding: 8px;
       font-family: inherit;
-      font-size: 16px; /* Prevents iOS auto-zoom */
+      font-size: 16px;
       border-radius: 4px;
       outline: none;
       width: 100%;
       touch-action: manipulation;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
-    textarea.form-control {
-      resize: vertical;
-      min-height: 60px;
     }
 
     .form-control:focus {
@@ -362,21 +424,36 @@
       text-transform: uppercase;
       cursor: pointer;
       font-family: inherit;
-      touch-action: manipulation;
     }
 
     .btn-submit { background: #ff007f; color: #000; border: none; }
     .btn-cancel { background: transparent; color: #aaa; border: 1px solid #444; }
 
-    /* Image Cropper Preview Area */
-    #crop-container {
+    /* Interactive Manual Crop Control */
+    #manual-crop-container {
       display: none;
       margin-top: 6px;
-      text-align: center;
       background: #0d0d0d;
       border: 1px dashed #ff007f;
-      padding: 6px;
+      padding: 8px;
       border-radius: 4px;
+    }
+
+    .crop-preview-box {
+      width: 100%;
+      height: 110px;
+      overflow: hidden;
+      position: relative;
+      border-radius: 3px;
+      border: 1px solid #333;
+      background: #000;
+    }
+
+    .crop-preview-img {
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
   </style>
 </head>
@@ -405,7 +482,7 @@
       <button class="btn-log" onclick="window.openModal()">+ Log Past Gig</button>
     </div>
 
-    <!-- Timeline Feed with SVG Connection Lines -->
+    <!-- Timeline Feed -->
     <div style="position: relative;">
       <svg id="connection-layer"></svg>
       <div class="archive-feed" id="archive-feed"></div>
@@ -454,16 +531,12 @@
           <input type="file" id="gig-image" accept="image/*" class="form-control" onchange="window.handleImagePreview(this)">
         </div>
         
-        <!-- Image Crop Preview -->
-        <div id="crop-container">
-          <span style="font-size:9px; color:#ff007f; display:block; margin-bottom:3px;">Crop Position / Focus:</span>
-          <select id="crop-fit" class="form-control" style="font-size:11px; padding:3px;">
-            <option value="center">Center Crop</option>
-            <option value="top">Top Crop</option>
-            <option value="bottom">Bottom Crop</option>
-          </select>
-          <div style="margin-top:5px; max-height: 70px; overflow:hidden; border-radius:3px;">
-            <img id="preview-crop-img" style="width:100%; height:70px; object-fit:cover;" src="" alt="Crop Preview">
+        <!-- Interactive Manual Crop Slider -->
+        <div id="manual-crop-container">
+          <label style="font-size:9px; color:#ff007f; display:block; margin-bottom:4px;">Drag Slider to Manually Crop Vertical Focus:</label>
+          <input type="range" id="crop-slider" min="0" max="100" value="50" style="width:100%; margin-bottom:6px;" oninput="window.updateCropOffset(this.value)">
+          <div class="crop-preview-box">
+            <img id="manual-crop-img" class="crop-preview-img" src="" alt="Crop Preview">
           </div>
         </div>
 
@@ -475,7 +548,7 @@
     </div>
   </div>
 
-  <!-- Firebase Script Integration -->
+  <!-- Firebase Integration Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -497,6 +570,7 @@
 
     let allGigs = [];
     let selectedImageBase64 = null;
+    let manualCropOffset = 50;
 
     onValue(gigsRef, (snapshot) => {
       const data = snapshot.val();
@@ -539,13 +613,21 @@
         post.className = `gig-post ${alignmentClass}`;
         post.setAttribute('data-id', item.id);
 
-        const fitPosition = item.cropFit || 'center';
+        const cropPos = item.cropOffset !== undefined ? `${item.cropOffset}%` : '50%';
         let imgHtml = item.imageSrc ? `
           <div class="gig-thumb-wrapper">
-            <img src="${item.imageSrc}" class="gig-thumb" style="object-position: ${fitPosition};" alt="Gig Stub">
+            <img src="${item.imageSrc}" class="gig-thumb" style="object-position: 50% ${cropPos};" alt="Gig Stub">
           </div>` : '';
 
         let songHtml = item.song ? `<span>Highlight Track: <span>${item.song}</span></span>` : '';
+
+        // Comments HTML render
+        const comments = item.comments ? Object.values(item.comments) : [];
+        let commentsListHtml = comments.map(c => `
+          <div class="comment-item">
+            <span class="comment-author">${c.author}:</span> ${c.text}
+          </div>
+        `).join('');
 
         post.innerHTML = `
           <div class="gig-header">
@@ -561,6 +643,21 @@
           <p class="gig-desc">${item.desc}</p>
           ${imgHtml}
           <div class="gig-author">Logged by: <span>${item.author || 'Anonymous'}</span></div>
+
+          <!-- Interactive Comments Section -->
+          <div class="comments-section">
+            <button class="comments-toggle" onclick="window.toggleComments('${item.id}')">💬 Comments (${comments.length})</button>
+            <div class="comments-box" id="comments-box-${item.id}">
+              <div class="comment-list" id="comment-list-${item.id}">
+                ${commentsListHtml || '<p style="font-size:10px; color:#555;">No comments yet. Start the conversation!</p>'}
+              </div>
+              <div class="comment-form">
+                <input type="text" id="comment-author-${item.id}" class="comment-input" style="width:80px; flex:none;" placeholder="Your Name" />
+                <input type="text" id="comment-text-${item.id}" class="comment-input" placeholder="Add a comment or artist suggestion..." />
+                <button class="btn-comment" onclick="window.addComment('${item.id}')">Post</button>
+              </div>
+            </div>
+          </div>
         `;
         feed.appendChild(post);
       });
@@ -568,6 +665,35 @@
       setTimeout(drawConnections, 100);
     };
 
+    // Toggle comments dropdown
+    window.toggleComments = (id) => {
+      const box = document.getElementById(`comments-box-${id}`);
+      if (box) {
+        box.style.display = box.style.display === 'block' ? 'none' : 'block';
+      }
+    };
+
+    // Add comment to Firebase
+    window.addComment = async (gigId) => {
+      const authorInput = document.getElementById(`comment-author-${gigId}`);
+      const textInput = document.getElementById(`comment-text-${gigId}`);
+      
+      const author = authorInput.value.trim() || 'Anonymous';
+      const text = textInput.value.trim();
+
+      if (!text) return;
+
+      const gigCommentsRef = ref(db, `past_gigs/${gigId}/comments`);
+      await push(gigCommentsRef, {
+        author,
+        text,
+        timestamp: Date.now()
+      });
+
+      textInput.value = '';
+    };
+
+    // Draw glowing pink SVG connection lines
     function drawConnections() {
       const svgLayer = document.getElementById('connection-layer');
       svgLayer.innerHTML = '';
@@ -618,21 +744,28 @@
 
     window.addEventListener('resize', () => { setTimeout(drawConnections, 200); });
 
+    // Image Upload & Crop Slider Controls
     window.handleImagePreview = function(input) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
           selectedImageBase64 = e.target.result;
-          document.getElementById('preview-crop-img').src = selectedImageBase64;
-          document.getElementById('crop-container').style.display = 'block';
+          const img = document.getElementById('manual-crop-img');
+          img.src = selectedImageBase64;
+          document.getElementById('manual-crop-container').style.display = 'block';
+          window.updateCropOffset(50);
         };
         reader.readAsDataURL(input.files[0]);
       }
     };
 
-    document.getElementById('crop-fit').addEventListener('change', (e) => {
-      document.getElementById('preview-crop-img').style.objectPosition = e.target.value;
-    });
+    window.updateCropOffset = function(val) {
+      manualCropOffset = val;
+      const img = document.getElementById('manual-crop-img');
+      if (img) {
+        img.style.objectPosition = `50% ${val}%`;
+      }
+    };
 
     document.getElementById('gig-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -646,7 +779,6 @@
       const date = document.getElementById('gig-date').value;
       const song = document.getElementById('gig-song').value.trim();
       const desc = document.getElementById('gig-desc').value.trim();
-      const cropFit = document.getElementById('crop-fit').value;
 
       submitBtn.innerText = "Saving...";
       submitBtn.disabled = true;
@@ -655,7 +787,7 @@
         await push(gigsRef, {
           title, author, bands, venue, genre, date, song, desc,
           imageSrc: selectedImageBase64 || null,
-          cropFit,
+          cropOffset: manualCropOffset,
           timestamp: Date.now()
         });
         window.closeModal();
@@ -676,7 +808,7 @@
       const modal = document.getElementById('gig-modal');
       modal.style.display = 'none';
       document.getElementById('gig-form').reset();
-      document.getElementById('crop-container').style.display = 'none';
+      document.getElementById('manual-crop-container').style.display = 'none';
       selectedImageBase64 = null;
     };
   </script>
