@@ -246,7 +246,7 @@
       color: #ff007f;
     }
 
-    /* Loaded Tape Inside Deck */
+    /* Loaded Tape Inside Deck (Reverted to original horizontal title layout style) */
     .loaded-cassette {
       width: 100%;
       max-width: 320px;
@@ -267,20 +267,26 @@
       margin-bottom: 10px;
       border-top: 4px solid #ff007f;
       text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
     }
 
     .loaded-label strong {
-      display: block;
-      font-size: 13px;
+      font-size: 12px;
       text-transform: uppercase;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      flex: 1;
     }
 
     .loaded-label small {
       font-size: 10px;
       color: #444;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .deck-window {
@@ -1080,7 +1086,7 @@
       dropZone.classList.add('loaded');
 
       document.getElementById('deck-tape-title').innerText = tape.title;
-      document.getElementById('deck-tape-speaker').innerText = `Recounted by ${tape.speaker}`;
+      document.getElementById('deck-tape-speaker').innerText = `By ${tape.speaker}`;
 
       // Update info readout
       document.getElementById('np-badge').innerText = tape.badge || 'ORAL HISTORY';
