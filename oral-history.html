@@ -365,12 +365,14 @@
       display: block;
     }
 
+    /* Updated description layout to avoid cutting off on mobile */
     .np-desc {
-      font-size: 12px;
-      color: #bbb;
-      line-height: 1.4;
-      max-height: 54px;
-      overflow-y: auto;
+      font-size: 13px;
+      color: #ccc;
+      line-height: 1.5;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      margin-bottom: 6px;
     }
 
     .transport-bar {
@@ -572,9 +574,9 @@
     .cassette-label .desc {
       font-size: 11px;
       color: #222;
-      line-height: 1.35;
+      line-height: 1.4;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -633,6 +635,37 @@
     .cassette-tape:hover .cassette-bottom {
       color: #ff007f;
       border-color: #ff007f;
+    }
+
+    /* Mobile specific adjustments for clear text readability */
+    @media (max-width: 600px) {
+      main {
+        padding: 0 14px;
+        margin-top: 84px;
+      }
+      .tape-deck-wrapper {
+        padding: 14px;
+      }
+      .tape-slot {
+        min-height: 140px;
+        padding: 12px;
+      }
+      .deck-controls-panel {
+        padding: 14px;
+      }
+      .np-title {
+        font-size: 15px;
+      }
+      .np-desc {
+        font-size: 13px;
+        max-height: none;
+        overflow-y: visible;
+      }
+      .cassette-label .desc {
+        display: block;
+        -webkit-line-clamp: unset;
+        overflow: visible;
+      }
     }
 
     /* 📱 FULLY SCROLLABLE MOBILE MODAL FIX 📱 */
