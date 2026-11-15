@@ -37,6 +37,7 @@
       align-items: center;
       gap: 10px;
       text-decoration: none;
+      min-width: 0;
     }
 
     .brand-logo {
@@ -59,6 +60,7 @@
       font-size: 12px;
       text-transform: uppercase;
       transition: color 0.2s;
+      white-space: nowrap;
     }
 
     .nav-links a:hover {
@@ -88,6 +90,8 @@
 
     .hero-text {
       max-width: 760px;
+      min-width: 0;
+      flex: 1;
     }
 
     .hero-text h1 {
@@ -123,6 +127,7 @@
       cursor: pointer;
       box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
       transition: transform 0.15s, box-shadow 0.15s;
+      flex-shrink: 0;
     }
 
     .btn-create-audio:hover {
@@ -138,6 +143,7 @@
       padding: 20px;
       margin-bottom: 30px;
       box-shadow: 0 0 30px rgba(255, 0, 127, 0.25), inset 0 0 20px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
     }
 
     .deck-header {
@@ -151,6 +157,8 @@
       color: #888;
       text-transform: uppercase;
       letter-spacing: 1px;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
     .deck-led {
@@ -206,6 +214,8 @@
       text-align: center;
       transition: all 0.2s ease;
       position: relative;
+      overflow: hidden;
+      width: 100%;
     }
 
     .tape-slot.drag-over {
@@ -239,13 +249,14 @@
     /* Loaded Tape Inside Deck */
     .loaded-cassette {
       width: 100%;
-      max-width: 340px;
+      max-width: 320px;
       background: #1c1c1c;
       border: 2px solid #ff007f;
       border-radius: 8px;
       padding: 12px;
       box-shadow: 0 0 18px rgba(255, 0, 127, 0.3);
       position: relative;
+      margin: 0 auto;
     }
 
     .loaded-label {
@@ -334,10 +345,14 @@
       border: 1px solid #282828;
       border-radius: 6px;
       padding: 16px;
+      min-width: 0;
     }
 
     .now-playing-info {
       margin-bottom: 14px;
+      min-width: 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .np-badge {
@@ -356,6 +371,8 @@
       color: #fff;
       text-transform: uppercase;
       margin-bottom: 4px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .np-speaker {
@@ -363,9 +380,9 @@
       color: #888;
       margin-bottom: 8px;
       display: block;
+      word-wrap: break-word;
     }
 
-    /* Updated description layout to avoid cutting off on mobile */
     .np-desc {
       font-size: 13px;
       color: #ccc;
@@ -468,7 +485,7 @@
     /* 📼 CASSETTE TAPE RACK / GRID 📼 */
     .cassette-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 22px;
     }
 
@@ -485,6 +502,7 @@
       flex-direction: column;
       justify-content: space-between;
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+      min-width: 0;
     }
 
     .cassette-tape:hover {
@@ -530,6 +548,7 @@
       margin: 4px 4px 12px 4px;
       border-top: 6px solid #ff007f;
       position: relative;
+      min-width: 0;
     }
 
     .label-top-row {
@@ -561,6 +580,8 @@
       line-height: 1.25;
       border-bottom: 1px dashed #bbb;
       padding-bottom: 3px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .cassette-label .speaker {
@@ -569,6 +590,7 @@
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
+      word-wrap: break-word;
     }
 
     .cassette-label .desc {
@@ -579,6 +601,8 @@
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     /* Mini Tape Cutout Window on Card */
@@ -637,21 +661,21 @@
       border-color: #ff007f;
     }
 
-    /* Mobile specific adjustments for clear text readability */
+    /* Mobile specific adjustments for clear text readability & bounds containment */
     @media (max-width: 600px) {
       main {
         padding: 0 14px;
         margin-top: 84px;
       }
       .tape-deck-wrapper {
-        padding: 14px;
+        padding: 12px;
       }
       .tape-slot {
         min-height: 140px;
-        padding: 12px;
+        padding: 10px;
       }
       .deck-controls-panel {
-        padding: 14px;
+        padding: 12px;
       }
       .np-title {
         font-size: 15px;
