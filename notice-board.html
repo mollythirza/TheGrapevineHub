@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
   <title>The Grapevine — Notice Board & Flyer Wall</title>
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -16,6 +15,24 @@
       color: #fff;
       font-family: 'Courier New', Courier, monospace;
       overflow: hidden;
+      touch-action: none;
+    }
+
+    /* Color-Matched Grunge Brushstroke Background Layer */
+    .wall-bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-color: #0d0d0d;
+      background-image:
+        linear-gradient(to bottom, rgba(13, 13, 13, 0.45) 0%, rgba(13, 13, 13, 0.15) 60%, rgba(13, 13, 13, 0.55) 100%),
+        url('image_d3b138.png');
+      background-size: cover;
+      background-position: bottom center;
+      background-repeat: no-repeat;
+      /* Shift magenta brushstroke hue to match #ff007f neon pink */
+      filter: hue-rotate(14deg) saturate(1.25) contrast(1.08);
+      pointer-events: none;
     }
 
     header {
@@ -24,14 +41,14 @@
       left: 0;
       width: 100%;
       z-index: 10000;
-      background: rgba(13, 13, 13, 0.95);
+      background: rgba(13, 13, 13, 0.94);
       border-bottom: 2px solid #ff007f;
       padding: 10px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       backdrop-filter: blur(8px);
-      box-shadow: 0 0 20px rgba(255, 0, 127, 0.3);
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.35);
     }
 
     .brand-container {
@@ -68,24 +85,25 @@
       text-shadow: 0 0 8px #ff007f;
     }
 
-    /* Control Bar */
+    /* Filter & Date Sort Bar */
     .filter-bar {
       position: fixed;
-      top: 60px;
+      top: 58px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 1000;
-      background: rgba(20, 20, 20, 0.95);
+      z-index: 9000;
+      background: rgba(18, 18, 18, 0.94);
       border: 1px solid #ff007f;
       border-radius: 6px;
       padding: 6px 12px;
       display: flex;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+      box-shadow: 0 0 18px rgba(255, 0, 127, 0.4);
       backdrop-filter: blur(6px);
-      max-width: 92vw;
+      max-width: 94vw;
       overflow-x: auto;
+      touch-action: pan-x;
     }
 
     .page-tag {
@@ -103,12 +121,19 @@
       background: #0d0d0d;
       color: #aaa;
       border: 1px solid #333;
-      padding: 3px 8px;
+      padding: 4px 9px;
       font-size: 10px;
+      font-family: inherit;
       text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
       white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .filter-chip:hover {
+      border-color: #ff007f;
+      color: #fff;
     }
 
     .filter-chip.active {
@@ -118,51 +143,117 @@
       border-color: #ff007f;
     }
 
-    /* Flyer Canvas */
-    #wall-canvas {
-      position: absolute;
-      top: 50px;
+    .filter-divider {
+      width: 1px;
+      height: 16px;
+      background: rgba(255, 0, 127, 0.35);
+      flex-shrink: 0;
+    }
+
+    /* Interactive Pinch-Zoom & Pan Viewport */
+    #wall-viewport {
+      position: fixed;
+      top: 0;
       left: 0;
       width: 100vw;
-      height: calc(100vh - 50px);
-      background: #0d0d0d;
-      background-image: radial-gradient(rgba(255, 0, 127, 0.08) 1px, transparent 1px);
-      background-size: 30px 30px;
-      overflow: auto;
+      height: 100vh;
+      overflow: hidden;
+      cursor: grab;
+      z-index: 10;
+      touch-action: none;
+    }
+
+    #wall-viewport:active {
+      cursor: grabbing;
+    }
+
+    #wall-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      min-height: 100%;
+      transform-origin: 0 0;
+      will-change: transform;
     }
 
     #flyers-container {
       position: relative;
       width: 100%;
-      min-height: 100%;
+      height: 100%;
     }
 
+    /* Pulsing Neon Pink Border Animation */
+    @keyframes borderPulse {
+      0%, 100% {
+        border-color: rgba(255, 0, 127, 0.65);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85), 0 0 10px rgba(255, 0, 127, 0.35);
+      }
+      50% {
+        border-color: #ff007f;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.9), 0 0 22px rgba(255, 0, 127, 0.8), inset 0 0 8px rgba(255, 0, 127, 0.25);
+      }
+    }
+
+    /* Notice Board Flyer Card */
     .flyer-post {
       position: absolute;
-      width: 180px;
-      background: #141414;
-      border: 1px solid rgba(255, 0, 127, 0.6);
-      border-radius: 4px;
-      padding: 8px;
+      background: rgba(18, 18, 18, 0.96);
+      border: 2px solid #ff007f;
+      border-radius: 3px;
+      padding: 14px 10px 10px;
       cursor: pointer;
-      box-shadow: 0 0 12px rgba(255, 0, 127, 0.3);
-      transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
-      z-index: 10;
+      animation: borderPulse 2.8s infinite ease-in-out;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      user-select: none;
     }
 
     .flyer-post:hover {
-      border-color: #ff007f;
-      box-shadow: 0 0 22px rgba(255, 0, 127, 0.7);
-      transform: scale(1.03);
-      z-index: 50;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.95), 0 0 30px #ff007f !important;
+      z-index: 500 !important;
+    }
+
+    /* Translucent Pink Masking Tape Strips on Edges */
+    .tape-strip {
+      position: absolute;
+      width: 44px;
+      height: 13px;
+      background: rgba(255, 0, 127, 0.48);
+      border-left: 1px dashed rgba(255, 180, 220, 0.6);
+      border-right: 1px dashed rgba(255, 180, 220, 0.6);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+      pointer-events: none;
+      z-index: 4;
+      backdrop-filter: blur(1px);
+    }
+
+    .tape-tl {
+      top: -6px;
+      left: -10px;
+      transform: rotate(-28deg);
+    }
+
+    .tape-tr {
+      top: -6px;
+      right: -10px;
+      transform: rotate(26deg);
+    }
+
+    .tape-top-center {
+      top: -7px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-2deg);
+      width: 52px;
     }
 
     .flyer-img {
       width: 100%;
-      height: 120px;
+      height: 115px;
       object-fit: cover;
       border-radius: 2px;
-      margin-bottom: 6px;
+      margin-bottom: 7px;
+      border: 1px solid #2a2a2a;
+      display: block;
     }
 
     .flyer-title {
@@ -172,80 +263,167 @@
       text-transform: uppercase;
       text-align: center;
       word-break: break-word;
+      line-height: 1.25;
+    }
+
+    .flyer-snippet {
+      font-size: 10px;
+      color: #bbb;
+      text-align: center;
+      margin-top: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.3;
     }
 
     .flyer-date-tag {
       font-size: 9px;
-      color: #777;
+      color: #888;
       text-align: center;
-      margin-top: 3px;
+      margin-top: 5px;
+      border-top: 1px dashed #2a2a2a;
+      padding-top: 4px;
     }
 
-    /* Pin Action Bar */
+    /* Bottom Controls: Zoom/Reset + Pin Button */
     .wall-toolbar {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
+      bottom: 18px;
+      left: 18px;
+      right: 18px;
+      z-index: 9500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .zoom-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(13, 13, 13, 0.92);
+      border: 1px solid #ff007f;
+      padding: 5px 9px;
+      border-radius: 30px;
+      box-shadow: 0 0 18px rgba(255, 0, 127, 0.35);
+      backdrop-filter: blur(6px);
+      pointer-events: auto;
+    }
+
+    .zoom-btn {
+      background: #1a1a1a;
+      color: #ff007f;
+      border: 1px solid rgba(255, 0, 127, 0.6);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .zoom-btn:hover, .zoom-btn:active {
+      background: #ff007f;
+      color: #000;
+    }
+
+    .zoom-readout {
+      font-size: 10px;
+      color: #aaa;
+      min-width: 36px;
+      text-align: center;
     }
 
     .btn-pin {
       background: #ff007f;
       color: #000;
       border: none;
-      padding: 10px 18px;
+      padding: 11px 18px;
       font-family: inherit;
       font-size: 11px;
       font-weight: bold;
       text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
-      box-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
-      transition: background 0.2s;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.55);
+      transition: background 0.2s, transform 0.15s;
+      pointer-events: auto;
     }
 
     .btn-pin:hover {
       background: #ff3399;
+      transform: translateY(-1px);
     }
 
-    /* 📱 Fully Scrollable & Compact Mobile Modals 📱 */
+    /* 📱 Fully Scrollable Mobile Modals 📱 */
     .modal-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.88);
+      height: 100dvh;
+      background: rgba(0, 0, 0, 0.9);
       z-index: 40000;
       display: none;
-      justify-content: center;
-      align-items: center;
-      padding: 12px;
-      backdrop-filter: blur(5px);
+      padding: 20px 14px 80px;
+      backdrop-filter: blur(6px);
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      overscroll-behavior: contain;
     }
 
     .modal-card {
       background: #141414;
       border: 2px solid #ff007f;
       width: 100%;
-      max-width: 440px;
-      max-height: 82vh;          /* Strictly contained so it never exceeds phone height */
-      overflow-y: auto;          /* Internal vertical scroll enabled */
+      max-width: 450px;
       border-radius: 8px;
-      padding: 16px;
-      box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
+      padding: 22px 18px 18px;
+      box-shadow: 0 0 35px rgba(255, 0, 127, 0.55);
       position: relative;
       margin: auto;
+      touch-action: pan-y;
+    }
+
+    .btn-modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: transparent;
+      color: #ff007f;
+      border: 1px solid #ff007f;
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-modal-close:hover {
+      background: #ff007f;
+      color: #000;
     }
 
     .modal-card h2 {
       color: #ff007f;
-      font-size: 15px;
+      font-size: 16px;
       text-transform: uppercase;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       text-align: center;
+      padding: 0 28px;
     }
 
     .form-group {
@@ -265,12 +443,13 @@
       background: #0d0d0d;
       border: 1px solid #333;
       color: #fff;
-      padding: 7px;
+      padding: 8px;
       font-family: inherit;
-      font-size: 16px; /* Prevents mobile browser auto-zoom */
+      font-size: 16px;
       border-radius: 4px;
       outline: none;
       width: 100%;
+      touch-action: manipulation;
     }
 
     .form-control:focus {
@@ -285,7 +464,7 @@
 
     .modal-btn {
       flex: 1;
-      padding: 9px;
+      padding: 10px;
       border-radius: 4px;
       font-size: 11px;
       font-weight: bold;
@@ -300,6 +479,9 @@
 </head>
 <body>
 
+  <!-- Color-Matched Grunge Background -->
+  <div class="wall-bg-layer"></div>
+
   <!-- Header -->
   <header>
     <a href="https://mollythirza.github.io/TheGrapevineHub/" class="brand-container">
@@ -311,27 +493,39 @@
     </div>
   </header>
 
-  <!-- Filter Controls -->
+  <!-- Filter & Date Sort Controls -->
   <div class="filter-bar">
     <span class="page-tag">📌 Notice Board</span>
     <button class="filter-chip active" id="filter-all" onclick="window.setTimeFilter('all')">All</button>
-    <button class="filter-chip" id="filter-recent" onclick="window.setTimeFilter('recent')">Recent</button>
+    <button class="filter-chip" id="filter-recent" onclick="window.setTimeFilter('recent')">Recent (30d)</button>
     <button class="filter-chip" id="filter-older" onclick="window.setTimeFilter('older')">Archive</button>
+    <div class="filter-divider"></div>
+    <button class="filter-chip active" id="sort-newest" onclick="window.setSortOrder('newest')">Newest Top</button>
+    <button class="filter-chip" id="sort-oldest" onclick="window.setSortOrder('oldest')">Oldest Top</button>
   </div>
 
-  <!-- Interactive Wall Canvas -->
-  <main id="wall-canvas">
-    <div id="flyers-container"></div>
+  <!-- Interactive Pinch-Zoomable & Pannable Wall Canvas -->
+  <main id="wall-viewport">
+    <div id="wall-canvas">
+      <div id="flyers-container"></div>
+    </div>
   </main>
 
-  <!-- Pin Button -->
+  <!-- Bottom Controls: Zoom/Reset & Pin Button -->
   <div class="wall-toolbar">
+    <div class="zoom-controls">
+      <button class="zoom-btn" id="zoom-out" title="Zoom Out">−</button>
+      <span class="zoom-readout" id="zoom-readout">100%</span>
+      <button class="zoom-btn" id="zoom-in" title="Zoom In">+</button>
+      <button class="zoom-btn" id="zoom-reset" title="Reset View">↺</button>
+    </div>
     <button class="btn-pin" onclick="window.openCreateModal()">+ Pin Flyer</button>
   </div>
 
   <!-- Create Modal -->
   <div id="create-modal" class="modal-overlay" onclick="window.closeCreateModal()">
     <div class="modal-card" onclick="event.stopPropagation()">
+      <button type="button" class="btn-modal-close" onclick="window.closeCreateModal()" title="Close">×</button>
       <h2>Pin a Flyer / Notice</h2>
       <form id="create-form">
         <div class="form-group">
@@ -344,7 +538,7 @@
         </div>
         <div class="form-group">
           <label>Full Description / Details *</label>
-          <textarea id="notice-desc" class="form-control" rows="2" placeholder="Date, venue, ticket info..." required></textarea>
+          <textarea id="notice-desc" class="form-control" rows="3" placeholder="Date, venue, ticket info..." required></textarea>
         </div>
         <div class="form-group">
           <label>External Link / URL (Optional)</label>
@@ -362,24 +556,23 @@
     </div>
   </div>
 
-  <!-- Detail Modal -->
+  <!-- Detail Modal (Scrollable on Mobile) -->
   <div id="detail-modal" class="modal-overlay" onclick="window.closeDetailModal()">
     <div class="modal-card" onclick="event.stopPropagation()">
+      <button type="button" class="btn-modal-close" onclick="window.closeDetailModal()" title="Close">×</button>
       <h2 id="detail-title">Notice Title</h2>
-      <div id="detail-image-container" style="margin-bottom: 10px; text-align: center;"></div>
-      <p style="font-size: 11px; color: #888; margin-bottom: 2px;">Pinned by <span id="detail-author" style="color: #ff007f;"></span></p>
-      <p style="font-size: 10px; color: #666; margin-bottom: 10px;" id="detail-date"></p>
-      <p id="detail-desc" style="font-size: 12px; color: #ccc; line-height: 1.4; margin-bottom: 14px; white-space: pre-wrap;"></p>
+      <div id="detail-image-container" style="margin-bottom: 12px; text-align: center;"></div>
+      <p style="font-size: 11px; color: #888; margin-bottom: 2px;">Pinned by <span id="detail-author" style="color: #ff007f; font-weight: bold;"></span></p>
+      <p style="font-size: 10px; color: #666; margin-bottom: 12px; border-bottom: 1px solid #262626; padding-bottom: 8px;" id="detail-date"></p>
+      <p id="detail-desc" style="font-size: 12px; color: #ddd; line-height: 1.55; margin-bottom: 16px; white-space: pre-wrap; word-break: break-word;"></p>
       
-      <div id="detail-link-container" style="margin-bottom: 14px; display: none;">
-        <a id="detail-link" href="#" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; background: rgba(255, 0, 127, 0.15); border: 1px solid #ff007f; color: #ff007f; text-align: center; padding: 9px; font-size: 11px; font-weight: bold; text-transform: uppercase; border-radius: 4px; text-decoration: none;">External Link ↗</a>
+      <div id="detail-link-container" style="margin-bottom: 12px; display: none;">
+        <a id="detail-link" href="#" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; background: #ff007f; color: #000; text-align: center; padding: 10px; font-size: 11px; font-weight: bold; text-transform: uppercase; border-radius: 4px; text-decoration: none;">Visit Link ↗</a>
       </div>
-
-      <button class="modal-btn btn-cancel" style="width: 100%;" onclick="window.closeDetailModal()">Close Flyer</button>
     </div>
   </div>
 
-  <!-- Firebase Integration Script -->
+  <!-- Firebase & Wall Layout Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -401,12 +594,203 @@
 
     let allNotices = {};
     let activeFilter = 'all';
+    let sortOrder = 'newest';
+
+    // Pinch-to-Zoom & Pan Engine
+    const viewport = document.getElementById('wall-viewport');
+    const canvas = document.getElementById('wall-canvas');
+    const zoomReadout = document.getElementById('zoom-readout');
+
+    let scale = 1;
+    const minScale = 0.5;
+    const maxScale = 2.5;
+    let pointX = 0;
+    let pointY = 0;
+
+    function clampPosition() {
+      const vW = window.innerWidth;
+      const vH = window.innerHeight;
+      const cW = vW * scale;
+      const cH = vH * scale;
+
+      if (scale <= 1) {
+        pointX = (vW - cW) / 2;
+        pointY = (vH - cH) / 2;
+      } else {
+        const margin = 40;
+        pointX = Math.min(margin, Math.max(vW - cW - margin, pointX));
+        pointY = Math.min(margin, Math.max(vH - cH - margin, pointY));
+      }
+    }
+
+    function applyTransform(smooth = false) {
+      scale = Math.min(maxScale, Math.max(minScale, scale));
+      clampPosition();
+      canvas.style.transition = smooth ? 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)' : 'none';
+      canvas.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+      zoomReadout.innerText = `${Math.round(scale * 100)}%`;
+    }
+
+    function resetWallView() {
+      scale = 1;
+      pointX = 0;
+      pointY = 0;
+      applyTransform(true);
+    }
+
+    // Drag vs Tap detection
+    let isDragging = false;
+    let hasMoved = false;
+    let startX = 0, startY = 0;
+    let downX = 0, downY = 0;
+
+    viewport.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      hasMoved = false;
+      downX = e.clientX;
+      downY = e.clientY;
+      startX = e.clientX - pointX;
+      startY = e.clientY - pointY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      if (Math.hypot(e.clientX - downX, e.clientY - downY) > 6) {
+        hasMoved = true;
+      }
+      pointX = e.clientX - startX;
+      pointY = e.clientY - startY;
+      applyTransform(false);
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    viewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.12 : 0.88;
+      const newScale = Math.min(maxScale, Math.max(minScale, scale * zoomFactor));
+      const xs = (e.clientX - pointX) / scale;
+      const ys = (e.clientY - pointY) / scale;
+      scale = newScale;
+      pointX = e.clientX - xs * scale;
+      pointY = e.clientY - ys * scale;
+      applyTransform(false);
+    }, { passive: false });
+
+    // Touch Pinch & Pan
+    let initialPinchDistance = null;
+    let initialScale = 1;
+
+    function getTouchDistance(t1, t2) {
+      return Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+    }
+
+    viewport.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        hasMoved = false;
+        downX = e.touches[0].clientX;
+        downY = e.touches[0].clientY;
+        startX = e.touches[0].clientX - pointX;
+        startY = e.touches[0].clientY - pointY;
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        hasMoved = true;
+        initialPinchDistance = getTouchDistance(e.touches[0], e.touches[1]);
+        initialScale = scale;
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && isDragging) {
+        if (Math.hypot(e.touches[0].clientX - downX, e.touches[0].clientY - downY) > 8) {
+          hasMoved = true;
+        }
+        e.preventDefault();
+        pointX = e.touches[0].clientX - startX;
+        pointY = e.touches[0].clientY - startY;
+        applyTransform(false);
+      } else if (e.touches.length === 2 && initialPinchDistance) {
+        e.preventDefault();
+        const currentDistance = getTouchDistance(e.touches[0], e.touches[1]);
+        const factor = currentDistance / initialPinchDistance;
+        const newScale = Math.min(maxScale, Math.max(minScale, initialScale * factor));
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        const xs = (midX - pointX) / scale;
+        const ys = (midY - pointY) / scale;
+        scale = newScale;
+        pointX = midX - xs * scale;
+        pointY = midY - ys * scale;
+        applyTransform(false);
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) initialPinchDistance = null;
+      if (e.touches.length === 0) isDragging = false;
+    });
+
+    // Zoom Control Buttons
+    document.getElementById('zoom-in').addEventListener('click', () => {
+      const cX = window.innerWidth / 2;
+      const cY = window.innerHeight / 2;
+      const xs = (cX - pointX) / scale;
+      const ys = (cY - pointY) / scale;
+      scale = Math.min(maxScale, scale * 1.25);
+      pointX = cX - xs * scale;
+      pointY = cY - ys * scale;
+      applyTransform(true);
+    });
+
+    document.getElementById('zoom-out').addEventListener('click', () => {
+      const cX = window.innerWidth / 2;
+      const cY = window.innerHeight / 2;
+      const xs = (cX - pointX) / scale;
+      const ys = (cY - pointY) / scale;
+      scale = Math.max(minScale, scale / 1.25);
+      pointX = cX - xs * scale;
+      pointY = cY - ys * scale;
+      applyTransform(true);
+    });
+
+    document.getElementById('zoom-reset').addEventListener('click', resetWallView);
+
+    // Deterministic pseudo-random generator from post ID so each post keeps a consistent organic scale & tilt
+    function seededVariation(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      const norm1 = Math.abs(Math.sin(hash)) ;
+      const norm2 = Math.abs(Math.cos(hash));
+      return {
+        scale: 0.90 + norm1 * 0.20,          // Between 0.90x and 1.10x (breaks uniformity without overcrowding)
+        rotate: (norm2 * 6 - 3).toFixed(2),  // Between -3deg and +3deg
+        jitterX: Math.round((norm1 - 0.5) * 14),
+        jitterY: Math.round((norm2 - 0.5) * 12),
+        pulseDelay: (norm1 * 2.5).toFixed(2)
+      };
+    }
 
     window.setTimeFilter = (filterType) => {
       activeFilter = filterType;
-      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      ['filter-all', 'filter-recent', 'filter-older'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active');
+      });
       const activeBtn = document.getElementById(`filter-${filterType}`);
       if (activeBtn) activeBtn.classList.add('active');
+      window.renderFlyers();
+    };
+
+    window.setSortOrder = (order) => {
+      sortOrder = order;
+      document.getElementById('sort-newest').classList.toggle('active', order === 'newest');
+      document.getElementById('sort-oldest').classList.toggle('active', order === 'oldest');
       window.renderFlyers();
     };
 
@@ -414,47 +798,94 @@
       const container = document.getElementById('flyers-container');
       if (!container) return;
       container.innerHTML = '';
-      
+
       const now = Date.now();
       const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
 
-      if (!allNotices || Object.keys(allNotices).length === 0) {
-        container.innerHTML = `<p style="text-align:center; padding-top:140px; color:#666; font-size:12px;">No flyers posted yet. Be the first to pin one!</p>`;
+      const entries = Object.keys(allNotices || {}).map(id => ({
+        id,
+        ...allNotices[id]
+      })).filter(item => {
+        const postTime = item.timestamp || 0;
+        const isRecent = (now - postTime) <= thirtyDaysMs;
+        if (activeFilter === 'recent' && !isRecent) return false;
+        if (activeFilter === 'older' && isRecent) return false;
+        return true;
+      });
+
+      if (entries.length === 0) {
+        container.innerHTML = `<p style="text-align:center; padding-top:160px; color:#888; font-size:12px;">No flyers posted in this view yet. Be the first to pin one!</p>`;
         return;
       }
 
-      const screenWidth = Math.max(window.innerWidth - 200, 280);
-      const screenHeight = Math.max(window.innerHeight - 280, 350);
+      // Sort chronologically: oldest first for grid placement, then layer newer ones on top when full
+      const chronological = [...entries].sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+      const orderedList = sortOrder === 'newest' ? chronological : [...chronological].reverse();
 
-      Object.keys(allNotices).forEach((id, index) => {
-        const item = allNotices[id];
-        const postTime = item.timestamp || 0;
-        const isRecent = (now - postTime) <= thirtyDaysMs;
+      // Calculate responsive grid slots fitting the visible viewport between header/filter bar and bottom toolbar
+      const topOffset = 112;
+      const bottomOffset = 78;
+      const sidePadding = 16;
+      const usableW = Math.max(window.innerWidth - sidePadding * 2, 260);
+      const usableH = Math.max(window.innerHeight - topOffset - bottomOffset, 260);
 
-        if (activeFilter === 'recent' && !isRecent) return;
-        if (activeFilter === 'older' && isRecent) return;
+      const isMobile = window.innerWidth < 640;
+      const baseCardW = isMobile ? 155 : 185;
+      const baseCardH = isMobile ? 195 : 225;
+
+      const cols = Math.max(2, Math.floor(usableW / (baseCardW + 14)));
+      const rows = Math.max(2, Math.floor(usableH / (baseCardH + 14)));
+      const maxSlotsPerLayer = cols * rows;
+
+      const cellW = usableW / cols;
+      const cellH = usableH / rows;
+
+      orderedList.forEach((item, index) => {
+        const layer = Math.floor(index / maxSlotsPerLayer);
+        const slotIndex = index % maxSlotsPerLayer;
+        const col = slotIndex % cols;
+        const row = Math.floor(slotIndex / cols);
+
+        const variation = item.variation || seededVariation(item.id);
+        const cardScale = item.cardScale || variation.scale;
+        const cardRotate = item.cardRotate || variation.rotate;
+
+        // Layer offset so overlaid posts peek out naturally over full grid slots
+        const layerShiftX = layer > 0 ? ((layer % 2 === 1 ? 14 : -14) + variation.jitterX) : variation.jitterX;
+        const layerShiftY = layer > 0 ? (16 * Math.min(layer, 3) + variation.jitterY) : variation.jitterY;
+
+        const leftPos = sidePadding + col * cellW + (cellW - baseCardW) / 2 + layerShiftX;
+        const topPos = topOffset + row * cellH + (cellH - baseCardH) / 2 + layerShiftY;
 
         const flyer = document.createElement('div');
         flyer.className = 'flyer-post';
-        
-        const posX = item.x !== undefined ? item.x : ((index * 50 + 20) % screenWidth);
-        const posY = item.y !== undefined ? item.y : (((index * 60) + 120) % screenHeight + 80);
-        
-        flyer.style.left = `${posX}px`;
-        flyer.style.top = `${posY}px`;
+        flyer.style.width = `${baseCardW}px`;
+        flyer.style.left = `${Math.max(8, Math.min(window.innerWidth - baseCardW - 8, leftPos))}px`;
+        flyer.style.top = `${Math.max(topOffset - 4, Math.min(window.innerHeight - baseCardH - 45, topPos))}px`;
+        flyer.style.transform = `scale(${cardScale.toFixed(2)}) rotate(${cardRotate}deg)`;
+        flyer.style.zIndex = 10 + index;
+        flyer.style.animationDelay = `${variation.pulseDelay}s`;
 
-        let imgHtml = item.imageSrc ? `<img src="${item.imageSrc}" class="flyer-img" alt="Flyer">` : '';
+        const imgHtml = item.imageSrc ? `<img src="${item.imageSrc}" class="flyer-img" alt="Flyer">` : '';
         const formattedDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString() : '';
 
+        // Alternate tape placement (corners vs top center)
+        const tapeHtml = (index % 2 === 0)
+          ? `<span class="tape-strip tape-tl"></span><span class="tape-strip tape-tr"></span>`
+          : `<span class="tape-strip tape-top-center"></span>`;
+
         flyer.innerHTML = `
+          ${tapeHtml}
           ${imgHtml}
           <div class="flyer-title">${item.title || 'Untitled Notice'}</div>
+          ${!item.imageSrc ? `<div class="flyer-snippet">${item.desc || ''}</div>` : ''}
           <div class="flyer-date-tag">${formattedDate}</div>
         `;
 
         flyer.addEventListener('click', (e) => {
+          if (hasMoved) return;
           e.stopPropagation();
-          window.openDetailModal(id);
+          window.openDetailModal(item.id);
         });
 
         container.appendChild(flyer);
@@ -467,10 +898,15 @@
       window.renderFlyers();
     });
 
+    window.addEventListener('resize', () => {
+      applyTransform(false);
+      window.renderFlyers();
+    });
+
     document.getElementById('create-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submit-btn');
-      
+
       const title = document.getElementById('notice-title').value.trim();
       const author = document.getElementById('notice-author').value.trim();
       const desc = document.getElementById('notice-desc').value.trim();
@@ -480,25 +916,33 @@
       submitBtn.innerText = "Pinning...";
       submitBtn.disabled = true;
 
-      const screenW = Math.max(window.innerWidth - 220, 180);
-      const screenH = Math.max(window.innerHeight - 300, 250);
-      const randomX = Math.floor(Math.random() * screenW + 15);
-      const randomY = Math.floor(Math.random() * screenH + 100);
+      // Randomize card scale & tilt on post so grid is organic and non-uniform
+      const cardScale = Number((0.90 + Math.random() * 0.20).toFixed(2));
+      const cardRotate = Number((Math.random() * 6 - 3).toFixed(2));
 
       if (imageInput.files && imageInput.files[0]) {
         const reader = new FileReader();
         reader.onload = async function(event) {
-          await pushToFirebase(title, author, desc, link, event.target.result, randomX, randomY);
+          await pushToFirebase(title, author, desc, link, event.target.result, cardScale, cardRotate);
         };
         reader.readAsDataURL(imageInput.files[0]);
       } else {
-        await pushToFirebase(title, author, desc, link, null, randomX, randomY);
+        await pushToFirebase(title, author, desc, link, null, cardScale, cardRotate);
       }
     });
 
-    async function pushToFirebase(title, author, desc, link, imageSrc, x, y) {
+    async function pushToFirebase(title, author, desc, link, imageSrc, cardScale, cardRotate) {
       try {
-        await push(noticesRef, { title, author, desc, link, imageSrc, x, y, timestamp: Date.now() });
+        await push(noticesRef, {
+          title,
+          author,
+          desc,
+          link,
+          imageSrc,
+          cardScale,
+          cardRotate,
+          timestamp: Date.now()
+        });
         window.closeCreateModal();
       } catch (err) {
         alert("Error pinning flyer: Image payload limit exceeded. Try a smaller file.");
@@ -508,13 +952,13 @@
     }
 
     window.openCreateModal = () => {
-      document.getElementById('create-modal').style.display = 'flex';
-      document.body.style.overflow = 'hidden';
+      const modal = document.getElementById('create-modal');
+      modal.style.display = 'flex';
+      modal.scrollTop = 0;
     };
 
     window.closeCreateModal = () => {
       document.getElementById('create-modal').style.display = 'none';
-      document.body.style.overflow = 'auto';
       document.getElementById('create-form').reset();
     };
 
@@ -526,7 +970,7 @@
       document.getElementById('detail-author').innerText = item.author || 'Anonymous';
       document.getElementById('detail-date').innerText = item.timestamp ? `Posted: ${new Date(item.timestamp).toLocaleString()}` : '';
       document.getElementById('detail-desc').innerText = item.desc;
-      
+
       const linkContainer = document.getElementById('detail-link-container');
       const linkElement = document.getElementById('detail-link');
       if (item.link && item.link.trim() !== '') {
@@ -539,20 +983,20 @@
 
       const imgContainer = document.getElementById('detail-image-container');
       if (item.imageSrc) {
-        imgContainer.innerHTML = `<img src="${item.imageSrc}" style="max-height: 180px; max-width: 100%; border-radius: 4px; margin: 0 auto;" />`;
+        imgContainer.innerHTML = `<img src="${item.imageSrc}" style="max-height: 240px; max-width: 100%; border-radius: 4px; margin: 0 auto; border: 1px solid #333;" />`;
         imgContainer.style.display = 'block';
       } else {
         imgContainer.innerHTML = '';
         imgContainer.style.display = 'none';
       }
 
-      document.getElementById('detail-modal').style.display = 'flex';
-      document.body.style.overflow = 'hidden';
+      const modal = document.getElementById('detail-modal');
+      modal.style.display = 'flex';
+      modal.scrollTop = 0;
     };
 
     window.closeDetailModal = () => {
       document.getElementById('detail-modal').style.display = 'none';
-      document.body.style.overflow = 'auto';
     };
   </script>
 </body>
