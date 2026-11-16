@@ -162,6 +162,7 @@
       height: 100vh;
       overflow: hidden;
       cursor: grab;
+      touch-action: none;
       background-image: radial-gradient(rgba(255, 0, 127, 0.12) 1px, transparent 1px);
       background-size: 28px 28px;
     }
@@ -493,20 +494,23 @@
       text-align: center;
     }
 
-    /* Gig Detail Preview Modal (Hub Sticker Modal Style) */
+    /* Gig Detail Preview Modal (Mobile-Scrollable) */
     #gig-detail-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.9);
+      height: 100dvh;
+      background: rgba(0, 0, 0, 0.92);
       z-index: 35000;
       display: none;
-      justify-content: center;
-      align-items: center;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      overscroll-behavior: contain;
       backdrop-filter: blur(6px);
-      padding: 20px;
+      padding: 24px 16px 80px;
     }
 
     .detail-modal-card {
@@ -514,13 +518,13 @@
       border: 2px solid #ff007f;
       width: 100%;
       max-width: 460px;
-      max-height: 86vh;
-      overflow-y: auto;
       border-radius: 8px;
       padding: 24px 20px 20px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.55);
       position: relative;
       text-align: left;
+      margin: auto;
+      touch-action: pan-y;
     }
 
     /* Small Pink Top-Right Close 'x' Button */
@@ -631,8 +635,10 @@
       flex-direction: column;
       gap: 6px;
       margin-bottom: 10px;
-      max-height: 140px;
+      max-height: 180px;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
     }
 
     .comment-item {
@@ -661,10 +667,11 @@
       color: #fff;
       padding: 7px 8px;
       font-family: inherit;
-      font-size: 14px;
+      font-size: 16px;
       border-radius: 4px;
       width: 110px;
       outline: none;
+      touch-action: manipulation;
     }
 
     .comment-input-text {
@@ -673,11 +680,12 @@
       color: #fff;
       padding: 7px 8px;
       font-family: inherit;
-      font-size: 14px;
+      font-size: 16px;
       border-radius: 4px;
       flex: 1;
       min-width: 140px;
       outline: none;
+      touch-action: manipulation;
     }
 
     .comment-input-name:focus, .comment-input-text:focus { border-color: #ff007f; }
@@ -704,11 +712,14 @@
       bottom: 0;
       width: 100%;
       height: 100%;
+      height: 100dvh;
       background: rgba(0, 0, 0, 0.94);
       z-index: 40000;
       display: none;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      overscroll-behavior: contain;
       padding: 25px 12px 140px 12px;
       backdrop-filter: blur(6px);
     }
@@ -723,6 +734,7 @@
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
       margin: 0 auto;
       position: relative;
+      touch-action: pan-y;
     }
 
     .modal-card h2 {
@@ -1207,7 +1219,6 @@
       filtered.forEach((item, index) => {
         const isNewest = index === filtered.length - 1;
         const wrapper = document.createElement('div');
-        // Keep newest gig cleanly positioned on top
         const posFromRight = (filtered.length - 1 - index);
         const posClass = posFromRight % 2 === 0 ? 'pos-top' : 'pos-bottom';
         wrapper.className = `gig-node-wrapper ${posClass} ${isNewest ? 'is-newest' : ''}`;
@@ -1317,7 +1328,9 @@
     window.openGigDetail = (gigId) => {
       activeDetailGigId = gigId;
       renderGigDetailContent(gigId);
-      document.getElementById('gig-detail-modal').style.display = 'flex';
+      const detailModal = document.getElementById('gig-detail-modal');
+      detailModal.style.display = 'flex';
+      detailModal.scrollTop = 0;
     };
 
     window.closeGigDetail = () => {
