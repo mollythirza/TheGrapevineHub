@@ -2,20 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
   <title>The Grapevine — Past Gig Archive & Timeline</title>
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body, html {
       width: 100%;
-      min-height: 100%;
+      height: 100%;
       background-color: #0d0d0d;
       color: #fff;
       font-family: 'Courier New', Courier, monospace;
-      overflow-x: hidden;
+      overflow: hidden;
+      touch-action: none;
     }
 
     header {
@@ -68,11 +68,161 @@
       text-shadow: 0 0 8px #ff007f;
     }
 
-    main {
-      max-width: 950px;
-      margin: 90px auto 80px;
-      padding: 0 14px;
-      position: relative;
+    /* Top Fixed Control Bar */
+    .top-hud {
+      position: fixed;
+      top: 56px;
+      left: 0;
+      width: 100%;
+      z-index: 9000;
+      padding: 12px 16px 10px;
+      background: linear-gradient(to bottom, rgba(13,13,13,0.97) 80%, rgba(13,13,13,0));
+      pointer-events: none;
+    }
+
+    .top-hud-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      pointer-events: auto;
+    }
+
+    .page-desc-banner {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .page-desc-banner h1 {
+      color: #ff007f;
+      font-size: 15px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .page-desc-banner p {
+      color: #bbb;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .page-desc-banner p span {
+      color: #ff007f;
+      font-weight: bold;
+    }
+
+    .filter-toolbar {
+      background: rgba(20, 20, 20, 0.95);
+      border: 1px solid #ff007f;
+      border-radius: 6px;
+      padding: 8px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      box-shadow: 0 0 18px rgba(255, 0, 127, 0.25);
+    }
+
+    .search-input {
+      background: #0d0d0d;
+      border: 1px solid #ff007f;
+      color: #fff;
+      padding: 7px 10px;
+      font-family: inherit;
+      font-size: 14px;
+      border-radius: 4px;
+      outline: none;
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .btn-log {
+      background: #ff007f;
+      color: #000;
+      border: none;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(255, 0, 127, 0.4);
+      white-space: nowrap;
+    }
+
+    .btn-log:hover { background: #ff3399; }
+
+    /* Interactive Pannable & Pinch-Zoomable Viewport */
+    #timeline-viewport {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      cursor: grab;
+      background-image: radial-gradient(rgba(255, 0, 127, 0.12) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    #timeline-viewport:active {
+      cursor: grabbing;
+    }
+
+    #timeline-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: 0 0;
+      will-change: transform;
+      display: flex;
+      align-items: center;
+      height: 780px;
+      padding: 185px 40px 80px 100px;
+    }
+
+    /* Central Horizontal Timeline Axis (Past on Left -> Newest on Right) */
+    .timeline-axis {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 55%;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255, 0, 127, 0.15) 0%, rgba(255, 0, 127, 0.55) 75%, #ff007f 100%);
+      box-shadow: 0 0 12px rgba(255, 0, 127, 0.6);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .timeline-past-marker {
+      background: #141414;
+      border: 1px solid rgba(255, 0, 127, 0.6);
+      color: #ff007f;
+      font-size: 9px;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      z-index: 15;
+      margin-right: 28px;
+      flex-shrink: 0;
+    }
+
+    .timeline-newest-marker {
+      background: #ff007f;
+      color: #000;
+      font-size: 9px;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 14px #ff007f;
+      z-index: 15;
+      margin-left: 28px;
+      flex-shrink: 0;
     }
 
     /* SVG Connection Lines Layer */
@@ -80,8 +230,6 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
       pointer-events: none;
       z-index: 1;
     }
@@ -89,98 +237,120 @@
     .connection-line {
       stroke: #ff007f;
       stroke-width: 2;
-      stroke-dasharray: 4 4;
-      opacity: 0.6;
+      stroke-dasharray: 5 5;
+      opacity: 0.55;
       animation: linePulse 3s infinite alternate;
     }
 
     @keyframes linePulse {
-      0% { opacity: 0.3; filter: drop-shadow(0 0 2px rgba(255,0,127,0.3)); }
-      100% { opacity: 0.8; filter: drop-shadow(0 0 8px #ff007f); }
+      0% { opacity: 0.25; filter: drop-shadow(0 0 2px rgba(255,0,127,0.3)); }
+      100% { opacity: 0.85; filter: drop-shadow(0 0 8px #ff007f); }
     }
 
-    /* Filter Toolbar */
-    .filter-toolbar {
-      background: rgba(20, 20, 20, 0.95);
-      border: 1px solid #ff007f;
-      border-radius: 6px;
-      padding: 12px;
-      margin-bottom: 30px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      box-shadow: 0 0 20px rgba(255, 0, 127, 0.25);
-      position: relative;
-      z-index: 10;
-    }
-
-    .search-input {
-      background: #0d0d0d;
-      border: 1px solid #ff007f;
-      color: #fff;
-      padding: 8px 12px;
-      font-family: inherit;
-      font-size: 16px;
-      border-radius: 4px;
-      outline: none;
-      flex: 1;
-      min-width: 200px;
-    }
-
-    .btn-log {
-      background: #ff007f;
-      color: #000;
-      border: none;
-      padding: 10px 16px;
-      font-family: inherit;
-      font-size: 11px;
-      font-weight: bold;
-      text-transform: uppercase;
-      border-radius: 4px;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
-      white-space: nowrap;
-    }
-
-    .btn-log:hover { background: #ff3399; }
-
-    /* Timeline Feed */
+    /* Horizontal Track of Gig Cards */
     .archive-feed {
       position: relative;
       display: flex;
-      flex-direction: column;
-      gap: 25px;
+      flex-direction: row;
+      align-items: center;
+      gap: 48px;
       z-index: 5;
+      height: 100%;
     }
 
-    /* Enforced Alternating Staggered Feed Posts Across ALL Screen Sizes */
+    .gig-node-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      flex-shrink: 0;
+    }
+
+    /* Glowing Node Dot on the Horizontal Axis */
+    .timeline-dot {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #0d0d0d;
+      border: 3px solid #ff007f;
+      box-shadow: 0 0 12px #ff007f;
+      z-index: 6;
+    }
+
+    .gig-node-wrapper.is-newest .timeline-dot {
+      background: #ff007f;
+      width: 16px;
+      height: 16px;
+      box-shadow: 0 0 18px #ff007f, 0 0 30px #ff007f;
+    }
+
+    /* Vertical Stem Connecting Card to Timeline Axis */
+    .timeline-stem {
+      position: absolute;
+      left: 50%;
+      width: 2px;
+      background: rgba(255, 0, 127, 0.55);
+      z-index: 3;
+    }
+
+    .gig-node-wrapper.pos-top .timeline-stem {
+      bottom: 45%;
+      height: 28px;
+    }
+
+    .gig-node-wrapper.pos-bottom .timeline-stem {
+      top: 55%;
+      height: 28px;
+    }
+
+    /* Gig Card Styling */
     .gig-post {
       background: #141414;
-      border: 1px solid rgba(255, 0, 127, 0.5);
+      border: 1px solid rgba(255, 0, 127, 0.55);
       border-radius: 6px;
       padding: 14px;
-      width: 68%; /* Compact width to allow clear alternating spacing on phones too */
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.2);
+      width: 300px;
+      box-shadow: 0 0 18px rgba(255, 0, 127, 0.22);
       transition: border-color 0.2s, box-shadow 0.2s;
       position: relative;
       word-break: break-word;
+      z-index: 10;
+      cursor: pointer;
     }
 
-    .gig-post.align-left {
-      align-self: flex-start;
-      margin-right: auto;
+    .gig-node-wrapper.pos-top .gig-post {
+      transform: translateY(-138px);
     }
 
-    .gig-post.align-right {
-      align-self: flex-end;
-      margin-left: auto;
+    .gig-node-wrapper.pos-bottom .gig-post {
+      transform: translateY(148px);
     }
 
     .gig-post:hover {
       border-color: #ff007f;
-      box-shadow: 0 0 22px rgba(255, 0, 127, 0.6);
-      z-index: 20;
+      box-shadow: 0 0 26px rgba(255, 0, 127, 0.65);
+      z-index: 30;
+    }
+
+    .newest-badge {
+      position: absolute;
+      top: -10px;
+      left: 12px;
+      background: #ff007f;
+      color: #000;
+      font-size: 9px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(255, 0, 127, 0.7);
     }
 
     .gig-header {
@@ -213,7 +383,7 @@
       margin-bottom: 8px;
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 4px 10px;
     }
 
     .gig-meta span span { color: #ff007f; }
@@ -223,14 +393,18 @@
       color: #ccc;
       line-height: 1.4;
       margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .gig-thumb-wrapper {
       width: 100%;
-      height: 130px;
+      height: 105px;
       overflow: hidden;
       border-radius: 4px;
-      margin-top: 8px;
+      margin-top: 6px;
       background: #000;
       border: 1px solid #333;
     }
@@ -241,55 +415,231 @@
       object-fit: cover;
     }
 
-    .gig-author {
-      font-size: 9px;
-      color: #777;
+    .gig-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-top: 8px;
       border-top: 1px dashed #222;
       padding-top: 6px;
+      font-size: 9px;
+      color: #777;
       text-transform: uppercase;
     }
 
-    .gig-author span { color: #ff007f; }
+    .gig-card-footer span { color: #ff007f; }
 
-    /* Fully Screen-Fitting Interactive Comment Section */
-    .comments-section {
-      margin-top: 10px;
-      border-top: 1px solid rgba(255, 0, 127, 0.2);
-      padding-top: 8px;
+    /* Bottom Floating Zoom & Reset Controls */
+    .timeline-controls {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 9500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(13, 13, 13, 0.92);
+      border: 1px solid #ff007f;
+      padding: 6px 10px;
+      border-radius: 30px;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.35);
+      backdrop-filter: blur(6px);
     }
 
-    .comments-toggle {
-      background: none;
-      border: none;
+    .zoom-btn {
+      background: #1a1a1a;
       color: #ff007f;
+      border: 1px solid rgba(255, 0, 127, 0.6);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .zoom-btn:hover, .zoom-btn:active {
+      background: #ff007f;
+      color: #000;
+    }
+
+    .zoom-pill-btn {
+      background: #1a1a1a;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 6px 11px;
+      border-radius: 16px;
       font-family: inherit;
       font-size: 10px;
-      cursor: pointer;
-      text-transform: uppercase;
       font-weight: bold;
-      padding: 0;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s;
     }
 
-    .comments-box {
-      margin-top: 8px;
+    .zoom-pill-btn:hover {
+      border-color: #ff007f;
+      color: #ff007f;
+    }
+
+    .zoom-readout {
+      font-size: 10px;
+      color: #aaa;
+      min-width: 38px;
+      text-align: center;
+    }
+
+    /* Gig Detail Preview Modal (Hub Sticker Modal Style) */
+    #gig-detail-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 35000;
       display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(6px);
+      padding: 20px;
+    }
+
+    .detail-modal-card {
+      background: #141414;
+      border: 2px solid #ff007f;
+      width: 100%;
+      max-width: 460px;
+      max-height: 86vh;
+      overflow-y: auto;
+      border-radius: 8px;
+      padding: 24px 20px 20px;
+      box-shadow: 0 0 35px rgba(255, 0, 127, 0.55);
+      position: relative;
+      text-align: left;
+    }
+
+    /* Small Pink Top-Right Close 'x' Button */
+    .btn-modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: transparent;
+      color: #ff007f;
+      border: 1px solid #ff007f;
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      z-index: 5;
+    }
+
+    .btn-modal-close:hover {
+      background: #ff007f;
+      color: #000;
+    }
+
+    .detail-date-tag {
+      display: inline-block;
+      font-size: 10px;
+      color: #ff007f;
+      border: 1px solid #ff007f;
+      padding: 2px 7px;
+      border-radius: 3px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .detail-modal-card h2 {
+      color: #ff007f;
+      font-size: 18px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      padding-right: 32px;
+    }
+
+    .detail-meta-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      font-size: 11px;
+      color: #aaa;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #262626;
+    }
+
+    .detail-meta-grid span span {
+      color: #ff007f;
+      font-weight: bold;
+    }
+
+    .detail-full-img {
+      width: 100%;
+      max-height: 230px;
+      object-fit: cover;
+      border-radius: 5px;
+      border: 1px solid #333;
+      margin-bottom: 12px;
+      background: #000;
+    }
+
+    .detail-full-desc {
+      font-size: 12px;
+      color: #ddd;
+      line-height: 1.55;
+      margin-bottom: 12px;
+      white-space: pre-wrap;
+    }
+
+    .detail-logged-by {
+      font-size: 10px;
+      color: #888;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .detail-logged-by span { color: #ff007f; }
+
+    /* Comments inside Detail Modal */
+    .modal-comments-box {
+      border-top: 1px solid rgba(255, 0, 127, 0.3);
+      padding-top: 12px;
+    }
+
+    .modal-comments-title {
+      font-size: 11px;
+      color: #ff007f;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 8px;
     }
 
     .comment-list {
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      margin-bottom: 8px;
-      max-height: 120px;
+      gap: 6px;
+      margin-bottom: 10px;
+      max-height: 140px;
       overflow-y: auto;
     }
 
     .comment-item {
       background: #0d0d0d;
       border-left: 2px solid #ff007f;
-      padding: 5px 8px;
-      font-size: 10px;
+      padding: 6px 8px;
+      font-size: 11px;
       border-radius: 0 4px 4px 0;
       word-break: break-word;
     }
@@ -302,18 +652,18 @@
     .comment-form {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
+      gap: 6px;
     }
 
     .comment-input-name {
       background: #0d0d0d;
       border: 1px solid #333;
       color: #fff;
-      padding: 5px 6px;
+      padding: 7px 8px;
       font-family: inherit;
       font-size: 14px;
       border-radius: 4px;
-      width: 90px;
+      width: 110px;
       outline: none;
     }
 
@@ -321,12 +671,12 @@
       background: #0d0d0d;
       border: 1px solid #333;
       color: #fff;
-      padding: 5px 6px;
+      padding: 7px 8px;
       font-family: inherit;
       font-size: 14px;
       border-radius: 4px;
       flex: 1;
-      min-width: 120px;
+      min-width: 140px;
       outline: none;
     }
 
@@ -336,16 +686,16 @@
       background: #ff007f;
       color: #000;
       border: none;
-      padding: 5px 10px;
+      padding: 7px 14px;
       font-family: inherit;
-      font-size: 9px;
+      font-size: 11px;
       font-weight: bold;
       text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
     }
 
-    /* Modal Overlay Structure */
+    /* Log New Gig Modal Overlay Structure */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -359,7 +709,7 @@
       display: none;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 15px 10px 140px 10px;
+      padding: 25px 12px 140px 12px;
       backdrop-filter: blur(6px);
     }
 
@@ -369,7 +719,7 @@
       width: 100%;
       max-width: 420px;
       border-radius: 8px;
-      padding: 14px;
+      padding: 16px;
       box-shadow: 0 0 35px rgba(255, 0, 127, 0.5);
       margin: 0 auto;
       position: relative;
@@ -377,7 +727,7 @@
 
     .modal-card h2 {
       color: #ff007f;
-      font-size: 13px;
+      font-size: 14px;
       text-transform: uppercase;
       margin-bottom: 10px;
       text-align: center;
@@ -401,7 +751,7 @@
       background: #0d0d0d;
       border: 1px solid #333;
       color: #fff;
-      padding: 6px;
+      padding: 7px;
       font-family: inherit;
       font-size: 16px;
       border-radius: 4px;
@@ -423,7 +773,7 @@
 
     .modal-btn {
       flex: 1;
-      padding: 8px;
+      padding: 9px;
       border-radius: 4px;
       font-size: 10px;
       font-weight: bold;
@@ -435,7 +785,6 @@
     .btn-submit { background: #ff007f; color: #000; border: none; }
     .btn-cancel { background: transparent; color: #aaa; border: 1px solid #444; }
 
-    /* Fully Functional Manual Image Cropper */
     #manual-crop-container {
       display: none;
       margin-top: 6px;
@@ -476,26 +825,49 @@
     </div>
   </header>
 
-  <main>
-    <div style="text-align: center; margin-bottom: 20px;">
-      <h1 style="color: #ff007f; font-size: 20px; text-transform: uppercase; margin-bottom: 4px;">Past Gig Archive & Timeline</h1>
-      <p style="color: #aaa; font-size: 11px;">Chronological timeline. Glowing lines connect shows sharing bands, venues, or genres.</p>
+  <!-- Top HUD Description, Filter & Search Bar -->
+  <div class="top-hud">
+    <div class="top-hud-inner">
+      <div class="page-desc-banner">
+        <h1>Past Gig Archive & Timeline</h1>
+        <p>Starts on the <span>newest gig</span> — drag or swipe to explore past shows stretching left, <span>pinch out</span> to view the whole web, or <span>tap any gig</span> to open full memories & comments.</p>
+      </div>
+      <div class="filter-toolbar">
+        <input type="text" id="search-input" class="search-input" placeholder="Search band, venue, song, genre..." oninput="window.filterGigs()">
+        <button class="btn-log" onclick="window.openModal()">+ Log Past Gig</button>
+      </div>
     </div>
+  </div>
 
-    <!-- Filter & Search Bar -->
-    <div class="filter-toolbar">
-      <input type="text" id="search-input" class="search-input" placeholder="Search band, venue, song, genre..." oninput="window.filterGigs()">
-      <button class="btn-log" onclick="window.openModal()">+ Log Past Gig</button>
-    </div>
-
-    <!-- Timeline Feed -->
-    <div style="position: relative;">
+  <!-- Horizontal Interactive Timeline Viewport -->
+  <div id="timeline-viewport">
+    <div id="timeline-canvas">
+      <div class="timeline-axis"></div>
+      <div class="timeline-past-marker">← PAST ARCHIVE</div>
       <svg id="connection-layer"></svg>
       <div class="archive-feed" id="archive-feed"></div>
+      <div class="timeline-newest-marker">NEWEST ★</div>
     </div>
-  </main>
+  </div>
 
-  <!-- Log Gig Modal -->
+  <!-- Zoom & Reset Controls -->
+  <div class="timeline-controls">
+    <button class="zoom-btn" id="zoom-out" title="Zoom Out">−</button>
+    <span class="zoom-readout" id="zoom-readout">100%</span>
+    <button class="zoom-btn" id="zoom-in" title="Zoom In">+</button>
+    <button class="zoom-pill-btn" id="btn-fit-all" title="Zoom Out to View Entire Timeline">Fit All</button>
+    <button class="zoom-btn" id="zoom-reset" title="Reset Back to Newest Gig">↺</button>
+  </div>
+
+  <!-- Gig Detail Preview Modal (Opens when tapping a gig post) -->
+  <div id="gig-detail-modal" onclick="window.closeGigDetail()">
+    <div class="detail-modal-card" onclick="event.stopPropagation()">
+      <button class="btn-modal-close" onclick="window.closeGigDetail()" title="Close">×</button>
+      <div id="detail-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Log New Gig Modal -->
   <div id="gig-modal" class="modal-overlay" onclick="window.closeModal()">
     <div class="modal-card" onclick="event.stopPropagation()">
       <h2>Log Past Gig Memory</h2>
@@ -537,7 +909,6 @@
           <input type="file" id="gig-image" accept="image/*" class="form-control" onchange="window.handleImagePreview(this)">
         </div>
         
-        <!-- Functional Manual Crop Slider -->
         <div id="manual-crop-container">
           <label style="font-size:9px; color:#ff007f; display:block; margin-bottom:3px;">Drag Slider to Manually Crop Vertical Focus:</label>
           <input type="range" id="crop-slider" min="0" max="100" value="50" style="width:100%; margin-bottom:4px;" oninput="window.updateCropOffset(this.value)">
@@ -554,7 +925,7 @@
     </div>
   </div>
 
-  <!-- Firebase Integration Script -->
+  <!-- Firebase & Timeline Interaction Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -575,9 +946,225 @@
     const gigsRef = ref(db, 'past_gigs');
 
     let allGigs = [];
+    let activeDetailGigId = null;
     let selectedImageBase64 = null;
     let manualCropOffset = 50;
 
+    // Pan & Pinch-to-Zoom State
+    const viewport = document.getElementById('timeline-viewport');
+    const canvas = document.getElementById('timeline-canvas');
+    const zoomReadout = document.getElementById('zoom-readout');
+
+    let scale = 1;
+    let minScale = 0.2;
+    const maxScale = 1.6;
+    let pointX = 0;
+    let pointY = 0;
+    let isInitialized = false;
+
+    function updateMinScale() {
+      const canvasWidth = canvas.scrollWidth || 1000;
+      const fitRatio = (window.innerWidth * 0.92) / canvasWidth;
+      minScale = Math.max(0.12, Math.min(0.65, fitRatio));
+    }
+
+    function clampPosition() {
+      const cWidth = (canvas.scrollWidth || 1000) * scale;
+      const cHeight = (canvas.offsetHeight || 780) * scale;
+      const vWidth = window.innerWidth;
+      const vHeight = window.innerHeight;
+
+      if (cWidth <= vWidth) {
+        pointX = (vWidth - cWidth) / 2;
+      } else {
+        const margin = 80;
+        pointX = Math.min(margin, Math.max(vWidth - cWidth - margin, pointX));
+      }
+
+      if (cHeight <= vHeight) {
+        pointY = (vHeight - cHeight) / 2 + 35;
+      } else {
+        const topMargin = 105;
+        const bottomMargin = 40;
+        pointY = Math.min(topMargin, Math.max(vHeight - cHeight - bottomMargin, pointY));
+      }
+    }
+
+    function applyTransform(smooth = false) {
+      updateMinScale();
+      scale = Math.min(maxScale, Math.max(minScale, scale));
+      clampPosition();
+      canvas.style.transition = smooth ? 'transform 0.35s cubic-bezier(0.22, 1, 0.36, 1)' : 'none';
+      canvas.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+      zoomReadout.innerText = `${Math.round(scale * 100)}%`;
+    }
+
+    // Focus directly on the Newest Gig (far right of the chronological track)
+    function focusOnNewest(smooth = true) {
+      scale = window.innerWidth < 600 ? 0.92 : 1;
+      const cWidth = (canvas.scrollWidth || 1000) * scale;
+      const cHeight = (canvas.offsetHeight || 780) * scale;
+      const vWidth = window.innerWidth;
+      const vHeight = window.innerHeight;
+
+      if (cWidth <= vWidth) {
+        pointX = (vWidth - cWidth) / 2;
+      } else {
+        pointX = vWidth - cWidth - 16;
+      }
+      pointY = (vHeight - cHeight) / 2 + 40;
+      applyTransform(smooth);
+    }
+
+    function fitEntireTimeline(smooth = true) {
+      updateMinScale();
+      scale = minScale;
+      const cWidth = (canvas.scrollWidth || 1000) * scale;
+      const cHeight = (canvas.offsetHeight || 780) * scale;
+      pointX = (window.innerWidth - cWidth) / 2;
+      pointY = (window.innerHeight - cHeight) / 2 + 35;
+      applyTransform(smooth);
+    }
+
+    // Drag vs Tap detection so tapping opens the modal without firing after a swipe
+    let isDragging = false;
+    let hasMoved = false;
+    let startX = 0;
+    let startY = 0;
+    let downX = 0;
+    let downY = 0;
+
+    viewport.addEventListener('mousedown', (e) => {
+      if (e.target.closest('input, button, textarea')) return;
+      isDragging = true;
+      hasMoved = false;
+      downX = e.clientX;
+      downY = e.clientY;
+      startX = e.clientX - pointX;
+      startY = e.clientY - pointY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      if (Math.hypot(e.clientX - downX, e.clientY - downY) > 6) {
+        hasMoved = true;
+      }
+      pointX = e.clientX - startX;
+      pointY = e.clientY - startY;
+      applyTransform(false);
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    // Mouse Wheel: Horizontal Swipe or Ctrl/Pinch Zoom
+    viewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (e.ctrlKey || e.metaKey) {
+        const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+        const newScale = Math.min(maxScale, Math.max(minScale, scale * zoomFactor));
+        const xs = (e.clientX - pointX) / scale;
+        const ys = (e.clientY - pointY) / scale;
+        scale = newScale;
+        pointX = e.clientX - xs * scale;
+        pointY = e.clientY - ys * scale;
+        applyTransform(false);
+      } else {
+        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        pointX -= delta;
+        applyTransform(false);
+      }
+    }, { passive: false });
+
+    // Touch Gestures: 1-Finger Swipe & 2-Finger Pinch-to-Zoom Out/In
+    let initialPinchDistance = null;
+    let initialScale = 1;
+
+    function getTouchDistance(t1, t2) {
+      const dx = t1.clientX - t2.clientX;
+      const dy = t1.clientY - t2.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    viewport.addEventListener('touchstart', (e) => {
+      if (e.target.closest('input, button, textarea')) return;
+
+      if (e.touches.length === 1) {
+        isDragging = true;
+        hasMoved = false;
+        downX = e.touches[0].clientX;
+        downY = e.touches[0].clientY;
+        startX = e.touches[0].clientX - pointX;
+        startY = e.touches[0].clientY - pointY;
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        hasMoved = true;
+        initialPinchDistance = getTouchDistance(e.touches[0], e.touches[1]);
+        initialScale = scale;
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && isDragging) {
+        if (Math.hypot(e.touches[0].clientX - downX, e.touches[0].clientY - downY) > 8) {
+          hasMoved = true;
+        }
+        e.preventDefault();
+        pointX = e.touches[0].clientX - startX;
+        pointY = e.touches[0].clientY - startY;
+        applyTransform(false);
+      } else if (e.touches.length === 2 && initialPinchDistance) {
+        e.preventDefault();
+        const currentDistance = getTouchDistance(e.touches[0], e.touches[1]);
+        const factor = currentDistance / initialPinchDistance;
+        const newScale = Math.min(maxScale, Math.max(minScale, initialScale * factor));
+
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+
+        const xs = (midX - pointX) / scale;
+        const ys = (midY - pointY) / scale;
+
+        scale = newScale;
+        pointX = midX - xs * scale;
+        pointY = midY - ys * scale;
+        applyTransform(false);
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) initialPinchDistance = null;
+      if (e.touches.length === 0) isDragging = false;
+    });
+
+    // Zoom & Reset Control Buttons
+    document.getElementById('zoom-in').addEventListener('click', () => {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const xs = (centerX - pointX) / scale;
+      const ys = (centerY - pointY) / scale;
+      scale = Math.min(maxScale, scale * 1.25);
+      pointX = centerX - xs * scale;
+      pointY = centerY - ys * scale;
+      applyTransform(true);
+    });
+
+    document.getElementById('zoom-out').addEventListener('click', () => {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const xs = (centerX - pointX) / scale;
+      const ys = (centerY - pointY) / scale;
+      scale = Math.max(minScale, scale / 1.25);
+      pointX = centerX - xs * scale;
+      pointY = centerY - ys * scale;
+      applyTransform(true);
+    });
+
+    document.getElementById('btn-fit-all').addEventListener('click', () => fitEntireTimeline(true));
+    document.getElementById('zoom-reset').addEventListener('click', () => focusOnNewest(true));
+
+    // Firebase Data Listener (Chronological: Oldest on Left -> Newest on Right)
     onValue(gigsRef, (snapshot) => {
       const data = snapshot.val();
       allGigs = [];
@@ -585,10 +1172,14 @@
         allGigs = Object.keys(data).map(id => ({ id, ...data[id] })).sort((a, b) => {
           const dateA = new Date(a.date || 0).getTime();
           const dateB = new Date(b.date || 0).getTime();
-          return dateB - dateA;
+          if (dateA !== dateB) return dateA - dateB;
+          return (a.timestamp || 0) - (b.timestamp || 0);
         });
       }
       window.filterGigs();
+      if (activeDetailGigId) {
+        renderGigDetailContent(activeDetailGigId);
+      }
     });
 
     window.filterGigs = () => {
@@ -608,33 +1199,35 @@
       });
 
       if (filtered.length === 0) {
-        feed.innerHTML = `<p style="text-align:center; color:#666; padding: 30px; font-size: 11px;">No gig memories found matching your search.</p>`;
+        feed.innerHTML = `<p style="color:#666; padding: 30px; font-size: 12px;">No gig memories found matching your search.</p>`;
         document.getElementById('connection-layer').innerHTML = '';
         return;
       }
 
       filtered.forEach((item, index) => {
+        const isNewest = index === filtered.length - 1;
+        const wrapper = document.createElement('div');
+        // Keep newest gig cleanly positioned on top
+        const posFromRight = (filtered.length - 1 - index);
+        const posClass = posFromRight % 2 === 0 ? 'pos-top' : 'pos-bottom';
+        wrapper.className = `gig-node-wrapper ${posClass} ${isNewest ? 'is-newest' : ''}`;
+
         const post = document.createElement('div');
-        const alignmentClass = index % 2 === 0 ? 'align-left' : 'align-right';
-        post.className = `gig-post ${alignmentClass}`;
+        post.className = 'gig-post';
         post.setAttribute('data-id', item.id);
 
+        const newestBadge = isNewest ? `<div class="newest-badge">★ Newest Gig</div>` : '';
         const cropPos = item.cropOffset !== undefined ? `${item.cropOffset}%` : '50%';
-        let imgHtml = item.imageSrc ? `
+        const imgHtml = item.imageSrc ? `
           <div class="gig-thumb-wrapper">
             <img src="${item.imageSrc}" class="gig-thumb" style="object-position: 50% ${cropPos};" alt="Gig Stub">
           </div>` : '';
 
-        let songHtml = item.song ? `<span>Highlight Track: <span>${item.song}</span></span>` : '';
-
-        const comments = item.comments ? Object.values(item.comments) : [];
-        let commentsListHtml = comments.map(c => `
-          <div class="comment-item">
-            <span class="comment-author">${c.author}:</span> ${c.text}
-          </div>
-        `).join('');
+        const songHtml = item.song ? `<span>Highlight: <span>${item.song}</span></span>` : '';
+        const commentsCount = item.comments ? Object.keys(item.comments).length : 0;
 
         post.innerHTML = `
+          ${newestBadge}
           <div class="gig-header">
             <h3 class="gig-title">${item.title}</h3>
             <span class="gig-date">${item.date || 'Unknown Date'}</span>
@@ -647,40 +1240,94 @@
           </div>
           <p class="gig-desc">${item.desc}</p>
           ${imgHtml}
-          <div class="gig-author">Logged by: <span>${item.author || 'Anonymous'}</span></div>
-
-          <!-- Interactive Comments Section -->
-          <div class="comments-section">
-            <button class="comments-toggle" onclick="window.toggleComments('${item.id}')">💬 Comments (${comments.length})</button>
-            <div class="comments-box" id="comments-box-${item.id}">
-              <div class="comment-list" id="comment-list-${item.id}">
-                ${commentsListHtml || '<p style="font-size:9px; color:#555;">No comments yet. Start the conversation!</p>'}
-              </div>
-              <div class="comment-form">
-                <input type="text" id="comment-author-${item.id}" class="comment-input-name" placeholder="Your Name" />
-                <input type="text" id="comment-text-${item.id}" class="comment-input-text" placeholder="Add comment / suggest artist..." />
-                <button class="btn-comment" onclick="window.addComment('${item.id}')">Post</button>
-              </div>
-            </div>
+          <div class="gig-card-footer">
+            <div>By <span>${item.author || 'Anonymous'}</span></div>
+            <div>💬 ${commentsCount} · <span>Tap to Open →</span></div>
           </div>
         `;
-        feed.appendChild(post);
+
+        post.addEventListener('click', (e) => {
+          if (hasMoved) return;
+          e.stopPropagation();
+          window.openGigDetail(item.id);
+        });
+
+        wrapper.innerHTML = `<div class="timeline-dot"></div><div class="timeline-stem"></div>`;
+        wrapper.appendChild(post);
+        feed.appendChild(wrapper);
       });
 
-      setTimeout(drawConnections, 100);
+      setTimeout(() => {
+        drawConnections();
+        if (!isInitialized) {
+          focusOnNewest(false);
+          isInitialized = true;
+        } else {
+          applyTransform(false);
+        }
+      }, 80);
     };
 
-    window.toggleComments = (id) => {
-      const box = document.getElementById(`comments-box-${id}`);
-      if (box) {
-        box.style.display = box.style.display === 'block' ? 'none' : 'block';
-      }
+    // Gig Detail Preview Modal (Hub Sticker Popup Style)
+    function renderGigDetailContent(gigId) {
+      const item = allGigs.find(g => g.id === gigId);
+      if (!item) return;
+
+      const body = document.getElementById('detail-modal-body');
+      const cropPos = item.cropOffset !== undefined ? `${item.cropOffset}%` : '50%';
+      const imgHtml = item.imageSrc ? `
+        <img src="${item.imageSrc}" class="detail-full-img" style="object-position: 50% ${cropPos};" alt="Gig Stub">
+      ` : '';
+
+      const songHtml = item.song ? `<span>Highlight Track: <span>${item.song}</span></span>` : '';
+      const comments = item.comments ? Object.values(item.comments) : [];
+      const commentsListHtml = comments.map(c => `
+        <div class="comment-item">
+          <span class="comment-author">${c.author}:</span> ${c.text}
+        </div>
+      `).join('');
+
+      body.innerHTML = `
+        <span class="detail-date-tag">${item.date || 'Unknown Date'}</span>
+        <h2>${item.title}</h2>
+        <div class="detail-meta-grid">
+          <span>Band(s): <span>${item.bands}</span></span>
+          <span>Venue: <span>${item.venue}</span></span>
+          <span>Genre: <span>${item.genre}</span></span>
+          ${songHtml}
+        </div>
+        ${imgHtml}
+        <p class="detail-full-desc">${item.desc}</p>
+        <div class="detail-logged-by">Logged by: <span>${item.author || 'Anonymous'}</span></div>
+
+        <div class="modal-comments-box">
+          <div class="modal-comments-title">💬 Scene Memories & Comments (${comments.length})</div>
+          <div class="comment-list">
+            ${commentsListHtml || '<p style="font-size:10px; color:#666;">No comments yet. Add your memory from this show!</p>'}
+          </div>
+          <div class="comment-form">
+            <input type="text" id="detail-comment-author" class="comment-input-name" placeholder="Your Name" />
+            <input type="text" id="detail-comment-text" class="comment-input-text" placeholder="Add memory / setlist note..." />
+            <button type="button" class="btn-comment" onclick="window.addComment('${item.id}')">Post</button>
+          </div>
+        </div>
+      `;
+    }
+
+    window.openGigDetail = (gigId) => {
+      activeDetailGigId = gigId;
+      renderGigDetailContent(gigId);
+      document.getElementById('gig-detail-modal').style.display = 'flex';
+    };
+
+    window.closeGigDetail = () => {
+      activeDetailGigId = null;
+      document.getElementById('gig-detail-modal').style.display = 'none';
     };
 
     window.addComment = async (gigId) => {
-      const authorInput = document.getElementById(`comment-author-${gigId}`);
-      const textInput = document.getElementById(`comment-text-${gigId}`);
-      
+      const authorInput = document.getElementById('detail-comment-author');
+      const textInput = document.getElementById('detail-comment-text');
       const author = authorInput.value.trim() || 'Anonymous';
       const text = textInput.value.trim();
 
@@ -699,12 +1346,8 @@
     function drawConnections() {
       const svgLayer = document.getElementById('connection-layer');
       svgLayer.innerHTML = '';
-      const feed = document.getElementById('archive-feed');
-      if (!feed) return;
-      
-      const feedRect = feed.getBoundingClientRect();
-      svgLayer.setAttribute('width', feedRect.width);
-      svgLayer.setAttribute('height', feed.scrollHeight);
+      svgLayer.setAttribute('width', canvas.scrollWidth);
+      svgLayer.setAttribute('height', canvas.offsetHeight);
 
       for (let i = 0; i < allGigs.length; i++) {
         for (let j = i + 1; j < allGigs.length; j++) {
@@ -713,10 +1356,10 @@
 
           const shareVenue = g1.venue && g2.venue && g1.venue.toLowerCase() === g2.venue.toLowerCase();
           const shareGenre = g1.genre && g2.genre && g1.genre.toLowerCase() === g2.genre.toLowerCase();
-          
+
           const bands1 = (g1.bands || '').toLowerCase().split(',').map(b => b.trim());
           const bands2 = (g2.bands || '').toLowerCase().split(',').map(b => b.trim());
-          const shareBand = bands1.some(b => bands2.includes(b));
+          const shareBand = bands1.some(b => b && bands2.includes(b));
 
           if (shareVenue || shareGenre || shareBand) {
             const el1 = document.querySelector(`[data-id="${g1.id}"]`);
@@ -725,11 +1368,12 @@
             if (el1 && el2) {
               const r1 = el1.getBoundingClientRect();
               const r2 = el2.getBoundingClientRect();
+              const cRect = canvas.getBoundingClientRect();
 
-              const x1 = r1.left + (r1.width / 2) - feedRect.left;
-              const y1 = r1.top + (r1.height / 2) - feedRect.top;
-              const x2 = r2.left + (r2.width / 2) - feedRect.left;
-              const y2 = r2.top + (r2.height / 2) - feedRect.top;
+              const x1 = (r1.left + r1.width / 2 - cRect.left) / scale;
+              const y1 = (r1.top + r1.height / 2 - cRect.top) / scale;
+              const x2 = (r2.left + r2.width / 2 - cRect.left) / scale;
+              const y2 = (r2.top + r2.height / 2 - cRect.top) / scale;
 
               const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
               line.setAttribute('x1', x1);
@@ -744,9 +1388,12 @@
       }
     }
 
-    window.addEventListener('resize', () => { setTimeout(drawConnections, 200); });
+    window.addEventListener('resize', () => {
+      applyTransform(false);
+      drawConnections();
+    });
 
-    // Working Manual Image Cropper Functionality
+    // Manual Image Cropper
     window.handleImagePreview = function(input) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -765,9 +1412,7 @@
     window.updateCropOffset = function(val) {
       manualCropOffset = val;
       const img = document.getElementById('manual-crop-img');
-      if (img) {
-        img.style.objectPosition = `50% ${val}%`;
-      }
+      if (img) img.style.objectPosition = `50% ${val}%`;
     };
 
     document.getElementById('gig-form').addEventListener('submit', async (e) => {
@@ -794,6 +1439,7 @@
           timestamp: Date.now()
         });
         window.closeModal();
+        setTimeout(() => focusOnNewest(true), 150);
       } catch (err) {
         alert("Error saving gig memory: Payload limit reached. Try a smaller image.");
       }
